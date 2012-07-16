@@ -2,10 +2,8 @@
   <entry>
     <xpath>/document</xpath>
     <children>
-      <sequential><!-- ordered -->
-	<optional>metadata</optional><!-- occurs 0 or 1 times -->
-	<required>content</required><!-- occurs exactly once -->
-      </sequential>
+      <optional>metadata</optional><!-- occurs 0 or 1 times -->
+      <element>content</element><!-- occurs exactly once -->
     </children>
     <notext/>
     <documentation>
@@ -45,8 +43,8 @@ You must not edit this section manually, unless you really know what you're doin
   <entry id="document-content">
     <xpath>/document/content</xpath>
     <children>
-      <number from="0" to="inf">
-	<set>
+      <any-number from="0" to="">
+	<one-of>
 	  <element>para</element>
 	  <element>video</element>
 	  <element>presentation</element>
@@ -61,8 +59,8 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>table</element>
 	  <element>definition</element>
 	  <element>activity</element>
-	</set>
-      </number>
+	</one-of>
+      </any-number>
     </children>
     <notext/>
   </entry>
