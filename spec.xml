@@ -11,6 +11,7 @@ The document element is the root.
 It may have a metadata element and must have a content element.
     </documentation>
   </entry>
+
   <entry>
     <xpath>/document/metadata</xpath>
     <children>
@@ -26,6 +27,7 @@ Only version numbers at this time.
 You must not edit this section manually, unless you really know what you're doing.
     </documentation>
   </entry>
+
   <entry>
     <xpath>/document/metadata/cnxml-version</xpath>
     <text>
@@ -33,6 +35,7 @@ You must not edit this section manually, unless you really know what you're doin
     </text>
     <validation-callback>is_version_number</validation-callback>
   </entry>
+
   <entry>
     <xpath>/document/metadata/pspicture-generator-version</xpath>
     <text>
@@ -40,11 +43,35 @@ You must not edit this section manually, unless you really know what you're doin
     </text>
     <validation-callback>is_version_number</validation-callback>
   </entry>
-  <entry id="document-content">
+
+  <entry>
     <xpath>/document/content</xpath>
     <children>
-      <any-number from="0" to="">
+      <one-of>
+	<any-number>
+	  <element>section</element>
+	</any-number>
+	<reference>block-element</reference>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//section</xpath>
+    <children>
+      <element>title</element>
+      <optional>shortcode</optional>
+      <reference>block-element</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry id="block-element">
+    <children>
+      <any-number>
 	<one-of>
+	  <element>section</element>
 	  <element>para</element>
 	  <element>video</element>
 	  <element>presentation</element>
@@ -62,14 +89,10 @@ You must not edit this section manually, unless you really know what you're doin
 	</one-of>
       </any-number>
     </children>
-    <notext/>
   </entry>
 
-<!--
-/document/content//section
-contains title shortcode :block-element:
-notext
 
+<!--
 /document/content//section/title
 contains :inline-element:
 text

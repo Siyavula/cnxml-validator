@@ -1,10 +1,15 @@
 from lxml import etree
+import sys
 
 # This parser automatically stripts comments
 parser = etree.ETCompatXMLParser()
 parser.feed(open('spec.xml','rt').read())
 spec = parser.close()
-parser.feed(open('test.cnxmlplus','rt').read())
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+else:
+    filename = 'test.cnxmlplus'
+parser.feed(open(filename,'rt').read())
 document = parser.close()
 for dom in spec, document:
     for node in dom.xpath('//*'):
@@ -16,19 +21,25 @@ for dom in spec, document:
 # Attach relevant spec entries to nodes in the DOM
 documentSpecEntries = {}
 for entry in spec:
+    if entry.find('xpath') is None:
+        continue
     for node in document.xpath(entry.find('xpath').text):
         if documentSpecEntries.get(node) is None:
             documentSpecEntries[node] = entry
 
 def traverseChildrenXml(patternNode):
+    global spec
     if patternNode is None:
         return None
     if len(patternNode) == 0:
         # Leaf: should contain tag name
-        assert patternNode.tag in ['optional', 'element']
+        assert patternNode.tag in ['optional', 'element', 'reference'], patternNode.tag
         assert patternNode.text is not None
         tag = patternNode.text.strip()
         assert tag != ''
+        if patternNode.tag == 'reference':
+            referenceEntry = [child for child in spec if child.attrib.get('id') == tag][0]
+            return traverseChildrenXml(referenceEntry.find('children'))
         if patternNode.tag == 'optional':
             return '(' + tag + ',)?'
         else:
@@ -37,7 +48,7 @@ def traverseChildrenXml(patternNode):
         assert patternNode.tag in ['children', 'optional', 'subset-of', 'any-number', 'one-of'], patternNode.tag
         subPatterns = [traverseChildrenXml(child) for child in patternNode.getchildren()]
         if patternNode.tag == 'children':
-            return '^(' + ''.join(subPatterns) + ')$'
+            return '(' + ''.join(subPatterns) + ')'
         elif patternNode.tag == 'optional':
             return '((' + ''.join(subPatterns) + ')?)'
         elif patternNode.tag == 'subset-of':
@@ -58,39 +69,29 @@ def traverse(node, spec):
     for child in children:
         traverse(child, spec)
 
-    '''
-    # Validate children: build map from tags to symbols
-    tagList = []
-    for child in children:
-        if child.tag not in tagList:
-            tagList.append(child.tag)
-    formatString = '%%0%ii'%len('%i'%(len(tagMap)-1))
-    tagMap = {}
-    for i in xrange(len(tagList)):
-        tagMap[tagList[i]] = formatString%i
-    '''
-
     # Validate children: build regex from spec
-    import re
-    regex = traverseChildrenXml(documentSpecEntries[node].find('children'))
+    specEntry = documentSpecEntries.get(node)
+    if specEntry is None:
+        return # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
+    regex = traverseChildrenXml(specEntry.find('children'))
     if regex is None:
         # No children
         assert len(children) == 0
     else:
-        pattern = re.compile(regex)
+        import re
+        pattern = re.compile('^' + regex + '$')
         print regex
-
-        # Validate children: build
+        # Validate children: build children pattern
         if len(children) > 0:
             childrenPattern = ','.join([child.tag for child in children]) + ','
         else:
             childrenPattern = ''
-        print childrenPattern    
+        print repr(childrenPattern)
         if pattern.match(childrenPattern) is None:
             raise ValueError, 'Child match failed for %s entry: %s'%(documentSpecEntries[node].find('xpath').text, childrenPattern)
+        print
 
-    #check that children match contains spec
-    #check that text matches text spec
-    #do callback
+    # TODO: Check that text matches text spec
+    # TODO: Do callback
 
 traverse(document, spec)
