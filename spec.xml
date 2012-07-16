@@ -1,0 +1,86 @@
+<spec>
+  <entry>
+    <xpath>/document</xpath>
+    <children>
+      <sequential><!-- ordered -->
+	<optional>metadata</optional><!-- occurs 0 or 1 times -->
+	<required>content</required><!-- occurs exactly once -->
+      </sequential>
+    </children>
+    <notext/>
+    <documentation>
+The document element is the root.
+It may have a metadata element and must have a content element.
+    </documentation>
+  </entry>
+  <entry>
+    <xpath>/document/metadata</xpath>
+    <children>
+      <subset-of><!-- subsetsof: at most one of each in the set; unordered -->
+	<element>cnxml-version</element>
+	<element>pspicture-generator-version</element>
+      </subset-of>
+    </children>
+    <notext/>
+    <documentation>
+The metadata section contains information about the XML document itself.
+Only version numbers at this time.
+You must not edit this section manually, unless you really know what you're doing.
+    </documentation>
+  </entry>
+  <entry>
+    <xpath>/document/metadata/cnxml-version</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_version_number</validation-callback>
+  </entry>
+  <entry>
+    <xpath>/document/metadata/pspicture-generator-version</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_version_number</validation-callback>
+  </entry>
+  <entry id="document-content">
+    <xpath>/document/content</xpath>
+    <children>
+      <number from="0" to="inf">
+	<set>
+	  <element>para</element>
+	  <element>video</element>
+	  <element>presentation</element>
+	  <element>simulation</element>
+	  <element>list</element>
+	  <element>equation</element>
+	  <element>latex</element>
+	  <element>worked_example</element>
+	  <element>figure</element>
+	  <element>exercises</element>
+	  <element>image</element>
+	  <element>table</element>
+	  <element>definition</element>
+	  <element>activity</element>
+	</set>
+      </number>
+    </children>
+    <notext/>
+  </entry>
+
+<!--
+/document/content//section
+contains title shortcode :block-element:
+notext
+
+/document/content//section/title
+contains :inline-element:
+text
+
+/document/content//section/shortcode
+text.strip
+validation-callback: is_shortcode
+
+:block-element:/para
+-->
+
+</spec>
