@@ -5,9 +5,9 @@
     <pspicture-generator-version>1.1</pspicture-generator-version>
   </metadata>
   <content>
-    <section type="chapter">
+    <section>
       <title>Electromagnetic radiation</title>
-      <section type="section">
+      <section>
         <title>What is <emphasis effect="italics">electromagnetic radiation</emphasis>?</title>
         <shortcode>ESADH</shortcode>
         <para>The most common example of electromagnetic (EM) radiation is visible light. Everyone is very familiar with light in everyday life, you can only see things because light bounces off them and enters your eyes. This alone makes it worthwhile to learn about it but there are also very many other applications of EM radiation. It is called electromagnetic because there are electric and magnetic fields making up the radiation. We will look at this in more detail a little later.</para>
@@ -50,7 +50,7 @@
         </list>
         <para>We will discuss this in the following sections and in even more detail in Grades 11 and 12.</para>
       </section>
-      <section type="section">
+      <section>
         <title>Wave-like nature of EM radiation</title>
         <shortcode>ESADI</shortcode>
         <para>If you watch a colony of ants walking up the wall, they look like a thin continuous black line. But as you look closer, you see that the line is made up of thousands of separated black ants.</para>
@@ -66,7 +66,7 @@
             <para>A photon is a quantum (energy packet) of light.</para>
           </meaning>
         </definition>
-        <section type="subsection">
+        <section>
           <title>Fields</title>
           <shortcode>ESADJ</shortcode>
           <para><emphasis effect="italics">Accelerating charges</emphasis> emit electromagnetic waves. A changing electric field generates a magnetic field and a changing magnetic field generates an electric field. This is the principle behind the propagation of electromagnetic waves, because electromagnetic waves, unlike sound waves, do not need a medium to travel through.</para>
@@ -159,7 +159,7 @@ We can identify two properties of the radiation - wavelength (<unit_number><numb
           </worked_example>
         </section>
       </section>
-      <section type="section">
+      <section>
         <title>Electromagnetic spectrum</title>
         <shortcode>ESADK</shortcode>
         <para>EM radiation is classified into types according to the frequency of the wave: these types include, in order of increasing frequency, radio waves, microwaves, infrared radiation, visible light, ultraviolet radiation, X-rays and gamma rays.</para>
@@ -174,7 +174,7 @@ We can identify two properties of the radiation - wavelength (<unit_number><numb
         <para><link target-id="table:EMSpectrumRanges"/> lists the wavelength and frequency ranges of the divisions of the electromagnetic spectrum.</para>
         <figure id="table:EMSpectrumRanges">
           <type>table</type>
-          <table latex-column-spec="|l|l|l|">
+          <table>
             <tgroup cols="3">
               <colspec colname="c1" colnum="1"/>
               <colspec colname="c2" colnum="2"/>
@@ -278,7 +278,7 @@ We can identify two properties of the radiation - wavelength (<unit_number><numb
         <para>Examples of some uses of electromagnetic waves are shown in <link target-id="Table:EMUses"/>.</para>
         <figure id="Table:EMUses">
           <type>table</type>
-          <table latex-column-spec="|l|p{7cm}|">
+          <table>
             <tgroup cols="2">
               <colspec colname="c1" colnum="1"/>
               <colspec colname="c2" colnum="2"/>
@@ -395,7 +395,7 @@ We can identify two properties of the radiation - wavelength (<unit_number><numb
         </video>
         <para>The EM spectrum is continuous (has no gaps) and infinite. Due to technological limitations, we can only use electromagnetic radiation with wavelengths between <unit_number><number><exp>-14</exp></number><unit>m</unit></unit_number> and <unit_number><number><exp>15</exp></number><unit>m</unit></unit_number>.</para>
       </section>
-      <section type="section">
+      <section>
         <title>Penetrating ability of EM radiation</title>
         <shortcode>ESADL</shortcode>
         <para>Different frequencies of EM radiation have different degrees of penetration. For example, if we take the human body as the object, visible light is reflected off the surface of the human body, ultra-violet light (from sunlight) damages the skin, but X-rays are able to penetrate the skin and bone and allow for pictures of the inside of the human body to be taken.</para>
@@ -510,7 +510,7 @@ In 2009 the World Health Organisation announced that they have found a link betw
 </entry>
 </exercises>
       </section>
-      <section type="section">
+      <section>
         <title>Particle-like nature of EM radiation</title>
         <shortcode>ESADM</shortcode>
         <para>When we talk of electromagnetic radiation as a particle, we refer to photons, which are packets of energy. The energy of the photon is related to the wavelength of electromagnetic radiation according to:</para>
@@ -616,7 +616,7 @@ In 2009 the World Health Organisation announced that they have found a link betw
           <solution url="http://www.fullmarks.org.za/Members/wllhea002/questions/A000654/view"/>
 </entry>
 </exercises>
-        <section type="subsection">
+        <section>
           <title>Animal behaviour [IKS]</title>
           <shortcode>ESADN</shortcode>
           <para>People have believed that animals can predict earthquakes and other natural disasters for centuries. As early as 373 B.C., historians recorded a massive exodus of animals, including rats, snakes and weasels, from the Greek city of Helice days before a quake struck causing massive devastation.</para>
@@ -695,7 +695,7 @@ In 2009 the World Health Organisation announced that they have found a link betw
           </activity>
 	</section>
       </section>
-      <section type="section">
+      <section>
 	<title>Chapter summary</title>
         <presentation>
           <shortcode>VPfhw</shortcode>
@@ -717,19 +717,19 @@ In 2009 the World Health Organisation announced that they have found a link betw
         </list>
         <figure id="table:emradiation::units">
           <type>table</type>
-          <table latex-column-spec="|l|c|c|">
+          <table>
             <tgroup cols="3">
               <colspec colname="c1" colnum="1"/>
               <colspec colname="c2" colnum="2"/>
               <colspec colname="c3" colnum="3"/>
               <tbody>
                 <row>
-                  <entry latex-column-spec="|c|" nameend="c3" namest="c1" align="center">
+                  <entry nameend="c3" namest="c1" align="center">
                     <para><emphasis effect="bold">Physical Quantities</emphasis></para>
                   </entry>
                 </row>
                 <row>
-                  <entry latex-column-spec="|c|" nameend="c1" namest="c1">
+                  <entry nameend="c1" namest="c1">
                     <para><emphasis effect="bold">Quantity</emphasis></para>
                   </entry>
                   <entry>

@@ -94,9 +94,10 @@ def traverse(iNode, spec):
         specAttributes = specEntry.find('attributes')
         if specAttributes is None:
             if len(nodeAttributes) > 0:
-                if False:
+                if True:
                     if len(iNode.attrib) > 0:
-                        print get_full_dom_path(iNode), iNode.attrib
+                        if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
+                            print get_full_dom_path(iNode), iNode.attrib
                 pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
         else:
             for entry in specAttributes:

@@ -162,6 +162,13 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//exercises/entry/solution</xpath>
+    <attributes>
+      <entry>
+	<name>url</name>
+	<type>url</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
@@ -428,6 +435,13 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//table/tgroup</xpath>
+    <attributes>
+      <entry>
+	<name>cols</name>
+	<type>integer(1,)</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <any-number from="1">
 	<element>colspec</element>
@@ -443,7 +457,7 @@ You must not edit this section manually, unless you really know what you're doin
       <entry>
 	<name>colname</name>
 	<type>string</type>
-	<default></default>
+	<default/>
       </entry>
       <entry>
 	<name>colnum</name>
@@ -475,6 +489,23 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//table/tgroup/tbody/row/entry</xpath>
+    <attributes>
+      <entry>
+	<name>namest</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>nameend</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>align</name>
+	<type>enum("center")</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <one-of>
 	<reference>block-element-no-subsections</reference>
