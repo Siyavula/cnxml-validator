@@ -1,4 +1,5 @@
-<spec>
+<?xml version='1.0' encoding='utf-8'?>
+<spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1">
   <entry>
     <xpath>/document</xpath>
     <children>
@@ -61,10 +62,105 @@ You must not edit this section manually, unless you really know what you're doin
     <xpath>/document/content//section</xpath>
     <children>
       <element>title</element>
-      <optional>shortcode</optional>
+      <optional>shortcode</optional><!--TODO: this should be required-->
       <reference>block-element</reference>
     </children>
     <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//section/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//section/shortcode</xpath>
+    <validation-callback>is_section_shortcode</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//para</xpath>
+    <children>
+      <reference>inline-container-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//list</xpath>
+    <attributes>
+      <entry>
+	<name>list-type</name>
+	<type>enum("bulleted","enumerated")</type>
+	<default>bulleted</default>
+      </entry>
+      <entry>
+	<name>start-value</name>
+	<type>integer(1,)</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <any-number from="1">
+	<element>item</element>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//list/item</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises</xpath>
+    <children>
+      <optional>title</optional>
+      <any-number>
+	<element>entry</element>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/entry</xpath>
+    <children>
+      <element>shortcode</element>
+      <element>problem</element>
+      <element>solution</element>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/entry/shortcode</xpath>
+    <validation-callback>is_exercise_shortcode</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/entry/problem</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/entry/solution</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
   </entry>
 
   <entry id="block-element">
@@ -72,25 +168,136 @@ You must not edit this section manually, unless you really know what you're doin
       <any-number>
 	<one-of>
 	  <element>section</element>
-	  <element>para</element>
-	  <element>video</element>
-	  <element>presentation</element>
-	  <element>simulation</element>
-	  <element>list</element>
-	  <element>equation</element>
-	  <element>latex</element>
-	  <element>worked_example</element>
-	  <element>figure</element>
-	  <element>exercises</element>
-	  <element>image</element>
-	  <element>table</element>
-	  <element>definition</element>
-	  <element>activity</element>
+	  <reference>block-element-no-subsections-entry</reference>
 	</one-of>
       </any-number>
     </children>
   </entry>
 
+  <entry id="block-element-no-subsections">
+    <children>
+      <any-number>
+	<reference>block-element-no-subsections-entry</reference>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry id="block-element-no-subsections-entry">
+    <children>
+      <one-of>
+	<element>para</element>
+	<element>video</element>
+	<element>presentation</element>
+	<element>simulation</element>
+	<element>list</element>
+	<element>equation</element>
+	<element>latex</element>
+	<element>worked_example</element>
+	<element>figure</element>
+	<element>image</element>
+	<element>table</element>
+	<element>definition</element>
+	<element>activity</element>
+	<element>exercises</element>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="inline-container-element">
+    <children>
+      <any-number>
+	<one-of>
+	  <element>emphasis</element>
+	  <element>sub</element>
+	  <element>sup</element>
+	  <element>list</element>
+	  <element>media</element>
+	  <element>link</element>
+	  <element>unit_number</element>
+	  <element>number</element>
+	  <element>unit</element>
+	  <element>m:math</element>
+	</one-of>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry id="inline-element">
+    <children>
+      <any-number>
+	<one-of>
+	  <element>emphasis</element>
+	  <element>sub</element>
+	  <element>sup</element>
+	  <element>link</element>
+	  <element>unit_number</element>
+	  <element>number</element>
+	  <element>unit</element>
+	  <element>m:math</element>
+	</one-of>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit_number</xpath>
+    <children>
+      <element>number</element>
+      <element>unit</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit_number/number</xpath>
+    <children>
+      <subset-of>
+	<element>coeff</element>
+	<element>base</element>
+	<element>exp</element>
+      </subset-of>
+    </children>
+    <validation-callback>is_number</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit_number/number/coeff</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit_number/number/base</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit_number/number/exp</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit_number/unit</xpath>
+    <children>
+      <any-number>
+	<one-of>
+	  <element>sub</element>
+	  <element>sup</element>
+	</one-of>
+      </any-number>
+    </children>
+    <validation-callback>is_unit</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//emphasis</xpath>
+    <attributes>
+      <entry>
+	<name>effect</name>
+	<type>enum("bold","italics","underline","smallcaps","normal")</type>
+	<default>bold</default>
+      </entry>
+    </attributes>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
 
 <!--
 /document/content//section/title

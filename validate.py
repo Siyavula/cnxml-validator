@@ -62,16 +62,59 @@ def traverseChildrenXml(patternNode):
             assert False
             return '(' + ''.join(subPatterns) + ')'
         
- 
-def traverse(node, spec):
+def tag_namespace_to_prefix(tag, spec):
+    if tag[0] == '{':
+        closingBracePos = tag.find('}')
+        namespaceUri = tag[1:closingBracePos]
+        prefix = dict([(value, key) for key, value in spec.nsmap.iteritems()])[namespaceUri]
+        return prefix + ':' + tag[closingBracePos+1:]
+    else:
+        return tag
+
+def get_full_dom_path(iNode):
+    node = iNode
+    path = '/' + tag_namespace_to_prefix(node.tag, spec)
+    while node.getparent() is not None:
+        node = node.getparent()
+        path = '/' + tag_namespace_to_prefix(node.tag, spec) + path
+    return path
+
+def traverse(iNode, spec):
     global documentSpecEntries
-    children = node.getchildren()
+    children = iNode.getchildren()
     for child in children:
         traverse(child, spec)
 
+    # Get associated specification node
+    specEntry = documentSpecEntries.get(iNode)
+
+    # Check attributes
+    if specEntry is not None:
+        nodeAttributes = dict(iNode.attrib)
+        specAttributes = specEntry.find('attributes')
+        if specAttributes is None:
+            if len(nodeAttributes) > 0:
+                if False:
+                    if len(iNode.attrib) > 0:
+                        print get_full_dom_path(iNode), iNode.attrib
+                pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
+        else:
+            for entry in specAttributes:
+                attributeName = entry.find('name').text
+                attributeValue = nodeAttributes.get(attributeName)
+                if (entry.find('default') is None) and (attributeValue is None):
+                    raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode))
+                if attributeValue is not None:
+                    # TODO: check that attribute value conforms to spec type
+                    del nodeAttributes[attributeName]
+            if len(nodeAttributes) > 0:
+                # There are still unhandled node attributes
+                raise KeyError, "Unknown attribute(s) '%s' in %s"%("', '".join(nodeAttributes.keys()), get_full_dom_path(iNode))
+
     # Validate children: build regex from spec
-    specEntry = documentSpecEntries.get(node)
     if specEntry is None:
+        if True:
+            print get_full_dom_path(iNode)
         return # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
     regex = traverseChildrenXml(specEntry.find('children'))
     if regex is None:
@@ -80,16 +123,13 @@ def traverse(node, spec):
     else:
         import re
         pattern = re.compile('^' + regex + '$')
-        print regex
         # Validate children: build children pattern
         if len(children) > 0:
-            childrenPattern = ','.join([child.tag for child in children]) + ','
+            childrenPattern = ','.join([tag_namespace_to_prefix(child.tag, spec) for child in children]) + ','
         else:
             childrenPattern = ''
-        print repr(childrenPattern)
         if pattern.match(childrenPattern) is None:
-            raise ValueError, 'Child match failed for %s entry: %s'%(documentSpecEntries[node].find('xpath').text, childrenPattern)
-        print
+            raise ValueError, 'Child match failed for %s entry: %s'%(documentSpecEntries[iNode].find('xpath').text, childrenPattern)
 
     # TODO: Check that text matches text spec
     # TODO: Do callback
