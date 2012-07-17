@@ -381,7 +381,6 @@ We can identify two properties of the radiation - wavelength (<unit_number><numb
         <figure id="fig:emspectrum">
           <type>figure</type>
           <image>
-            <arguments>width=\columnwidth</arguments>
             <src>photos/m38778_EM_Spectrum_Properties_edit.png</src>
           </image>
           <caption>
@@ -427,7 +426,6 @@ We can identify two properties of the radiation - wavelength (<unit_number><numb
 	</video>
         <para>As a defence against UV radiation, the body tans when exposed to moderate (depending on skin type) levels of radiation by releasing the brown pigment melanin. This helps to block UV penetration and prevent damage to the vulnerable skin tissue deeper down. Sun-tan lotion, often referred to as sunblock or sunscreen, partly blocks UV radiation and is widely available. These products have a sun protection factor (SPF) rating (usually indicated on the container) that indicate how much protection the product provides against UVB radiation. The SPF rating does not specify protection against UVA radiation. Some sunscreen lotion now includes compounds such as titanium dioxide which helps protect against UVA rays. Other UVA-blocking compounds found in sunscreen include zinc oxide and avobenzone.</para>
           <image>
-            <arguments>width=.8\columnwidth</arguments>
             <src>photos/beach2_treehouse1977.jpg</src>
           </image>
         <para><emphasis effect="bold">What makes a good sunscreen?</emphasis></para>
@@ -463,7 +461,6 @@ Ordinary, untreated glasses give some protection. Most plastic lenses give more 
 
         <para>For example, a mammogram is an X-ray of the human breast to detect breast cancer, but if a woman starts having regular mammograms when she is too young, her chances of getting breast cancer increases.</para>
           <image>
-            <arguments>width=0.8\textwidth</arguments>
             <src>photos/x-ray-hand_TraceMeek_flickr.jpg</src>
           </image>
         <para><emphasis effect="bold">Gamma-rays</emphasis></para>
@@ -480,7 +477,6 @@ Ordinary, untreated glasses give some protection. Most plastic lenses give more 
 
         <para><emphasis effect="bold">Cellphones and microwave radiation</emphasis></para>
           <image>
-            <arguments>width=.8\columnwidth</arguments>
             <src>photos/cellphones_kapungo.jpg</src>
           </image>
           <para>Cellphone radiation and health concerns have been raised, especially following the enormous increase in their use. This is because cellphones use electromagnetic waves in the microwave range. These concerns have induced a large body of research. Concerns about effects on health have also been raised regarding other digital wireless systems, such as data communication networks.

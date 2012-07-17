@@ -23,7 +23,7 @@ documentSpecEntries = {}
 for entry in spec:
     if entry.find('xpath') is None:
         continue
-    for node in document.xpath(entry.find('xpath').text):
+    for node in document.xpath(entry.find('xpath').text, namespaces=spec.nsmap):
         if documentSpecEntries.get(node) is None:
             documentSpecEntries[node] = entry
 
@@ -119,7 +119,8 @@ def traverse(iNode, spec):
     regex = traverseChildrenXml(specEntry.find('children'))
     if regex is None:
         # No children
-        assert len(children) == 0
+        if len(children) != 0:
+            raise ValueError, "No children expected in %s"%get_full_dom_path(iNode)
     else:
         import re
         pattern = re.compile('^' + regex + '$')

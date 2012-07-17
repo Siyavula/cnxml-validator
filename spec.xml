@@ -106,6 +106,7 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>item</element>
       </any-number>
     </children>
+    <notext/>
   </entry>
 
   <entry>
@@ -126,6 +127,7 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>entry</element>
       </any-number>
     </children>
+    <notext/>
   </entry>
 
   <entry>
@@ -142,6 +144,7 @@ You must not edit this section manually, unless you really know what you're doin
       <element>problem</element>
       <element>solution</element>
     </children>
+    <notext/>
   </entry>
 
   <entry>
@@ -154,12 +157,383 @@ You must not edit this section manually, unless you really know what you're doin
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
+    <notext/>
   </entry>
 
   <entry>
     <xpath>/document/content//exercises/entry/solution</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//definition</xpath>
+    <children>
+      <element>term</element>
+      <element>meaning</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//definition/term</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//definition/meaning</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//activity</xpath>
+    <attributes>
+      <entry>
+	<name>type</name>
+	<type>enum()</type>
+      </entry>
+    </attributes>
+    <children>
+      <element>title</element>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//activity/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//worked_example</xpath>
+    <children>
+      <element>title</element>
+      <element>question</element>
+      <element>answer</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//worked_example/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//worked_example/question</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//worked_example/answer</xpath>
+    <children>
+      <any-number from="1">
+	<element>workstep</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//worked_example/answer/workstep</xpath>
+    <children>
+      <element>title</element>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//worked_example/answer/workstep/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//presentation</xpath>
+    <children>
+      <element>shortcode</element>
+      <element>url</element>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//presentation/shortcode</xpath>
+    <validation-callback>is_rich_media_shortcode</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//presentation/url</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation</xpath>
+    <children>
+      <element>shortcode</element>
+      <element>url</element>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation/shortcode</xpath>
+    <validation-callback>is_rich_media_shortcode</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation/url</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//video</xpath>
+    <children>
+      <element>title</element>
+      <element>shortcode</element>
+      <element>url</element>
+      <optional>width</optional>
+      <optional>height</optional>
+      <optional>url</optional>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//video/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//video/shortcode</xpath>
+    <validation-callback>is_rich_media_shortcode</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//video/url</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//video/width</xpath>
+    <validation-callback>is_int</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//video/height</xpath>
+    <validation-callback>is_int</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//figure</xpath>
+    <children>
+      <element>type</element>
+      <one-of>
+	<element>table</element>
+	<element>pspicture</element>
+	<element>tikzpicture</element>
+	<element>image</element>
+      </one-of>
+      <element>caption</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//pspicture</xpath>
+    <children>
+      <any-number>
+	<element>usepackage</element>
+      </any-number>
+      <element>code</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//pspicture/usepackage</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//pspicture/code</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//tikzpicture</xpath>
+    <children>
+      <any-number>
+	<element>usepackage</element>
+      </any-number>
+      <element>code</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//tikzpicture/usepackage</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//tikzpicture/code</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//image</xpath>
+    <children>
+      <element>src</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//image/src</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//figure/type</xpath>
+    <validation-callback>is_figue_type</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//figure/caption</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table</xpath>
+    <children>
+      <element>tgroup</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup</xpath>
+    <children>
+      <any-number from="1">
+	<element>colspec</element>
+      </any-number>
+      <element>tbody</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/colspec</xpath>
+    <attributes>
+      <entry>
+	<name>colname</name>
+	<type>string</type>
+	<default></default>
+      </entry>
+      <entry>
+	<name>colnum</name>
+	<type>integer(1,)</type>
+      </entry>
+    </attributes>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/tbody</xpath>
+    <children>
+      <any-number>
+	<element>row</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/tbody/row</xpath>
+    <children>
+      <any-number>
+	<element>entry</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/tbody/row/entry</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//equation</xpath>
+    <children>
+      <element>m:math</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//m:math</xpath>
+    <children>
+      <reference>math-stuff</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+
+  <entry id="math-stuff">
+    <children>
+      <any-number>
+	<one-of>
+	  <element>m:mrow</element>
+	  <element>m:mfrac</element>
+	  <element>m:mfenced</element>
+	  <element>m:mi</element>
+	  <element>m:mo</element>
+	  <element>m:mn</element>
+	  <element>m:mtable</element>
+	  <element>m:mtr</element>
+	  <element>m:mtd</element>
+	  <element>m:mtext</element>
+	  <element>m:msub</element>
+	  <element>m:msup</element>
+	  <element>m:mspace</element>
+	  <element>m:mphantom</element>
+	</one-of>
+      </any-number>
     </children>
   </entry>
 
@@ -249,7 +623,7 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
-    <xpath>/document/content//unit_number/number</xpath>
+    <xpath>/document/content//number</xpath>
     <children>
       <subset-of>
 	<element>coeff</element>
@@ -261,19 +635,19 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
-    <xpath>/document/content//unit_number/number/coeff</xpath>
+    <xpath>/document/content//number/coeff</xpath>
   </entry>
 
   <entry>
-    <xpath>/document/content//unit_number/number/base</xpath>
+    <xpath>/document/content//number/base</xpath>
   </entry>
 
   <entry>
-    <xpath>/document/content//unit_number/number/exp</xpath>
+    <xpath>/document/content//number/exp</xpath>
   </entry>
 
   <entry>
-    <xpath>/document/content//unit_number/unit</xpath>
+    <xpath>/document/content//unit</xpath>
     <children>
       <any-number>
 	<one-of>
@@ -294,6 +668,40 @@ You must not edit this section manually, unless you really know what you're doin
 	<default>bold</default>
       </entry>
     </attributes>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//link</xpath>
+    <attributes>
+      <entry>
+	<name>url</name>
+	<type>url</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>target-id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+    <validation-callback>check_link_element</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//sub</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//sup</xpath>
     <children>
       <reference>inline-element</reference>
     </children>
