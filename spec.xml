@@ -408,10 +408,16 @@ You must not edit this section manually, unless you really know what you're doin
     <children>
       <element>type</element>
       <one-of>
-	<element>table</element>
-	<element>pspicture</element>
-	<element>tikzpicture</element>
-	<element>image</element>
+	<any-number from="1">
+	  <element>table</element>
+	</any-number>
+	<any-number from="1">
+	  <one-of>
+	    <element>pspicture</element>
+	    <element>tikzpicture</element>
+	    <element>image</element>
+	  </one-of>
+	</any-number>
       </one-of>
       <optional>caption</optional>
     </children>
