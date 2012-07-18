@@ -722,6 +722,8 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>activity</element>
 	<element>exercises</element>
 	<element>note</element>
+
+	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
     </children>
   </entry>
