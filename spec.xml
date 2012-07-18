@@ -722,6 +722,8 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>chem_compound</element>
 	  <element>spec_note</element>
 	  <element>nuclear_notation</element>
+
+	  <element>todo</element><!-- This needs to go away before publising the print textbooks -->
 	</one-of>
       </any-number>
     </children>
