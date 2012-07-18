@@ -571,6 +571,11 @@ You must not edit this section manually, unless you really know what you're doin
 	<type>enum("center")</type>
 	<default/>
       </entry>
+      <entry>
+	<name>morerows</name>
+	<type>integer</type>
+	<default/>
+      </entry>
     </attributes>
     <children>
       <one-of>
