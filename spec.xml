@@ -59,7 +59,22 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
+    <xpath>/document/content//activity/section</xpath>
+    <children>
+      <element>title</element>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
     <xpath>/document/content//section</xpath>
+    <attributes>
+      <entry>
+	<name>type</name>
+	<type>enum("chapter","section","subsection","subsubsection")</type>
+      </entry>
+    </attributes>
     <children>
       <element>title</element>
       <optional>shortcode</optional><!--TODO: this should be required-->
