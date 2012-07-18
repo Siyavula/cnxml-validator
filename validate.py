@@ -91,6 +91,11 @@ def traverse(iNode, spec):
     # Check attributes
     if specEntry is not None:
         nodeAttributes = dict(iNode.attrib)
+        for key in nodeAttributes:
+            if key[0] == '{': # attribute name has namespace
+                value = nodeAttributes[key]
+                del nodeAttributes[key]
+                nodeAttributes[tag_namespace_to_prefix(key, spec)] = value
         specAttributes = specEntry.find('attributes')
         if specAttributes is None:
             if len(nodeAttributes) > 0:
