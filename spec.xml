@@ -203,11 +203,25 @@ You must not edit this section manually, unless you really know what you're doin
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum()</type>
+	<type>enum("groupdiscussion","casestudy")</type>
       </entry>
     </attributes>
     <children>
       <element>title</element>
+      <reference>block-element</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//note</xpath>
+    <attributes>
+      <entry>
+	<name>type</name>
+	<type>enum("tip")</type>
+      </entry>
+    </attributes>
+    <children>
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
@@ -293,8 +307,17 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//simulation</xpath>
     <children>
+      <element>title</element>
       <element>shortcode</element>
       <element>url</element>
+      <element>embed</element>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation/title</xpath>
+    <children>
+      <reference>inline-element</reference>
     </children>
   </entry>
 
@@ -305,6 +328,11 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//simulation/url</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation/embed</xpath>
+    <validation-callback>is_valid_html</validation-callback>
   </entry>
 
   <entry>
@@ -355,13 +383,20 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>tikzpicture</element>
 	<element>image</element>
       </one-of>
-      <element>caption</element>
+      <optional>caption</optional>
     </children>
     <notext/>
   </entry>
 
   <entry>
     <xpath>/document/content//pspicture</xpath>
+    <attributes>
+      <entry>
+	<name>style:width</name>
+	<type>number</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <any-number>
 	<element>usepackage</element>
@@ -381,6 +416,13 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//tikzpicture</xpath>
+    <attributes>
+      <entry>
+	<name>style:width</name>
+	<type>number</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <any-number>
 	<element>usepackage</element>
@@ -400,6 +442,13 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//image</xpath>
+    <attributes>
+      <entry>
+	<name>style:width</name>
+	<type>number</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <element>src</element>
     </children>
@@ -523,6 +572,26 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
+    <xpath>/document/content//latex</xpath>
+    <attributes>
+      <entry>
+	<name>display</name>
+	<type>enum("inline","block")</type>
+	<default>inline</default>
+      </entry>
+    </attributes>
+    <children>
+      <any-number>
+	<one-of>
+	  <element>number</element>
+	  <element>unit</element>
+	  <element>unit_number</element>
+	</one-of>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry>
     <xpath>/document/content//m:math</xpath>
     <children>
       <reference>math-stuff</reference>
@@ -544,6 +613,8 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -563,6 +634,8 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>m:msup</element>
 	  <element>m:mspace</element>
 	  <element>m:mphantom</element>
+	  <element>m:mstyle</element>
+	  <element>m:mover</element>
 	</one-of>
       </any-number>
     </children>
@@ -600,10 +673,13 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>worked_example</element>
 	<element>figure</element>
 	<element>image</element>
+	<element>pspicture</element>
+	<element>tikzpicture</element>
 	<element>table</element>
 	<element>definition</element>
 	<element>activity</element>
 	<element>exercises</element>
+	<element>note</element>
       </one-of>
     </children>
   </entry>
@@ -622,6 +698,9 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>number</element>
 	  <element>unit</element>
 	  <element>m:math</element>
+	  <element>latex</element>
+	  <element>chem_compound</element>
+	  <element>spec_note</element>
 	</one-of>
       </any-number>
     </children>
@@ -639,6 +718,9 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>number</element>
 	  <element>unit</element>
 	  <element>m:math</element>
+	  <element>latex</element>
+	  <element>chem_compound</element>
+	  <element>spec_note</element>
 	</one-of>
       </any-number>
     </children>
@@ -651,6 +733,14 @@ You must not edit this section manually, unless you really know what you're doin
       <element>unit</element>
     </children>
     <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//chem_compound</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//spec_note</xpath>
   </entry>
 
   <entry>
