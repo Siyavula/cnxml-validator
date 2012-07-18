@@ -716,6 +716,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>latex</element>
 	  <element>chem_compound</element>
 	  <element>spec_note</element>
+	  <element>nuclear_notation</element>
 	</one-of>
       </any-number>
     </children>
@@ -736,6 +737,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>latex</element>
 	  <element>chem_compound</element>
 	  <element>spec_note</element>
+	  <element>nuclear_notation</element>
 	</one-of>
       </any-number>
     </children>
@@ -748,14 +750,6 @@ You must not edit this section manually, unless you really know what you're doin
       <element>unit</element>
     </children>
     <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//chem_compound</xpath>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//spec_note</xpath>
   </entry>
 
   <entry>
@@ -793,6 +787,39 @@ You must not edit this section manually, unless you really know what you're doin
       </any-number>
     </children>
     <validation-callback>is_unit</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//chem_compound</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//spec_note</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//nuclear_notation</xpath>
+    <children>
+      <unordered>
+	<element>symbol</element>
+	<element>mass_number</element>
+	<element>atomic_number</element>
+      </unordered>
+    </children>
+    <notext/>
+    <validation-callback>is_nuclear_notation</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//nuclear_notation/symbol</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//nuclear_notation/mass_number</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//nuclear_notation/atomic_number</xpath>
   </entry>
 
   <entry>

@@ -45,7 +45,7 @@ def traverseChildrenXml(patternNode):
         else:
             return '(' + tag + ',)'
     else:
-        assert patternNode.tag in ['children', 'optional', 'subset-of', 'any-number', 'one-of'], patternNode.tag
+        assert patternNode.tag in ['children', 'optional', 'subset-of', 'any-number', 'one-of', 'unordered'], patternNode.tag
         subPatterns = [traverseChildrenXml(child) for child in patternNode.getchildren()]
         if patternNode.tag == 'children':
             return '(' + ''.join(subPatterns) + ')'
@@ -58,6 +58,9 @@ def traverseChildrenXml(patternNode):
             return '((' + ''.join(subPatterns) + '){%s,%s})'%(patternNode.attrib.get('from', ''), patternNode.attrib.get('to', ''))
         elif patternNode.tag == 'one-of':
             return '(' + '|'.join(subPatterns) + ')'
+        elif patternNode.tag == 'unordered':
+            # TODO: this is currently broken and will also match repetitions of the elements or a subset of the elements. it will match correct patterns, but will also match some incorrect ones
+            return '((' + '|'.join(subPatterns) + ')*)'
         else:
             assert False
             return '(' + ''.join(subPatterns) + ')'
