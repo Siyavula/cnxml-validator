@@ -327,8 +327,11 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>shortcode</element>
 	<element>url</element>
 	<element>embed</element>
+	<optional>width</optional>
+	<optional>height</optional>
       </unordered>
     </children>
+    <validation-callback>simulation_has_url_or_embed</validation-callback>
   </entry>
 
   <entry>
@@ -341,6 +344,16 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//simulation/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation/width</xpath>
+    <validation-callback>is_integer</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//simulation/height</xpath>
+    <validation-callback>is_integer</validation-callback>
   </entry>
 
   <entry>
