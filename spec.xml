@@ -407,18 +407,17 @@ You must not edit this section manually, unless you really know what you're doin
     <xpath>/document/content//figure</xpath>
     <children>
       <element>type</element>
-      <one-of>
-	<any-number from="1">
+      <any-number from="1">
+	<one-of>
 	  <element>table</element>
-	</any-number>
-	<any-number from="1">
-	  <one-of>
-	    <element>pspicture</element>
-	    <element>tikzpicture</element>
-	    <element>image</element>
-	  </one-of>
-	</any-number>
-      </one-of>
+	  <element>pspicture</element>
+	  <element>tikzpicture</element>
+	  <element>image</element>
+	  <element>para</element>
+	  <element>equation</element>
+	  <element>latex</element>
+	</one-of>
+      </any-number>
       <optional>caption</optional>
     </children>
     <notext/>
