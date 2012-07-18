@@ -322,10 +322,12 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//simulation</xpath>
     <children>
-      <element>title</element>
-      <element>shortcode</element>
-      <element>url</element>
-      <element>embed</element>
+      <unordered>
+	<element>title</element>
+	<element>shortcode</element>
+	<element>url</element>
+	<element>embed</element>
+      </unordered>
     </children>
   </entry>
 
@@ -601,6 +603,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>number</element>
 	  <element>unit</element>
 	  <element>unit_number</element>
+	  <element>percentage</element>
 	</one-of>
       </any-number>
     </children>
@@ -708,10 +711,12 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>sup</element>
 	  <element>list</element>
 	  <element>media</element>
+	  <element>image</element>
 	  <element>link</element>
 	  <element>unit_number</element>
 	  <element>number</element>
 	  <element>unit</element>
+	  <element>percentage</element>
 	  <element>m:math</element>
 	  <element>latex</element>
 	  <element>chem_compound</element>
@@ -733,6 +738,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>unit_number</element>
 	  <element>number</element>
 	  <element>unit</element>
+	  <element>percentage</element>
 	  <element>m:math</element>
 	  <element>latex</element>
 	  <element>chem_compound</element>
@@ -787,6 +793,11 @@ You must not edit this section manually, unless you really know what you're doin
       </any-number>
     </children>
     <validation-callback>is_unit</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//percentage</xpath>
+    <validation-callback>is_percentage</validation-callback>
   </entry>
 
   <entry>
