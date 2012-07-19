@@ -1,31 +1,18 @@
 from lxml import etree
 import sys
 
+if len(sys.argv) == 1:
+    print 'ERROR: no file specified'
+    sys.exit()
+
+SINGLE_FILE = (len(sys.argv) == 2)
+filenames = sys.argv[1:]
+
 # This parser automatically stripts comments
 parser = etree.ETCompatXMLParser()
 parser.feed(open('spec.xml','rt').read())
 spec = parser.close()
-if len(sys.argv) > 1:
-    filename = sys.argv[1]
-else:
-    filename = 'test.cnxmlplus'
-parser.feed(open(filename,'rt').read())
-document = parser.close()
-for dom in spec, document:
-    for node in dom.xpath('//*'):
-        if node.text is None:
-            node.text = ''
-        if node.tail is None:
-            node.tail = ''
 
-# Attach relevant spec entries to nodes in the DOM
-documentSpecEntries = {}
-for entry in spec:
-    if entry.find('xpath') is None:
-        continue
-    for node in document.xpath(entry.find('xpath').text, namespaces=spec.nsmap):
-        if documentSpecEntries.get(node) is None:
-            documentSpecEntries[node] = entry
 
 def traverseChildrenXml(patternNode):
     global spec
@@ -64,7 +51,7 @@ def traverseChildrenXml(patternNode):
         else:
             assert False
             return '(' + ''.join(subPatterns) + ')'
-        
+
 def tag_namespace_to_prefix(tag, spec):
     if tag[0] == '{':
         closingBracePos = tag.find('}')
@@ -145,4 +132,26 @@ def traverse(iNode, spec):
     # TODO: Check that text matches text spec
     # TODO: Do callback
 
-traverse(document, spec)
+
+for filename in filenames:
+    if not SINGLE_FILE:
+        print filename
+    parser.feed(open(filename,'rt').read())
+    document = parser.close()
+    for dom in spec, document:
+        for node in dom.xpath('//*'):
+            if node.text is None:
+                node.text = ''
+            if node.tail is None:
+                node.tail = ''
+
+    # Attach relevant spec entries to nodes in the DOM
+    documentSpecEntries = {}
+    for entry in spec:
+        if entry.find('xpath') is None:
+            continue
+        for node in document.xpath(entry.find('xpath').text, namespaces=spec.nsmap):
+            if documentSpecEntries.get(node) is None:
+                documentSpecEntries[node] = entry
+
+    traverse(document, spec)
