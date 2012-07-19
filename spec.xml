@@ -652,10 +652,12 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -673,10 +675,12 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>m:mtext</element>
 	  <element>m:msub</element>
 	  <element>m:msup</element>
+	  <element>m:msubsup</element>
 	  <element>m:mspace</element>
 	  <element>m:mphantom</element>
 	  <element>m:mstyle</element>
 	  <element>m:mover</element>
+	  <element>m:msqrt</element>
 	</one-of>
       </any-number>
     </children>
