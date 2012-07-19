@@ -139,6 +139,7 @@ def traverse(iNode, spec):
         else:
             childrenPattern = ''
         if pattern.match(childrenPattern) is None:
+            print etree.tostring(iNode)
             raise ValueError, 'Child match failed for %s entry: %s'%(documentSpecEntries[iNode].find('xpath').text, childrenPattern)
 
     # TODO: Check that text matches text spec
