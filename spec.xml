@@ -309,9 +309,12 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//worked_example/answer</xpath>
     <children>
-      <any-number from="1">
-	<element>workstep</element>
-      </any-number>
+      <one-of>
+	<any-number from="1">
+	  <element>workstep</element>
+	</any-number>
+	<reference>block-element-no-subsections</reference>
+      </one-of>
     </children>
     <notext/>
   </entry>
@@ -523,6 +526,11 @@ You must not edit this section manually, unless you really know what you're doin
 	<type>number</type>
 	<default/>
       </entry>
+      <entry>
+	<name>style:format</name>
+	<type>string</type>
+	<default/>
+      </entry>
     </attributes>
     <children>
       <element>src</element>
@@ -698,6 +706,7 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -721,6 +730,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>m:mstyle</element>
 	  <element>m:mover</element>
 	  <element>m:msqrt</element>
+	  <element>m:munder</element>
 	</one-of>
       </any-number>
     </children>
