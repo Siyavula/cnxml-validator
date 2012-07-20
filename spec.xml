@@ -305,8 +305,18 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//presentation</xpath>
     <children>
-      <element>shortcode</element>
-      <element>url</element>
+      <unordered>
+	<element>title</element>
+	<element>shortcode</element>
+	<element>url</element>
+      </unordered>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//presentation/title</xpath>
+    <children>
+      <reference>inline-element</reference>
     </children>
   </entry>
 
