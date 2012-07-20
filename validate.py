@@ -116,7 +116,12 @@ def traverse(iNode, spec):
     if regex is None:
         # No children
         if len(children) != 0:
-            raise ValueError, "No children expected in %s"%get_full_dom_path(iNode)
+            print 'ERROR:', 'No children expected in %s'%(documentSpecEntries[iNode].find('xpath').text)
+            print '*** These are superfluous children:'
+            print ','.join([tag_namespace_to_prefix(child.tag, spec) for child in children]) + ','
+            print '*** The offending element looks like this:'
+            print etree.tostring(iNode)
+            sys.exit()
     else:
         import re
         pattern = re.compile('^' + regex + '$')

@@ -209,6 +209,9 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//definition/term</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
   </entry>
 
   <entry>
