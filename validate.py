@@ -126,8 +126,14 @@ def traverse(iNode, spec):
         else:
             childrenPattern = ''
         if pattern.match(childrenPattern) is None:
+            print 'ERROR:', 'Child match failed for a %s element'%(documentSpecEntries[iNode].find('xpath').text)
+            print '*** I was expecting the children to follow this pattern:'
+            print regex
+            print '*** Instead I got these children:'
+            print childrenPattern
+            print '*** The offending element looks like this:'
             print etree.tostring(iNode)
-            raise ValueError, 'Child match failed for %s entry: %s'%(documentSpecEntries[iNode].find('xpath').text, childrenPattern)
+            sys.exit()
 
     # TODO: Check that text matches text spec
     # TODO: Do callback
