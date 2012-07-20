@@ -71,6 +71,11 @@ You must not edit this section manually, unless you really know what you're doin
     <xpath>/document/content//section</xpath>
     <attributes>
       <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
 	<name>type</name>
 	<type>enum("chapter","section","subsection","subsubsection")</type>
       </entry>
@@ -155,7 +160,9 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//exercises/entry</xpath>
     <children>
-      <element>shortcode</element>
+      <any-number from="1"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
+	<element>shortcode</element>
+      </any-number>
       <element>problem</element>
       <element>solution</element>
     </children>
@@ -229,6 +236,13 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
+    <xpath>/document/content//activity/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
     <xpath>/document/content//note</xpath>
     <attributes>
       <entry>
@@ -243,9 +257,25 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
-    <xpath>/document/content//activity/title</xpath>
+    <xpath>/document/content//math_extension</xpath>
+    <children>
+      <element>title</element>
+      <element>body</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//math_extension/title</xpath>
     <children>
       <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//math_extension/body</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
     </children>
   </entry>
 
@@ -735,6 +765,7 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>activity</element>
 	<element>exercises</element>
 	<element>note</element>
+	<element>math_extension</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
