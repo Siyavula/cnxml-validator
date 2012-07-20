@@ -560,6 +560,23 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//table</xpath>
+    <attributes>
+      <entry>
+	<name>frame</name>
+	<type>enum("none")</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colsep</name>
+	<type>integer</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>rowsep</name>
+	<type>integer</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <element>tgroup</element>
     </children>
