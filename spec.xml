@@ -78,6 +78,7 @@ You must not edit this section manually, unless you really know what you're doin
       <entry>
 	<name>type</name>
 	<type>enum("chapter","section","subsection","subsubsection")</type>
+	<default/>
       </entry>
     </attributes>
     <children>
