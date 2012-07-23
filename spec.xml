@@ -121,6 +121,16 @@ You must not edit this section manually, unless you really know what you're doin
 	<type>integer(1,)</type>
 	<default>1</default>
       </entry>
+      <entry>
+	<name>mark-prefix</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>number-style</name>
+	<type>enum("arabic","upper-alpha","lower-alpha","upper-roman","lower-roman")</type>
+	<default>arabic</default>
+      </entry>
     </attributes>
     <children>
       <any-number from="1">
