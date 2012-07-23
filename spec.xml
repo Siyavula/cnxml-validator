@@ -706,6 +706,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>unit</element>
 	  <element>unit_number</element>
 	  <element>percentage</element>
+	  <element>currency</element>
 	</one-of>
       </any-number>
     </children>
@@ -738,6 +739,7 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -762,6 +764,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>m:mover</element>
 	  <element>m:msqrt</element>
 	  <element>m:munder</element>
+	  <element>m:munderover</element>
 	</one-of>
       </any-number>
     </children>
@@ -828,6 +831,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>number</element>
 	  <element>unit</element>
 	  <element>percentage</element>
+	  <element>currency</element>
 	  <element>m:math</element>
 	  <element>latex</element>
 	  <element>chem_compound</element>
@@ -852,6 +856,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>number</element>
 	  <element>unit</element>
 	  <element>percentage</element>
+	  <element>currency</element>
 	  <element>m:math</element>
 	  <element>latex</element>
 	  <element>chem_compound</element>
@@ -869,6 +874,12 @@ You must not edit this section manually, unless you really know what you're doin
       <element>unit</element>
     </children>
     <notext/>
+  </entry>
+
+  <!-- //currency/number shadows //number -->
+  <entry>
+    <xpath>/document/content//currency/number</xpath>
+    <validation-callback>is_float</validation-callback>
   </entry>
 
   <entry>
@@ -911,6 +922,35 @@ You must not edit this section manually, unless you really know what you're doin
   <entry>
     <xpath>/document/content//percentage</xpath>
     <validation-callback>is_percentage</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//currency</xpath>
+    <attributes>
+      <entry>
+	<name>precision</name>
+	<type>integer</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <unordered>
+	<optional>symbol</optional>
+	<element>number</element>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//currency/symbol</xpath>
+    <attributes>
+      <entry>
+	<name>location</name>
+	<type>enum("front","back")</type>
+	<default>front</default>
+      </entry>
+    </attributes>
   </entry>
 
   <entry>
