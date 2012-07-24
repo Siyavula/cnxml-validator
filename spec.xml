@@ -820,6 +820,7 @@ You must not edit this section manually, unless you really know what you're doin
     <children>
       <any-number>
 	<one-of>
+	  <element>br</element>
 	  <element>emphasis</element>
 	  <element>sub</element>
 	  <element>sup</element>
@@ -848,6 +849,7 @@ You must not edit this section manually, unless you really know what you're doin
     <children>
       <any-number>
 	<one-of>
+	  <element>br</element>
 	  <element>emphasis</element>
 	  <element>sub</element>
 	  <element>sup</element>
@@ -984,6 +986,11 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//nuclear_notation/atomic_number</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//br</xpath>
+    <notext/>
   </entry>
 
   <entry>
