@@ -140,7 +140,28 @@ def traverse(iNode, spec):
             print etree.tostring(iNode)
             sys.exit()
 
-    # TODO: Check that text matches text spec
+    # Check that text matches text spec
+    if specEntry is not None:
+        if specEntry.find('notext') is not None:
+            text = ''
+            if iNode.text is not None:
+                text = iNode.text.strip()
+                if text != '':
+                    location = 'at the beginning of the element'
+            if text == '':
+                for child in iNode.getchildren():
+                    if child.tail is not None:
+                        text = child.tail.strip()
+                        if text != '':
+                            location = 'after a %s child'%child.tag
+                            break
+            if text != '':
+                print 'ERROR:', '%s element must not have any text'%(documentSpecEntries[iNode].find('xpath').text)
+                print '*** Found the following text ' + location + ': ' + text
+                print '*** The offending element looks like this:'
+                print etree.tostring(iNode)
+                sys.exit()
+
     # TODO: Do callback
 
 

@@ -723,13 +723,13 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children></entry>
+  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children></entry>
+  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children></entry>
   <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children></entry>
   <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
