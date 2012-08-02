@@ -271,6 +271,14 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
+    <xpath>/document/content//math_identity</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
     <xpath>/document/content//math_extension</xpath>
     <children>
       <element>title</element>
@@ -740,6 +748,7 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -765,6 +774,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>m:msqrt</element>
 	  <element>m:munder</element>
 	  <element>m:munderover</element>
+	  <element>m:mroot</element>
 	</one-of>
       </any-number>
     </children>
@@ -810,6 +820,7 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>exercises</element>
 	<element>note</element>
 	<element>math_extension</element>
+	<element>math_identity</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
