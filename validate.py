@@ -1,22 +1,49 @@
 from lxml import etree
 import sys, os
-
-if len(sys.argv) == 1:
-    print 'ERROR: no file specified'
-    sys.exit()
+import argparse
 
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
-SINGLE_FILE = (len(sys.argv) == 2)
-filenames = sys.argv[1:]
+# Parse command line arguments
+argumentParser = argparse.ArgumentParser(description='Check the validity of a CNXML+ document.')
+argumentParser.add_argument(
+    '--clean-up', dest='produceCleanedXML', action='store_true',
+    help='Write to standard output a cleaned-up version of the input XML. Will delete all offending elements.')
+argumentParser.add_argument(
+    '-o', dest='outputFilename',
+    help='Write output to given filename rather than stdout.')
+argumentParser.add_argument(
+    'filename', nargs='+',
+    help='One or more filenames to process.')
+commandlineArguments = argumentParser.parse_args()
+
+isSingleFile = (len(commandlineArguments.filename) == 1)
+
+if commandlineArguments.outputFilename is None:
+    outputFile = sys.stdout
+else:
+    outputFile = open(commandlineArguments.outputFilename, 'wt')
 
 # This parser automatically stripts comments
 parser = etree.ETCompatXMLParser()
 parser.feed(open(os.path.join(MY_PATH, 'spec.xml'),'rt').read())
 spec = parser.close()
 
+def warning_message(message, newLine=True):
+    global commandlineArguments
+    sys.stderr.write('WARNING: ' + message)
+    if newLine:
+        sys.stderr.write('\n')
 
-def traverseChildrenXml(patternNode):
+def error_message(message, newLine=True, terminate=True):
+    global commandlineArguments
+    sys.stderr.write('ERROR: ' + message)
+    if newLine:
+        sys.stderr.write('\n')
+    if not commandlineArguments.produceCleanedXML:
+        sys.exit()
+
+def traverse_children_xml(patternNode):
     global spec
     if patternNode is None:
         return None
@@ -28,14 +55,14 @@ def traverseChildrenXml(patternNode):
         assert tag != ''
         if patternNode.tag == 'reference':
             referenceEntry = [child for child in spec if child.attrib.get('id') == tag][0]
-            return traverseChildrenXml(referenceEntry.find('children'))
+            return traverse_children_xml(referenceEntry.find('children'))
         if patternNode.tag == 'optional':
             return '(' + tag + ',)?'
         else:
             return '(' + tag + ',)'
     else:
         assert patternNode.tag in ['children', 'optional', 'subset-of', 'any-number', 'one-of', 'unordered'], patternNode.tag
-        subPatterns = [traverseChildrenXml(child) for child in patternNode.getchildren()]
+        subPatterns = [traverse_children_xml(child) for child in patternNode.getchildren()]
         if patternNode.tag == 'children':
             return '(' + ''.join(subPatterns) + ')'
         elif patternNode.tag == 'optional':
@@ -91,10 +118,9 @@ def traverse(iNode, spec):
         specAttributes = specEntry.find('attributes')
         if specAttributes is None:
             if len(nodeAttributes) > 0:
-                if True:
-                    if len(iNode.attrib) > 0:
-                        if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
-                            print get_full_dom_path(iNode), iNode.attrib
+                if len(iNode.attrib) > 0:
+                    if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
+                        warning_message('Extra attributes in ' + get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
                 pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
         else:
             for entry in specAttributes:
@@ -111,19 +137,17 @@ def traverse(iNode, spec):
 
     # Validate children: build regex from spec
     if specEntry is None:
-        if True:
-            print get_full_dom_path(iNode)
+        warning_message('Unhandled element at ' + get_full_dom_path(iNode))
         return # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
-    regex = traverseChildrenXml(specEntry.find('children'))
+    regex = traverse_children_xml(specEntry.find('children'))
     if regex is None:
         # No children
         if len(children) != 0:
-            print 'ERROR:', 'No children expected in %s'%(documentSpecEntries[iNode].find('xpath').text)
-            print '*** These are superfluous children:'
-            print ','.join([tag_namespace_to_prefix(child.tag, spec) for child in children]) + ','
-            print '*** The offending element looks like this:'
-            print etree.tostring(iNode)
-            sys.exit()
+            error_message('''No children expected in ''' + documentSpecEntries[iNode].find('xpath').text + '''
+*** These are superfluous children:
+''' + ','.join([tag_namespace_to_prefix(child.tag, spec) for child in children]) + '''
+*** The offending element looks like this:
+''' + etree.tostring(iNode))
     else:
         import re
         pattern = re.compile('^' + regex + '$')
@@ -133,14 +157,13 @@ def traverse(iNode, spec):
         else:
             childrenPattern = ''
         if pattern.match(childrenPattern) is None:
-            print 'ERROR:', 'Child match failed for a %s element'%(documentSpecEntries[iNode].find('xpath').text)
-            print '*** I was expecting the children to follow this pattern:'
-            print regex
-            print '*** Instead I got these children:'
-            print childrenPattern
-            print '*** The offending element looks like this:'
-            print etree.tostring(iNode)
-            sys.exit()
+            error_message('''Child match failed for a ''' + documentSpecEntries[iNode].find('xpath').text + ''' element.
+*** I was expecting the children to follow this pattern:
+''' + regex + '''
+*** Instead I got these children:
+''' + childrenPattern + '''
+*** The offending element looks like this:
+''' + etree.tostring(iNode))
 
     # Check that text matches text spec
     if specEntry is not None:
@@ -158,18 +181,17 @@ def traverse(iNode, spec):
                             location = 'after a %s child'%child.tag
                             break
             if text != '':
-                print 'ERROR:', '%s element must not have any text'%(documentSpecEntries[iNode].find('xpath').text)
-                print '*** Found the following text ' + location + ': ' + text
-                print '*** The offending element looks like this:'
-                print etree.tostring(iNode)
-                sys.exit()
+                error_message(documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
+*** Found the following text ''' + location + ': ' + text + '''
+*** The offending element looks like this:
+''' + etree.tostring(iNode))
 
     # TODO: Do callback
 
 
-for filename in filenames:
-    if not SINGLE_FILE:
-        print filename
+for filename in commandlineArguments.filename:
+    if not isSingleFile:
+        sys.stderr.write(filename + '\n')
     parser.feed(open(filename,'rt').read())
     document = parser.close()
     for dom in spec, document:
