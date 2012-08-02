@@ -1,16 +1,18 @@
 from lxml import etree
-import sys
+import sys, os
 
 if len(sys.argv) == 1:
     print 'ERROR: no file specified'
     sys.exit()
+
+MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
 SINGLE_FILE = (len(sys.argv) == 2)
 filenames = sys.argv[1:]
 
 # This parser automatically stripts comments
 parser = etree.ETCompatXMLParser()
-parser.feed(open('spec.xml','rt').read())
+parser.feed(open(os.path.join(MY_PATH, 'spec.xml'),'rt').read())
 spec = parser.close()
 
 
