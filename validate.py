@@ -106,39 +106,38 @@ def traverse(iNode, spec):
 
     # Get associated specification node
     specEntry = documentSpecEntries.get(iNode)
-
-    # Check attributes
-    if specEntry is not None:
-        nodeAttributes = dict(iNode.attrib)
-        for key in nodeAttributes:
-            if key[0] == '{': # attribute name has namespace
-                value = nodeAttributes[key]
-                del nodeAttributes[key]
-                nodeAttributes[tag_namespace_to_prefix(key, spec)] = value
-        specAttributes = specEntry.find('attributes')
-        if specAttributes is None:
-            if len(nodeAttributes) > 0:
-                if len(iNode.attrib) > 0:
-                    if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
-                        warning_message('Extra attributes in ' + get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
-                pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
-        else:
-            for entry in specAttributes:
-                attributeName = entry.find('name').text
-                attributeValue = nodeAttributes.get(attributeName)
-                if (entry.find('default') is None) and (attributeValue is None):
-                    raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode))
-                if attributeValue is not None:
-                    # TODO: check that attribute value conforms to spec type
-                    del nodeAttributes[attributeName]
-            if len(nodeAttributes) > 0:
-                # There are still unhandled node attributes
-                raise KeyError, "Unknown attribute(s) '%s' in %s"%("', '".join(nodeAttributes.keys()), get_full_dom_path(iNode))
-
-    # Validate children: build regex from spec
     if specEntry is None:
         warning_message('Unhandled element at ' + get_full_dom_path(iNode))
         return # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
+
+    # Check attributes
+    nodeAttributes = dict(iNode.attrib)
+    for key in nodeAttributes:
+        if key[0] == '{': # attribute name has namespace
+            value = nodeAttributes[key]
+            del nodeAttributes[key]
+            nodeAttributes[tag_namespace_to_prefix(key, spec)] = value
+    specAttributes = specEntry.find('attributes')
+    if specAttributes is None:
+        if len(nodeAttributes) > 0:
+            if len(iNode.attrib) > 0:
+                if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
+                    warning_message('Extra attributes in ' + get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
+            pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
+    else:
+        for entry in specAttributes:
+            attributeName = entry.find('name').text
+            attributeValue = nodeAttributes.get(attributeName)
+            if (entry.find('default') is None) and (attributeValue is None):
+                raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode))
+            if attributeValue is not None:
+                # TODO: check that attribute value conforms to spec type
+                del nodeAttributes[attributeName]
+        if len(nodeAttributes) > 0:
+            # There are still unhandled node attributes
+            raise KeyError, "Unknown attribute(s) '%s' in %s"%("', '".join(nodeAttributes.keys()), get_full_dom_path(iNode))
+
+    # Validate children: build regex from spec
     regex = traverse_children_xml(specEntry.find('children'))
     if regex is None:
         # No children
@@ -166,28 +165,33 @@ def traverse(iNode, spec):
 ''' + etree.tostring(iNode))
 
     # Check that text matches text spec
-    if specEntry is not None:
-        if specEntry.find('notext') is not None:
-            text = ''
-            if iNode.text is not None:
-                text = iNode.text.strip()
-                if text != '':
-                    location = 'at the beginning of the element'
-            if text == '':
-                for child in iNode.getchildren():
-                    if child.tail is not None:
-                        text = child.tail.strip()
-                        if text != '':
-                            location = 'after a %s child'%child.tag
-                            break
+    if specEntry.find('notext') is not None:
+        text = ''
+        if iNode.text is not None:
+            text = iNode.text.strip()
             if text != '':
-                error_message(documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
+                location = 'at the beginning of the element'
+        if text == '':
+            for child in iNode.getchildren():
+                if child.tail is not None:
+                    text = child.tail.strip()
+                    if text != '':
+                        location = 'after a %s child'%child.tag
+                        break
+        if text != '':
+            error_message(documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
 *** Found the following text ''' + location + ': ' + text + '''
 *** The offending element looks like this:
 ''' + etree.tostring(iNode))
 
-    # TODO: Do callback
-
+    # Do validation callback
+    callbackNode = specEntry.find('validation-callback')
+    if callbackNode is not None:
+        callbackFunctionName = callbackNode.text.strip()
+        import callbacks
+        callbackFunction = eval('callbacks.' + callbackFunctionName)
+        if not callbackFunction(iNode):
+            raise error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
 
 for filename in commandlineArguments.filename:
     if not isSingleFile:

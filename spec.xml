@@ -235,6 +235,53 @@ You must not edit this section manually, unless you really know what you're doin
   </entry>
 
   <entry>
+    <xpath>/document/content//rule</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+      </entry>
+      <entry>
+	<name>type</name>
+	<type>enum("theorem")</type>
+      </entry>
+    </attributes>
+    <children>
+      <element>title</element>
+      <element>statement</element>
+      <element>proof</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//rule/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//rule/statement</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//rule/proof</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
     <xpath>/document/content//activity</xpath>
     <attributes>
       <entry>
@@ -460,12 +507,12 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//video/width</xpath>
-    <validation-callback>is_int</validation-callback>
+    <validation-callback>is_integer</validation-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//video/height</xpath>
-    <validation-callback>is_int</validation-callback>
+    <validation-callback>is_integer</validation-callback>
   </entry>
 
   <entry>
@@ -566,7 +613,7 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//figure/type</xpath>
-    <validation-callback>is_figue_type</validation-callback>
+    <validation-callback>is_figure_type</validation-callback>
   </entry>
 
   <entry>
@@ -749,6 +796,7 @@ You must not edit this section manually, unless you really know what you're doin
   <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
   <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mref</xpath><children><reference>math-stuff</reference></children><notext/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -775,6 +823,7 @@ You must not edit this section manually, unless you really know what you're doin
 	  <element>m:munder</element>
 	  <element>m:munderover</element>
 	  <element>m:mroot</element>
+	  <element>m:mref</element>
 	</one-of>
       </any-number>
     </children>
@@ -816,6 +865,7 @@ You must not edit this section manually, unless you really know what you're doin
 	<element>tikzpicture</element>
 	<element>table</element>
 	<element>definition</element>
+	<element>rule</element>
 	<element>activity</element>
 	<element>exercises</element>
 	<element>note</element>
@@ -923,10 +973,7 @@ You must not edit this section manually, unless you really know what you're doin
     <xpath>/document/content//unit</xpath>
     <children>
       <any-number>
-	<one-of>
-	  <element>sub</element>
-	  <element>sup</element>
-	</one-of>
+	<element>sup</element>
       </any-number>
     </children>
     <validation-callback>is_unit</validation-callback>
@@ -934,7 +981,7 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//percentage</xpath>
-    <validation-callback>is_percentage</validation-callback>
+    <validation-callback>is_float</validation-callback>
   </entry>
 
   <entry>
