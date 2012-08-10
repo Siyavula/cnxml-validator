@@ -559,6 +559,20 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//pspicture/code</xpath>
+    <children>
+      <any-number>
+	<one-of>
+	  <element>unit_number</element>
+	  <element>number</element>
+	  <element>unit</element>
+	  <element>percentage</element>
+	  <element>currency</element>
+	  <element>chem_compound</element>
+	  <element>spec_note</element>
+	  <element>nuclear_notation</element>
+	</one-of>
+      </any-number>
+    </children>
   </entry>
 
   <entry>
@@ -585,6 +599,20 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//tikzpicture/code</xpath>
+    <children>
+      <any-number>
+	<one-of>
+	  <element>unit_number</element>
+	  <element>number</element>
+	  <element>unit</element>
+	  <element>percentage</element>
+	  <element>currency</element>
+	  <element>chem_compound</element>
+	  <element>spec_note</element>
+	  <element>nuclear_notation</element>
+	</one-of>
+      </any-number>
+    </children>
   </entry>
 
   <entry>
