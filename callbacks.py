@@ -44,7 +44,7 @@ def is_float(element):
     try:
         float(text)
     except ValueError:
-        raise_error("Could not interpret text as an float", element)
+        raise_error("Could not interpret text as a float", element)
     return True
 
 def is_valid_html(element):
