@@ -28,27 +28,32 @@ def traverse(iNode, spec):
     if specEntry is None:
         error_message('Unhandled element at ' + get_full_dom_path(iNode, spec))
 
+    if iNode.tag == 'nuclear_notation':
+        import pdb
+        pdb.set_trace()
     conversionFunction = conversionFunctions.get(specEntry)
     if conversionFunction is None:
         # Cache conversion function
         conversionFunctionNodes = specEntry.xpath('.//conversion-callback[@name="latex"]')
         if len(conversionFunctionNodes) == 0:
             warning_message('No conversion entry for ' + get_full_dom_path(iNode, spec))
-            conversionFunctionSource = 'conversionFunction = lambda self: ""'
+            conversionFunctionSource = 'conversionFunction = lambda self: None'
         else:
             if len(conversionFunctionNodes) != 1:
                 error_message('More than 1 conversion entry for ' + get_full_dom_path(iNode, spec))
             conversionFunctionSource = conversionFunctionNodes[0].text.strip()
             if conversionFunctionSource == '':
-                conversionFunctionSource = 'return ""'
-            conversionFunctionSource = 'def conversionFunction(self):\n' + '\n'.join(['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
+                conversionFunctionSource = 'conversionFunction = lambda self: None'
+            else:
+                conversionFunctionSource = 'def conversionFunction(self):\n' + '\n'.join(['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
+
         localVars = {}
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']
         conversionFunctions[specEntry] = conversionFunction
 
-    converted = conversionFunction(iNode)
     parent = iNode.getparent()
+    converted = conversionFunction(iNode)
     if isinstance(converted, basestring):
         if parent is None:
             return converted
@@ -56,7 +61,7 @@ def traverse(iNode, spec):
             dummyNode = etree.Element('dummy')
             dummyNode.text = converted
             etree_replace_with_node_list(parent, iNode, dummyNode)
-    else:
+    elif converted is not None:
         if parent is None:
             return converted
         else:
@@ -86,4 +91,4 @@ for filename in sys.argv[1:]:#commandlineArguments.filename:
             if documentSpecEntries.get(node) is None:
                 documentSpecEntries[node] = entry
 
-    print traverse(document, spec)
+    print etree.tostring(traverse(document, spec))
