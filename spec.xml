@@ -11,6 +11,9 @@
 The document element is the root.
 It may have a metadata element and must have a content element.
     </documentation>
+    <conversion-callback name="latex">
+return self.text.strip()
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -27,6 +30,7 @@ The metadata section contains information about the XML document itself.
 Only version numbers at this time.
 You must not edit this section manually, unless you really know what you're doing.
     </documentation>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -35,6 +39,7 @@ You must not edit this section manually, unless you really know what you're doin
       <pre-processing-callback>strip</pre-processing-callback>
     </text>
     <validation-callback>is_version_number</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -43,6 +48,7 @@ You must not edit this section manually, unless you really know what you're doin
       <pre-processing-callback>strip</pre-processing-callback>
     </text>
     <validation-callback>is_version_number</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -56,6 +62,9 @@ You must not edit this section manually, unless you really know what you're doin
       </one-of>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+return self.text.strip()
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -87,6 +96,9 @@ You must not edit this section manually, unless you really know what you're doin
       <reference>block-element</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+return self.text.strip()
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -106,6 +118,9 @@ You must not edit this section manually, unless you really know what you're doin
     <children>
       <reference>inline-container-element</reference>
     </children>
+    <conversion-callback name="latex">
+return '\\par\n' + ' '.join(self.text.strip().split()) + '\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1043,10 +1058,16 @@ You must not edit this section manually, unless you really know what you're doin
 
   <entry>
     <xpath>/document/content//chem_compound</xpath>
+    <conversion-callback name="latex">
+return r'\(' + self.text + r'\)'
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//spec_note</xpath>
+    <conversion-callback name="latex">
+return r'\(' + self.text + r'\)'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1060,23 +1081,36 @@ You must not edit this section manually, unless you really know what you're doin
     </children>
     <notext/>
     <validation-callback>is_nuclear_notation</validation-callback>
+    <conversion-callback name="latex">
+latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
+if 'latex' in self.path:
+    return latex
+else:
+    return r'\(' + latex + r'\)'
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//nuclear_notation/symbol</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//nuclear_notation/mass_number</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//nuclear_notation/atomic_number</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//br</xpath>
     <notext/>
+    <conversion-callback name="latex">
+return r'\\'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1091,6 +1125,16 @@ You must not edit this section manually, unless you really know what you're doin
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+pattern = {
+    'bold': r'\textbf{%s}',
+    'italics': r'\textit{%s}',
+    'underline': r'\ul{%s}', # requires soul package
+    'smallcaps': r'\textsc{%s}',
+    'normal': '%s',
+}[self.attrib['effect']]
+return pattern%self.text
+    </conversion-callback>
   </entry>
 
   <entry>

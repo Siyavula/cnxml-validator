@@ -2,6 +2,8 @@ from lxml import etree
 import sys, os
 import argparse
 
+from utils import warning_message, error_message, tag_namespace_to_prefix, get_full_dom_path
+
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
 # Parse command line arguments
@@ -24,24 +26,15 @@ if commandlineArguments.outputFilename is None:
 else:
     outputFile = open(commandlineArguments.outputFilename, 'wt')
 
-# This parser automatically stripts comments
+# This parser automatically strips comments
 parser = etree.ETCompatXMLParser()
 parser.feed(open(os.path.join(MY_PATH, 'spec.xml'),'rt').read())
 spec = parser.close()
-
-def warning_message(message, newLine=True):
-    global commandlineArguments
-    sys.stderr.write('WARNING: ' + message)
-    if newLine:
-        sys.stderr.write('\n')
-
-def error_message(message, newLine=True, terminate=True):
-    global commandlineArguments
-    sys.stderr.write('ERROR: ' + message)
-    if newLine:
-        sys.stderr.write('\n')
-    if not commandlineArguments.produceCleanedXML:
-        sys.exit()
+for node in spec.xpath('//*'):
+    if node.text is None:
+        node.text = ''
+    if node.tail is None:
+        node.tail = ''
 
 def traverse_children_xml(patternNode):
     global spec
@@ -81,23 +74,6 @@ def traverse_children_xml(patternNode):
             assert False
             return '(' + ''.join(subPatterns) + ')'
 
-def tag_namespace_to_prefix(tag, spec):
-    if tag[0] == '{':
-        closingBracePos = tag.find('}')
-        namespaceUri = tag[1:closingBracePos]
-        prefix = dict([(value, key) for key, value in spec.nsmap.iteritems()])[namespaceUri]
-        return prefix + ':' + tag[closingBracePos+1:]
-    else:
-        return tag
-
-def get_full_dom_path(iNode):
-    node = iNode
-    path = '/' + tag_namespace_to_prefix(node.tag, spec)
-    while node.getparent() is not None:
-        node = node.getparent()
-        path = '/' + tag_namespace_to_prefix(node.tag, spec) + path
-    return path
-
 def traverse(iNode, spec):
     global documentSpecEntries
     children = iNode.getchildren()
@@ -107,7 +83,7 @@ def traverse(iNode, spec):
     # Get associated specification node
     specEntry = documentSpecEntries.get(iNode)
     if specEntry is None:
-        warning_message('Unhandled element at ' + get_full_dom_path(iNode))
+        warning_message('Unhandled element at ' + get_full_dom_path(iNode, spec))
         return # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
 
     # Check attributes
@@ -122,20 +98,20 @@ def traverse(iNode, spec):
         if len(nodeAttributes) > 0:
             if len(iNode.attrib) > 0:
                 if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
-                    warning_message('Extra attributes in ' + get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
+                    warning_message('Extra attributes in ' + get_full_dom_path(iNode, spec) + ': ' + repr(iNode.attrib))
             pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
     else:
         for entry in specAttributes:
             attributeName = entry.find('name').text
             attributeValue = nodeAttributes.get(attributeName)
             if (entry.find('default') is None) and (attributeValue is None):
-                raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode))
+                raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode, spec))
             if attributeValue is not None:
                 # TODO: check that attribute value conforms to spec type
                 del nodeAttributes[attributeName]
         if len(nodeAttributes) > 0:
             # There are still unhandled node attributes
-            raise KeyError, "Unknown attribute(s) '%s' in %s"%("', '".join(nodeAttributes.keys()), get_full_dom_path(iNode))
+            raise KeyError, "Unknown attribute(s) '%s' in %s"%("', '".join(nodeAttributes.keys()), get_full_dom_path(iNode, spec))
 
     # Validate children: build regex from spec
     regex = traverse_children_xml(specEntry.find('children'))
@@ -198,12 +174,11 @@ for filename in commandlineArguments.filename:
         sys.stderr.write(filename + '\n')
     parser.feed(open(filename,'rt').read())
     document = parser.close()
-    for dom in spec, document:
-        for node in dom.xpath('//*'):
-            if node.text is None:
-                node.text = ''
-            if node.tail is None:
-                node.tail = ''
+    for node in document.xpath('//*'):
+        if node.text is None:
+            node.text = ''
+        if node.tail is None:
+            node.tail = ''
 
     # Attach relevant spec entries to nodes in the DOM
     documentSpecEntries = {}
