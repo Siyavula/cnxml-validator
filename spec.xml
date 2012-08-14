@@ -374,7 +374,7 @@ return self.text
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("activity","groupdiscussion","casestudy")</type>
+	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment")</type>
       </entry>
     </attributes>
     <children>
@@ -383,7 +383,13 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex"><!-- type already creates start of environment -->
-environment = self.attrib['type'].capitalize()
+activityType = self.attrib['type']
+if activityType == 'f_experiment':
+    environment = 'FormalExperiment'
+elif activityType == 'i_experiment':
+    environment = 'InformalExperiment'
+else:
+    environment = activityType.capitalize()
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -1342,16 +1348,17 @@ return result
     </children>
     <validation-callback>is_unit</validation-callback>
     <conversion-callback name="latex">
+unitsWithoutSpace = [u'°', u'℃']
 inUnitNumber = (self.getparent().tag == 'unit_number')
 result = r'\text{' + self.text + '}'
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
     result = r'\(' + result + r'\)'
-    if inUnitNumber:
+    if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         result = '~' + result
 else:
-    if inUnitNumber:
+    if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         assert result[:5] == r'\text{'
         result = result[:6] + ' ' + result[6:]
 return result
@@ -1414,7 +1421,7 @@ while pos &lt; len(text):
         pos += 1
         while (pos &lt; len(text)) and text[pos].isalpha():
             pos += 1
-        text = text[:start] + r'\text{' + text[start:pos] + '}'
+        text = text[:start] + r'\text{' + text[start:pos] + '}' + text[pos:]
         pos += 7
     else:
         pos += 1
@@ -1523,8 +1530,10 @@ if target is not None:
     return r'\ref{' + target + '}'
 url = self.attrib.get('url')
 if url is not None:
-    warning_message('&lt;link&gt; with url attribute not yet implemented')
-    return ''
+    if self.text != '':
+        return r'\href{' + url + '}{' + self.text + '}'
+    else:
+        return r'\url{' + url + '}'
     </conversion-callback>
   </entry>
 

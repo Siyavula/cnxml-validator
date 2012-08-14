@@ -126,3 +126,4 @@ for filename in sys.argv[1:]:#commandlineArguments.filename:
 
     #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
     print traverse(document, spec).encode('utf-8')
+    sys.stdout.flush()
