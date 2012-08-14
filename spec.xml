@@ -725,7 +725,7 @@ return result
     <conversion-callback name="latex">
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     warning_message('UNHANDLED style:width in pspicture')
-return r'\begin{pspicture}' + self.text + r'\end{pspicture}' + '\n'
+return r'\par\begin{pspicture}' + self.text + r'\end{pspicture}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -892,7 +892,7 @@ return r'  \caption[]{' + self.text + '}\n'
     </children>
     <notext/>
     <conversion-callback name="latex">
-return r'\begin{tabular}{' + 'c'*int(self.attrib['columnCount']) + '}\n' + self.text + r'\end{tabular}' + '\n'
+return r'\par\begin{tabular}{|' + 'c|'*int(self.attrib['columnCount']) + '}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -971,7 +971,7 @@ return text[:-2] + '\n'
     <conversion-callback name="latex">
 text = self.text.strip()
 assert text[-1] == '&amp;'
-return text[:-1] + r' \\' + '\n'
+return '\\hline\n' + text[:-1] + r' \\' + '\n'
     </conversion-callback>
   </entry>
 
