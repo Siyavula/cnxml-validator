@@ -125,4 +125,4 @@ for filename in sys.argv[1:]:#commandlineArguments.filename:
                 documentSpecEntries[node] = entry
 
     #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
-    print traverse(document, spec)
+    print traverse(document, spec).encode('utf-8')
