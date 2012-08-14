@@ -136,4 +136,6 @@ def check_link_element(element):
     targetPresent = element.attrib.has_key('target-id')
     if urlPresent == targetPresent:
         raise_error("<link> must have either url or target-id (but not both)", element)
+    if targetPresent and (element.text != ''):
+        raise_error("<link> with target-id must not contain text")
     return True

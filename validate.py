@@ -2,7 +2,7 @@ from lxml import etree
 import sys, os
 import argparse
 
-from utils import warning_message, error_message, tag_namespace_to_prefix, get_full_dom_path
+from utils import warning_message, error_message, tag_namespace_to_prefix, get_full_dom_path, tag_prefix_to_namespace
 
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -104,9 +104,13 @@ def traverse(iNode, spec):
         for entry in specAttributes:
             attributeName = entry.find('name').text
             attributeValue = nodeAttributes.get(attributeName)
-            if (entry.find('default') is None) and (attributeValue is None):
-                raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode, spec))
-            if attributeValue is not None:
+            if attributeValue is None:
+                specDefaultNode = entry.find('default')
+                if specDefaultNode is None:
+                    raise KeyError, "Missing attribute '%s' in %s"%(attributeName, get_full_dom_path(iNode, spec))
+                elif commandlineArguments.produceCleanedXML and (specDefaultNode.text != ''):
+                    iNode.attrib[tag_prefix_to_namespace(attributeName, spec)] = specDefaultNode.text
+            else:
                 # TODO: check that attribute value conforms to spec type
                 del nodeAttributes[attributeName]
         if len(nodeAttributes) > 0:
@@ -147,6 +151,8 @@ def traverse(iNode, spec):
             text = iNode.text.strip()
             if text != '':
                 location = 'at the beginning of the element'
+            if commandlineArguments.produceCleanedXML:
+                iNode.text = None
         if text == '':
             for child in iNode.getchildren():
                 if child.tail is not None:
@@ -154,6 +160,8 @@ def traverse(iNode, spec):
                     if text != '':
                         location = 'after a %s child'%child.tag
                         break
+                    if commandlineArguments.produceCleanedXML:
+                        child.tail = None
         if text != '':
             error_message(documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
 *** Found the following text ''' + location + ': ' + text + '''
@@ -190,3 +198,6 @@ for filename in commandlineArguments.filename:
                 documentSpecEntries[node] = entry
 
     traverse(document, spec)
+
+    if commandlineArguments.produceCleanedXML:
+        print etree.tostring(document, xml_declaration=True, encoding='utf-8')

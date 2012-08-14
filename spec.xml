@@ -12,7 +12,7 @@ The document element is the root.
 It may have a metadata element and must have a content element.
     </documentation>
     <conversion-callback name="latex">
-return self
+return self.text
     </conversion-callback>
   </entry>
 
@@ -76,6 +76,21 @@ return self.text.strip()
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'ActivitySection'
+return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//activity/section/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -116,7 +131,7 @@ while node is not None:
         level += 1
     node = node.getparent()
 section = ['chapter', 'section', 'subsection', 'subsubsection'][level]
-return r'\%s{%s}\n'%(section, self.text)
+return '\\%s{%s}\n'%(section, self.text)
     </conversion-callback>
   </entry>
 
@@ -168,6 +183,14 @@ return '\\par\n' + ' '.join(self.text.strip().split()) + '\n'
       </any-number>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+listType = self.attrib['list-type']
+if listType == 'bulleted':
+    environment = 'itemize'
+elif listType == 'enumerated':
+    environment = 'enumerate'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -178,6 +201,9 @@ return '\\par\n' + ' '.join(self.text.strip().split()) + '\n'
 	<reference>inline-element</reference>
       </one-of>
     </children>
+    <conversion-callback name="latex">
+return r'\item ' + self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -189,6 +215,10 @@ return '\\par\n' + ' '.join(self.text.strip().split()) + '\n'
       </any-number>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'Exercise'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -211,11 +241,18 @@ return ''
       <element>solution</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'ExerciseEntry'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//exercises/entry/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -224,6 +261,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'ExerciseEntryProblem'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -239,6 +280,9 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+return '' # Leave solutions out of textbook
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -248,6 +292,10 @@ return ''
       <element>meaning</element>
     </children>
     <notext/>
+    <conversion-callback name="latex"><!-- type already creates start of environment -->
+environment = 'Definition'
+return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -255,6 +303,10 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -265,6 +317,9 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -319,7 +374,7 @@ return ''
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("groupdiscussion","casestudy")</type>
+	<type>enum("activity","groupdiscussion","casestudy")</type>
       </entry>
     </attributes>
     <children>
@@ -327,6 +382,10 @@ return ''
       <reference>block-element</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex"><!-- type already creates start of environment -->
+environment = self.attrib['type'].capitalize()
+return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -334,6 +393,10 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -348,6 +411,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex"><!-- type already creates start of environment -->
+environment = 'Tip'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -356,6 +423,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex"><!-- type already creates start of environment -->
+environment = 'Identity'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -365,6 +436,10 @@ return ''
       <element>body</element>
     </children>
     <notext/>
+    <conversion-callback name="latex"><!-- type already creates start of environment -->
+environment = 'Extension'
+return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -372,6 +447,10 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -379,6 +458,9 @@ return ''
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -389,6 +471,10 @@ return ''
       <element>answer</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'Wex'
+return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -396,6 +482,10 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -406,6 +496,10 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
+    <conversion-callback name="latex">
+environment = 'WexQuestion'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -419,6 +513,10 @@ return ''
       </one-of>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'WexAnswer'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -428,6 +526,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'WexStep'
+return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -435,6 +537,10 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -446,6 +552,9 @@ return ''
 	<element>url</element>
       </unordered>
     </children>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -453,15 +562,18 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//presentation/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//presentation/url</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -477,6 +589,9 @@ return ''
       </unordered>
     </children>
     <validation-callback>simulation_has_url_or_embed</validation-callback>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -484,30 +599,36 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//simulation/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//simulation/width</xpath>
     <validation-callback>is_integer</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//simulation/height</xpath>
     <validation-callback>is_integer</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//simulation/url</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//simulation/embed</xpath>
     <validation-callback>is_valid_html</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -520,6 +641,9 @@ return ''
       <optional>height</optional>
       <optional>url</optional>
     </children>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -527,25 +651,30 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//video/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//video/url</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//video/width</xpath>
     <validation-callback>is_integer</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//video/height</xpath>
     <validation-callback>is_integer</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -566,6 +695,15 @@ return ''
       <optional>caption</optional>
     </children>
     <notext/>
+    <conversion-callback name="latex"><!-- type already creates start of environment -->
+environment = self.attrib['type'].capitalize()
+result = '\n\\begin{' + environment + '}\n' + self.text
+id = self.attrib.get('id')
+if id is not None:
+    result += r'\label{' + id + '}\n'
+result += r'\end{' + environment + '}\n'
+return result
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -584,10 +722,19 @@ return ''
       <element>code</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
+    warning_message('UNHANDLED style:width in pspicture')
+return r'\begin{pspicture}' + self.text + r'\end{pspicture}' + '\n'
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//pspicture/usepackage</xpath>
+    <conversion-callback name="latex">
+warning_message('REQUIRED PSTRICKS PACKAGE: ' + self.text)
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -606,6 +753,9 @@ return ''
 	</one-of>
       </any-number>
     </children>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -624,10 +774,19 @@ return ''
       <element>code</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
+    warning_message('UNHANDLED style:width in tikzpicture')
+return r'\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n'
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//tikzpicture/usepackage</xpath>
+    <conversion-callback name="latex">
+warning_message('REQUIRED TIKZ PACKAGE: ' + self.text)
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -646,6 +805,9 @@ return ''
 	</one-of>
       </any-number>
     </children>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -656,25 +818,41 @@ return ''
 	<type>number</type>
 	<default/>
       </entry>
-      <entry>
+      <!--<entry>
 	<name>style:format</name>
 	<type>string</type>
 	<default/>
-      </entry>
+      </entry>-->
     </attributes>
     <children>
       <element>src</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+result = r'\includegraphics'
+width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
+if width is not None:
+    result += r'[width=%s\textwidth]'%width
+result += '{' + self.attrib['src'] + '}\n'
+return result
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//image/src</xpath>
+    <conversion-callback name="latex">
+self.getparent().attrib['src'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//figure/type</xpath>
     <validation-callback>is_figure_type</validation-callback>
+    <conversion-callback name="latex">
+self.getparent().attrib['type'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -685,6 +863,9 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
+    <conversion-callback name="latex">
+return r'  \caption[]{' + self.text + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -710,6 +891,9 @@ return ''
       <element>tgroup</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+return r'\begin{tabular}{' + 'c'*int(self.attrib['columnCount']) + '}\n' + self.text + r'\end{tabular}' + '\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -728,6 +912,16 @@ return ''
       <element>tbody</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+cols = self.attrib.get('cols')
+if cols is not None:
+    if self.attrib.get('columnCount') is not None:
+        assert self.attrib.get('columnCount') == cols
+    else:
+        self.attrib['columnCount'] = cols
+self.getparent().attrib['columnCount'] = self.attrib['columnCount']
+return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -744,6 +938,11 @@ return ''
       </entry>
     </attributes>
     <notext/>
+    <conversion-callback name="latex">
+parentAttrib = self.getparent().attrib
+parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -754,6 +953,11 @@ return ''
       </any-number>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+text = self.text.strip()
+assert text[-2:] == r'\\'
+return text[:-2] + '\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -764,6 +968,11 @@ return ''
       </any-number>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+text = self.text.strip()
+assert text[-1] == '&amp;'
+return text[:-1] + r' \\' + '\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -796,6 +1005,9 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
+    <conversion-callback name="latex">
+return self.text.strip() + ' &amp;'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -852,30 +1064,48 @@ else:
       <reference>math-stuff</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+tex = mathml_transform(self)
+tex = unicode(tex).replace('$', '')
+if tex.count(r'\left') != tex.count(r'\right'):
+    tex = tex.replace(r'\left', '').replace(r'\right', '')
+
+# replace the stackrel{^} with hat
+tex = tex.replace(r'\stackrel{^}', r'\hat')
+
+# fix the \times symbol
+tex = tex.replace(u'×', r'\times')
+
+# fix the trig functions too
+for func in ['sin', 'cos', 'tan', 'cot']:
+    tex = tex.replace(' ' + func, '\\' + func + ' ')
+
+return r'\(' + tex + r'\)'
+    </conversion-callback>
   </entry>
 
-  <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children></entry>
-  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children></entry>
-  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children></entry>
-  <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children></entry>
-  <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/></entry>
-  <entry><xpath>/document/content//m:mref</xpath><children><reference>math-stuff</reference></children><notext/></entry>
+  <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
+  <entry><xpath>/document/content//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex"/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -1034,18 +1264,70 @@ else:
       </subset-of>
     </children>
     <validation-callback>is_number</validation-callback>
+    <conversion-callback name="latex">
+if len(self) == 0:
+    if 'e' in self.text:
+        # Number in exponential notation: convert to coeff and exp
+        numberText = self.text.strip()
+        self.text = None
+        self.append(etree.Element('coeff'))
+        pos = numberText.find('e')
+        self[-1].text = numberText[:pos]
+        self.append(etree.Element('exp'))
+        self[-1].text = str(int(numberText[pos+1:]))
+    else:
+        # No children, means it's just a plain number
+        numberText = self.text.strip()
+        self.text = None
+        self.append(etree.Element('coeff'))
+        self[-1].text = numberText
+
+# Parse out coefficient, base and exponent
+nodes = {}
+text = {}
+for key in ['coeff', 'exp', 'base']:
+    nodes[key] = self.find(key)
+    text[key] = nodes[key].text.strip() if nodes[key] is not None else None
+if text['base'] is None:
+    text['base'] = '10'
+for key in text:
+    if text[key] is None: continue
+    if text[key][0] == '-':
+        minus = '-'
+        text[key] = text[key][1:]
+    else:
+        minus = ''
+    text[key] = minus + r'\text{' + utils.format_number(text[key], thousandsSeparator=r'\ ') + '}'
+
+# Build LaTeX representation
+result = text['coeff'] if nodes['coeff'] is not None else ''
+if nodes['exp'] is not None:
+    if nodes['coeff'] is not None:
+        result += r'\ \times\ '
+    result += text['base'] + '^{' + text['exp'] + '}'
+
+# Check whether already in math mode
+latexMode = ('latex' in utils.get_full_dom_path(self))
+if not latexMode:
+    result = r'\(' + result + r'\)'
+
+return result
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//number/coeff</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//number/base</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
     <xpath>/document/content//number/exp</xpath>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -1061,6 +1343,9 @@ else:
   <entry>
     <xpath>/document/content//percentage</xpath>
     <validation-callback>is_float</validation-callback>
+    <conversion-callback name="latex">
+return convert_using(self, '/document/content//number') + r'\%'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1095,14 +1380,29 @@ else:
   <entry>
     <xpath>/document/content//chem_compound</xpath>
     <conversion-callback name="latex">
-return r'\(' + self.text.strip() + r'\)'
+text = self.text.strip()
+pos = 0
+while pos &lt; len(text):
+    if text[pos].isalpha():
+        start = pos
+        pos += 1
+        while (pos &lt; len(text)) and text[pos].isalpha():
+            pos += 1
+        text = text[:start] + r'\text{' + text[start:pos] + '}'
+        pos += 7
+    else:
+        pos += 1
+latexMode = ('latex' in utils.get_full_dom_path(self))
+if not latexMode:
+    text = r'\(' + text + r'\)'
+return text
     </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//spec_note</xpath>
     <conversion-callback name="latex">
-return r'\(' + self.text.strip() + r'\)'
+return convert_using(self, '/document/content//chem_compound')
     </conversion-callback>
   </entry>
 
@@ -1119,10 +1419,10 @@ return r'\(' + self.text.strip() + r'\)'
     <validation-callback>is_nuclear_notation</validation-callback>
     <conversion-callback name="latex">
 latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
-if 'latex' in self.path:
-    return latex
-else:
-    return r'\(' + latex + r'\)'
+latexMode = ('latex' in utils.get_full_dom_path(self))
+if not latexMode:
+    latex = r'\(' + latex + r'\)'
+return latex
     </conversion-callback>
   </entry>
 
@@ -1191,6 +1491,15 @@ return pattern%self.text
       <reference>inline-element</reference>
     </children>
     <validation-callback>check_link_element</validation-callback>
+    <conversion-callback name="latex">
+target = self.attrib.get('target-id')
+if target is not None:
+    return r'\ref{' + target + '}'
+url = self.attrib.get('url')
+if url is not None:
+    warning_message('&lt;link&gt; with url attribute not yet implemented')
+    return ''
+    </conversion-callback>
   </entry>
 
   <entry>
