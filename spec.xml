@@ -1246,6 +1246,9 @@ return r'\(' + tex + r'\)'
       <element>unit</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
   </entry>
 
   <!-- //currency/number shadows //number -->
@@ -1338,6 +1341,29 @@ return result
       </any-number>
     </children>
     <validation-callback>is_unit</validation-callback>
+    <conversion-callback name="latex">
+inUnitNumber = (self.getparent().tag == 'unit_number')
+result = r'\text{' + self.text + '}'
+# Check whether already in math mode
+latexMode = ('latex' in utils.get_full_dom_path(self))
+if not latexMode:
+    result = r'\(' + result + r'\)'
+    if inUnitNumber:
+        result = '~' + result
+else:
+    if inUnitNumber:
+        assert result[:5] == r'\text{'
+        result = result[:6] + ' ' + result[6:]
+return result
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//unit/sup</xpath>
+    <validation-callback>is_number</validation-callback>
+    <conversion-callback name="latex">
+return '$^{' + self.text + '}$'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1509,12 +1535,14 @@ if url is not None:
     </children>
   </entry>
 
+  <!-- Currently used inside <unit> only
   <entry>
     <xpath>/document/content//sup</xpath>
     <children>
       <reference>inline-element</reference>
     </children>
   </entry>
+  -->
 
 <!--
 /document/content//section/title
