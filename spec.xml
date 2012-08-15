@@ -895,10 +895,11 @@ return r'  \caption[]{' + self.text + '}\n'
     </attributes>
     <children>
       <element>tgroup</element>
-    </children>
+    </children>t
     <notext/>
     <conversion-callback name="latex">
-return r'\par\begin{tabular}{|' + 'c|'*int(self.attrib['columnCount']) + '}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
+columnAlignment = eval(self.attrib['latexColumnAlignment'])
+return r'\par\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -925,7 +926,9 @@ if cols is not None:
         assert self.attrib.get('columnCount') == cols
     else:
         self.attrib['columnCount'] = cols
-self.getparent().attrib['columnCount'] = self.attrib['columnCount']
+parentAttrib = self.getparent().attrib
+parentAttrib['columnCount'] = self.attrib['columnCount']
+parentAttrib['latexColumnAlignment'] = self.attrib['latexColumnAlignment']
 return self.text
     </conversion-callback>
   </entry>
@@ -942,11 +945,19 @@ return self.text
 	<name>colnum</name>
 	<type>integer(1,)</type>
       </entry>
+      <entry>
+	<name>style:latex-alignment</name>
+	<type>string</type>
+	<default>c</default>
+      </entry>
     </attributes>
     <notext/>
     <conversion-callback name="latex">
 parentAttrib = self.getparent().attrib
 parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
+if parentAttrib.get('latexColumnAlignment') is None:
+    parentAttrib['latexColumnAlignment'] = '[]'
+parentAttrib['latexColumnAlignment'] = repr(eval(parentAttrib['latexColumnAlignment']) + [self.attrib['{http://siyavula.com/cnxml/style/0.1}latex-alignment']])
 return ''
     </conversion-callback>
   </entry>
