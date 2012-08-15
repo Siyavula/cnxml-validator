@@ -1094,7 +1094,7 @@ if tex.count(r'\left') != tex.count(r'\right'):
 tex = tex.replace(r'\stackrel{^}', r'\hat')
 
 # fix the \times symbol
-tex = tex.replace(u'×', r'\times')
+tex = tex.replace(u'×', r'\times ')
 
 # fix the trig functions too
 for func in ['sin', 'cos', 'tan', 'cot']:
