@@ -1033,6 +1033,9 @@ return self.text.strip() + ' &amp;'
       <element>m:math</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
