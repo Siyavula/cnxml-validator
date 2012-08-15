@@ -1069,7 +1069,7 @@ else:
             foundMathEnvironment = True
             break
     if not foundMathEnvironment:
-        return '\\[\n' + selfl.text + '\n\\]\n'
+        return '\\[\n' + self.text + '\n\\]\n'
     else:
         return self.text
     </conversion-callback>
