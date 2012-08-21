@@ -139,3 +139,29 @@ class MmlTex:
         from lxml import etree
         MY_PATH = os.path.realpath(os.path.dirname(__file__))
         self.__call__ = etree.XSLT(etree.parse(os.path.join(MY_PATH, 'mmltex/mmltex.xsl')))
+
+def escape_latex(iText, iIgnore=''):
+    """
+    Escape the LaTeX special symbols in a string.
+
+    Inputs:
+
+      iText - The string to escape.
+      iIgnore - A sequence of characters that should *not* be escaped.
+
+    Output:
+
+      The escaped string.
+    """
+    mapping = {
+        '\\': r'\textbackslash{}',
+        '%': r'\%',
+        '$': r'\$',
+        '&': r'\&',
+        '#': r'\#',
+        '_': r'\_',
+        '~': r'{\raise.17ex\hbox{$\scriptstyle\sim$}}',
+        '{': r'\{',
+        '}': r'\}',
+    }
+    return ''.join(map(lambda x: x if x in iIgnore else mapping.get(x, x), iText))
