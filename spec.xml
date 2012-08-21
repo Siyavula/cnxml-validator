@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1">
+<spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1" xmlns:its="http://www.w3.org/2005/11/its">
   <entry>
     <xpath>/document</xpath>
     <children>
@@ -1578,5 +1578,43 @@ validation-callback: is_shortcode
 
 :block-element:/para
 -->
+
+  <entry>
+    <xpath>//its:rules</xpath>
+    <attributes>
+      <entry>
+	<name>version</name>
+	<type>string</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <element>its:translateRule</element>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//its:rules/its:translateRule</xpath>
+    <attributes>
+      <entry>
+	<name>translate</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>selector</name>
+	<type>string</type>
+	<default/>
+      </entry>
+    </attributes>
+    <notext/>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
+  </entry>
 
 </spec>
