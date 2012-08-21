@@ -1,7 +1,7 @@
 from lxml import etree
 import sys, os
 
-from utils import warning_message, error_message, tag_namespace_to_prefix, get_full_dom_path, etree_replace_with_node_list, MmlTex
+from utils import warning_message, error_message, tag_namespace_to_prefix, get_full_dom_path, etree_replace_with_node_list, MmlTex, escape_latex
 
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -60,6 +60,7 @@ def cache_conversion_function(iSpec):
             'warning_message': warning_message,
             'error_message': error_message,
             'mathml_transform': mathml_transform,
+            'escape_latex': escape_latex,
         }
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']

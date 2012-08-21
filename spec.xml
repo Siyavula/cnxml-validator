@@ -923,7 +923,7 @@ return r'\par\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text
 cols = self.attrib.get('cols')
 if cols is not None:
     if self.attrib.get('columnCount') is not None:
-        assert self.attrib.get('columnCount') == cols
+        assert self.attrib.get('columnCount') == cols, "Table column count specified in 'cols' attribute does not match number of columns in colspec."
     else:
         self.attrib['columnCount'] = cols
 parentAttrib = self.getparent().attrib
@@ -972,7 +972,7 @@ return ''
     <notext/>
     <conversion-callback name="latex">
 text = self.text.strip()
-assert text[-2:] == r'\\'
+assert text[-2:] == r'\\', "Weird latex table error in /document/content//table/tgroup/tbody conversion."
 return text[:-2] + '\n'
     </conversion-callback>
   </entry>
@@ -987,7 +987,7 @@ return text[:-2] + '\n'
     <notext/>
     <conversion-callback name="latex">
 text = self.text.strip()
-assert text[-1] == '&amp;'
+assert text[-1] == '&amp;', "Weird latex table error in /document/content//table/tgroup/tbody/row conversion."
 return '\\hline\n' + text[:-1] + r' \\' + '\n'
     </conversion-callback>
   </entry>
@@ -1373,7 +1373,7 @@ if not latexMode:
         result = '~' + result
 else:
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
-        assert result[:5] == r'\text{'
+        assert result[:6] == r'\text{', "Weird error in /document/content//unit conversion."
         result = result[:6] + ' ' + result[6:]
 return result
     </conversion-callback>
