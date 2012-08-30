@@ -880,7 +880,7 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex">
-return r'  \caption[]{' + self.text + '}\n'
+return r'  \Caption{' + self.text + '}\n'
     </conversion-callback>
   </entry>
 
