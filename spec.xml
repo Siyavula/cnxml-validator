@@ -847,7 +847,17 @@ return result
   <entry>
     <xpath>/document/content//image/src</xpath>
     <conversion-callback name="latex">
-self.getparent().attrib['src'] = self.text.strip()
+src = self.text.strip()
+pos = src.rfind('.')
+if pos != -1:
+    extension = src[pos+1:]
+else:
+    extension = None
+if extension != 'eps':
+    oldSrc = src
+    src = src[:-len(extension)] + 'eps'
+    convert_image(oldSrc, src)
+self.getparent().attrib['src'] = src
 return ''
     </conversion-callback>
   </entry>

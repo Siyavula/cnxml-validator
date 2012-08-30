@@ -74,6 +74,7 @@ def cache_conversion_function(iSpec):
             'error_message': utils.error_message,
             'mathml_transform': mathml_transform,
             'escape_latex': utils.escape_latex,
+            'convert_image': convert_image,
         }
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']
@@ -81,9 +82,14 @@ def cache_conversion_function(iSpec):
 
     return conversionFunction
 
-def convert_using(node, path):
-    f = cache_conversion_function(path)
-    return f(node)
+def convert_using(iNode, iPath):
+    f = cache_conversion_function(iPath)
+    return f(iNode)
+
+def convert_image(iSourceFilename, iDestinationFilename):
+    import subprocess
+    p = subprocess.Popen(['convert', iSourceFilename, iDestinationFilename])
+    p.wait()
 
 def traverse(iNode, iValidator):
     global conversionFunctions
