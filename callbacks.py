@@ -101,6 +101,8 @@ def is_number(element):
     return True
 
 def is_unit(element):
+    if (len(element) == 0) and (element.text.strip() == ''):
+        raise_error("<unit> is empty", element)
     for child in element:
         assert child.tag == 'sup' # From spec.xml we already know that each child is a <sup>
         text = child.text if child.text is not None else ''
