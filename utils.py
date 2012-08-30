@@ -2,18 +2,14 @@ import sys
 import entities
 
 def warning_message(message, newLine=True):
-    global commandlineArguments
     sys.stderr.write('WARNING: ' + message)
     if newLine:
         sys.stderr.write('\n')
 
 def error_message(message, newLine=True, terminate=True):
-    global commandlineArguments
     sys.stderr.write('ERROR: ' + message)
     if newLine:
         sys.stderr.write('\n')
-    if not commandlineArguments.produceCleanedXML:
-        sys.exit()
 
 def tag_namespace_to_prefix(tag, iSpec=None):
     if (iSpec is not None) and (tag[0] == '{'):
