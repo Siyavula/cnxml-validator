@@ -205,21 +205,23 @@ class XmlValidator(object):
             raise TypeError, "XML input needs to be either an XML string or a DOM"
 
         # Normalize text and tail of nodes
+        self.documentNodePath = {None: []}
         for node in dom.xpath('//*'):
             if node.text is None:
                 node.text = ''
             if node.tail is None:
                 node.tail = ''
-
-        self.dom = dom
+            self.documentNodePath[node] = self.documentNodePath[node.getparent()] + [node.tag]
 
         # Attach relevant spec entries to nodes in the DOM
         self.documentSpecEntries = {}
         for entry in self.spec:
             if entry.find('xpath') is None:
                 continue
-            for node in self.dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
+            for node in dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
                 if self.documentSpecEntries.get(node) is None:
                     self.documentSpecEntries[node] = entry
 
-        self.__validate_traverse(self.dom, iCleanUp=iCleanUp)
+        # Validate
+        self.__validate_traverse(dom, iCleanUp=iCleanUp)
+        self.dom = dom
