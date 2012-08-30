@@ -1558,27 +1558,6 @@ if url is not None:
     </children>
   </entry>
 
-  <!-- Currently used inside <unit> only
-  <entry>
-    <xpath>/document/content//sup</xpath>
-    <children>
-      <reference>inline-element</reference>
-    </children>
-  </entry>
-  -->
-
-<!--
-/document/content//section/title
-contains :inline-element:
-text
-
-/document/content//section/shortcode
-text.strip
-validation-callback: is_shortcode
-
-:block-element:/para
--->
-
   <entry>
     <xpath>//its:rules</xpath>
     <attributes>
