@@ -137,7 +137,7 @@ class XmlValidator(object):
         if regex is None:
             # No children
             if len(children) != 0:
-                self.__log_error_message('''No children expected in ''' + documentSpecEntries[iNode].find('xpath').text + '''
+                self.__log_error_message('''No children expected in ''' + self.documentSpecEntries[iNode].find('xpath').text + '''
     *** These are superfluous children:
     ''' + ','.join([self.__tag_namespace_to_prefix(child.tag) for child in children]) + '''
     *** The offending element looks like this:
@@ -151,7 +151,7 @@ class XmlValidator(object):
             else:
                 childrenPattern = ''
             if pattern.match(childrenPattern) is None:
-                error_message('''Child match failed for a ''' + documentSpecEntries[iNode].find('xpath').text + ''' element.
+                error_message('''Child match failed for a ''' + self.documentSpecEntries[iNode].find('xpath').text + ''' element.
     *** I was expecting the children to follow this pattern:
     ''' + regex + '''
     *** Instead I got these children:
@@ -178,7 +178,7 @@ class XmlValidator(object):
                         if iCleanUp:
                             child.tail = None
             if text != '':
-                self.__log_error_message(documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
+                self.__log_error_message(self.documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
     *** Found the following text ''' + location + ': ' + text + '''
     *** The offending element looks like this:
     ''' + etree.tostring(iNode))
