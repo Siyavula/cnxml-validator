@@ -3,6 +3,7 @@
   <entry>
     <xpath>/document</xpath>
     <children>
+      <optional>its:rules</optional>
       <optional>metadata</optional><!-- occurs 0 or 1 times -->
       <element>content</element><!-- occurs exactly once -->
     </children>
@@ -1578,7 +1579,9 @@ if url is not None:
       </entry>
     </attributes>
     <children>
-      <element>its:translateRule</element>
+      <any-number>
+	<element>its:translateRule</element>
+      </any-number>
     </children>
     <notext/>
     <conversion-callback name="latex">

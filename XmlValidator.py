@@ -151,7 +151,7 @@ class XmlValidator(object):
             else:
                 childrenPattern = ''
             if pattern.match(childrenPattern) is None:
-                error_message('''Child match failed for a ''' + self.documentSpecEntries[iNode].find('xpath').text + ''' element.
+                self.__log_error_message('''Child match failed for a ''' + self.documentSpecEntries[iNode].find('xpath').text + ''' element.
     *** I was expecting the children to follow this pattern:
     ''' + regex + '''
     *** Instead I got these children:
