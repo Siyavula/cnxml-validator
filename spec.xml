@@ -187,9 +187,9 @@ return '\\par\n' + ' '.join(self.text.strip().split()) + '\n'
     <conversion-callback name="latex">
 listType = self.attrib['list-type']
 if listType == 'bulleted':
-    environment = 'itemize'
+    environment = 'ListBulleted'
 elif listType == 'enumerated':
-    environment = 'enumerate'
+    environment = 'ListEnumerated'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -217,7 +217,7 @@ return r'\item ' + self.text
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'Exercise'
+environment = 'Exercises'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -243,7 +243,7 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'ExerciseEntry'
+environment = 'ExercisesEntry'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -263,7 +263,7 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'ExerciseEntryProblem'
+environment = 'ExercisesEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -375,7 +375,7 @@ return self.text
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment")</type>
+	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment")</type>
       </entry>
     </attributes>
     <children>
@@ -386,11 +386,13 @@ return self.text
     <conversion-callback name="latex"><!-- type already creates start of environment -->
 activityType = self.attrib['type']
 if activityType == 'f_experiment':
-    environment = 'FormalExperiment'
+    environment = 'ActivityFormalexperiment'
+elif activityType == 'g_experiment':
+    environment = 'ActivityGeneralexperiment'
 elif activityType == 'i_experiment':
-    environment = 'InformalExperiment'
+    environment = 'ActivityInformalexperiment'
 else:
-    environment = activityType.capitalize()
+    environment = 'Activity' + activityType.capitalize()
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -419,7 +421,7 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex"><!-- type already creates start of environment -->
-environment = 'Tip'
+environment = 'NoteTip'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -431,7 +433,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <notext/>
     <conversion-callback name="latex"><!-- type already creates start of environment -->
-environment = 'Identity'
+environment = 'Mathidentity'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -444,7 +446,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <notext/>
     <conversion-callback name="latex"><!-- type already creates start of environment -->
-environment = 'Extension'
+environment = 'Mathextension'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -479,7 +481,7 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'Wex'
+environment = 'Workedexample'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -504,7 +506,7 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex">
-environment = 'WexQuestion'
+environment = 'WorkedexampleQuestion'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -521,7 +523,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'WexAnswer'
+environment = 'WorkedexampleAnswer'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -534,7 +536,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'WexStep'
+environment = 'WorkedexampleAnswerWorkstep'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
@@ -703,7 +705,7 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex"><!-- type already creates start of environment -->
-environment = self.attrib['type'].capitalize()
+environment = 'Figure' + self.attrib['type'].capitalize()
 result = '\n\\begin{' + environment + '}\n' + self.text
 id = self.attrib.get('id')
 if id is not None:

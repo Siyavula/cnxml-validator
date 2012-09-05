@@ -1,4 +1,6 @@
-\newenvironment{boxedenv}[1]{%
+% === Generic environments, used by other environments ===
+
+\newenvironment{EnvWithBoxTitle}[1]{%
 \par
 \vspace{12pt}
 \hrule
@@ -11,112 +13,138 @@
 \vspace{12pt}
 }
 
-\newenvironment{unboxedenv}[1]{%
+\newenvironment{EnvWithTitle}[1]{%
 \subsubsection*{#1}
 }{%
 }
 
-\newenvironment{Figure}{%
+% === CNXML+ environments ===
+
+\newenvironment{ActivityActivity}[1]{%
+\begin{EnvWithBoxTitle}{Activity: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ActivityFormalexperiment}[1]{%
+\begin{EnvWithBoxTitle}{Formal Experiment: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ActivityGeneralexperiment}[1]{%
+\begin{EnvWithBoxTitle}{General Experiment: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ActivityGroupdiscussion}[1]{%
+\begin{EnvWithBoxTitle}{Group Discussion: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ActivityInformalexperiment}[1]{%
+\begin{EnvWithBoxTitle}{Informal Experiment: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ActivityInvestigation}[1]{%
+\begin{EnvWithBoxTitle}{Investigation: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ActivitySection}[1]{%
+\begin{EnvWithTitle}{#1:}%
+}{%
+\end{EnvWithTitle}%
+}
+
+\newenvironment{Definition}[1]{%
+\begin{EnvWithBoxTitle}{Definition: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{Exercises}{%
+\begin{EnvWithBoxTitle}{Exercises}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{ExercisesEntry}{}{}
+
+\newenvironment{ExercisesEntryProblem}{%
+\begin{EnvWithTitle}{Problem:}%
+}{%
+\end{EnvWithTitle}%
+}
+
+\newenvironment{FigureFigure}{%
 \begin{figure}[h!]%
 }{%
 \end{figure}%
 }
 
-\newenvironment{Table}{%
+\newenvironment{FigureTable}{%
 \begin{table}[h!]%
 }{%
 \end{table}%
 }
 
-\newenvironment{Tip}{%
-\begin{boxedenv}{Tip}%
+\newenvironment{ListBulleted}{%
+\begin{itemize}%
 }{%
-\end{boxedenv}%
+\end{itemize}%
 }
 
-\newenvironment{Definition}[1]{%
-\begin{boxedenv}{Definition: #1}%
+\newenvironment{ListEnumerated}{%
+\begin{enumerate}%
 }{%
-\end{boxedenv}%
+\end{enumerate}%
 }
 
-\newenvironment{Wex}[1]{%
-\begin{boxedenv}{Worked Example: #1}%
+\newenvironment{Mathextension}{%
+\begin{EnvWithBoxTitle}{Extension}%
 }{%
-\end{boxedenv}%
+\end{EnvWithBoxTitle}%
 }
 
-\newenvironment{WexQuestion}{%
-\begin{unboxedenv}{Question}%
+\newenvironment{Mathidentity}{%
+\begin{EnvWithBoxTitle}{Identity}%
 }{%
-\end{unboxedenv}%
+\end{EnvWithBoxTitle}%
 }
 
-\newenvironment{WexAnswer}{%
-\begin{unboxedenv}{Answer}%
+\newenvironment{NoteTip}{%
+\begin{EnvWithBoxTitle}{Tip}%
 }{%
-\end{unboxedenv}%
+\end{EnvWithBoxTitle}%
 }
 
-\newenvironment{WexStep}[1]{%
-\begin{unboxedenv}{Step: #1}%
+\newenvironment{Workedexample}[1]{%
+\begin{EnvWithBoxTitle}{Worked Example: #1}%
 }{%
-\end{unboxedenv}%
+\end{EnvWithBoxTitle}%
 }
 
-\newenvironment{Exercise}{%
-\begin{boxedenv}{Exercises}%
+\newenvironment{WorkedexampleAnswer}{%
+\begin{EnvWithTitle}{Answer}%
 }{%
-\end{boxedenv}%
+\end{EnvWithTitle}%
 }
 
-\newenvironment{ExerciseEntry}{}{}
-
-\newenvironment{ExerciseEntryProblem}{%
-\begin{unboxedenv}{Problem:}%
+\newenvironment{WorkedexampleAnswerWorkstep}[1]{%
+\begin{EnvWithTitle}{Step: #1}%
 }{%
-\end{unboxedenv}%
+\end{EnvWithTitle}%
 }
 
-\newenvironment{Activity}[1]{%
-\begin{boxedenv}{Activity: #1}%
+\newenvironment{WorkedexampleQuestion}{%
+\begin{EnvWithTitle}{Question}%
 }{%
-\end{boxedenv}%
-}
-
-\newenvironment{ActivitySection}[1]{%
-\begin{unboxedenv}{#1:}%
-}{%
-\end{unboxedenv}%
-}
-
-\newenvironment{Groupdiscussion}[1]{%
-\begin{boxedenv}{Group Discussion: #1}%
-}{%
-\end{boxedenv}%
-}
-
-\newenvironment{FormalExperiment}[1]{%
-\begin{boxedenv}{Formal Experiment: #1}%
-}{%
-\end{boxedenv}%
-}
-
-\newenvironment{InformalExperiment}[1]{%
-\begin{boxedenv}{Informal Experiment: #1}%
-}{%
-\end{boxedenv}%
-}
-
-\newenvironment{G_experiment}[1]{%
-\begin{boxedenv}{General Experiment: #1}%
-}{%
-\end{boxedenv}%
-}
-
-\newenvironment{Investigation}[1]{%
-\begin{boxedenv}{Investigation: #1}%
-}{%
-\end{boxedenv}%
+\end{EnvWithTitle}%
 }
 
