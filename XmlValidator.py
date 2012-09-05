@@ -190,7 +190,7 @@ class XmlValidator(object):
             import callbacks
             callbackFunction = eval('callbacks.' + callbackFunctionName)
             if not callbackFunction(iNode):
-                raise error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
+                self.__log_error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
 
 
     def validate(self, iXml, iCleanUp=False):
