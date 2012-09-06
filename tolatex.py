@@ -32,7 +32,7 @@ mathml_transform = utils.MmlTex()
 
 conversionFunctions = {} # Cache
 def cache_conversion_function(iSpec):
-    global conversionFunctions, validator
+    global conversionFunctions, validator, utils
 
     if isinstance(iSpec, basestring):
         # xpath given rather than node
