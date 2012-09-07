@@ -332,7 +332,7 @@ return self.text
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("theorem")</type>
+	<type>enum("theorem",)</type>
       </entry>
     </attributes>
     <children>
@@ -413,7 +413,7 @@ return ''
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("tip")</type>
+	<type>enum("tip",)</type>
       </entry>
     </attributes>
     <children>
@@ -892,7 +892,7 @@ return r'  \Caption{' + self.text + '}\n'
     <attributes>
       <entry>
 	<name>frame</name>
-	<type>enum("none")</type>
+	<type>enum("none",)</type>
 	<default/>
       </entry>
       <entry>
@@ -1020,7 +1020,7 @@ return '\\hline\n' + text[:-1] + r' \\' + '\n'
       </entry>
       <entry>
 	<name>align</name>
-	<type>enum("center")</type>
+	<type>enum("center",)</type>
 	<default/>
       </entry>
       <entry>

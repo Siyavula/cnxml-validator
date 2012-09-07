@@ -111,13 +111,12 @@ class XmlValidator(object):
         specAttributes = specEntry.find('attributes')
         if specAttributes is None:
             if len(nodeAttributes) > 0:
-                if len(iNode.attrib) > 0:
-                    if not ((iNode.attrib.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
-                        self.__log_warning_message('Extra attributes in ' + self.__get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
-                pass # TODO: This will ignore any nodes that have attributes, even when the spec does not specify any. Make this more strict later to force all attributes to be in the spec.
+                if not ((nodeAttributes.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
+                    self.__log_error_message('Extra attributes in ' + self.__get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
         else:
             for entry in specAttributes:
                 attributeName = entry.find('name').text
+                attributeType = entry.find('type').text
                 attributeValue = nodeAttributes.get(attributeName)
                 if attributeValue is None:
                     specDefaultNode = entry.find('default')
@@ -126,7 +125,40 @@ class XmlValidator(object):
                     elif iCleanUp and (specDefaultNode.text != ''):
                         iNode.attrib[self.__tag_prefix_to_namespace(attributeName)] = specDefaultNode.text
                 else:
-                    # TODO: check that attribute value conforms to spec type
+                    if attributeType == 'string':
+                        passed = True
+                    elif attributeType == 'url':
+                        # TODO: Make this more strict
+                        passed = True
+                    elif attributeType == 'number':
+                        try:
+                            float(attributeValue)
+                            passed = True
+                        except ValueError:
+                            passed = False
+                    elif attributeType[:7] == 'integer':
+                        try:
+                            attributeValue = int(attributeValue)
+                            passed = True
+                            if len(attributeType) > 7:
+                                intRange = [x.strip() for x in attributeType[8:-1].split(',')]
+                                intRange = [None if x == '' else int(x) for x in intRange]
+                                if intRange[0] is not None:
+                                    if attributeValue < intRange[0]:
+                                        passed = False
+                                if intRange[1] is not None:
+                                    if attributeValue > intRange[1]:
+                                        passed = False
+                        except ValueError:
+                            passed = False
+                    elif attributeType[:5] == 'enum(':
+                        options = eval(attributeType[4:])
+                        assert type(options) is tuple
+                        passed = (attributeValue in options)
+                    else:
+                        passed = False
+                    if not passed:
+                        self.__log_error_message('Attribute value %s does not conform to type %s in '%(repr(attributeValue), repr(attributeType)) + self.__get_full_dom_path(iNode))
                     del nodeAttributes[attributeName]
             if len(nodeAttributes) > 0:
                 # There are still unhandled node attributes
