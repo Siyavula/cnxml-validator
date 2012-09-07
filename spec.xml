@@ -1029,7 +1029,7 @@ return '\\hline\n' + text[:-1] + r' \\' + '\n'
       <entry>
 	<name>morerows</name>
 	<type>integer</type>
-	<default/>
+	<default>0</default>
       </entry>
     </attributes>
     <children>
@@ -1041,7 +1041,10 @@ return '\\hline\n' + text[:-1] + r' \\' + '\n'
     <conversion-callback name="latex">
 multiColumnStart = self.attrib.get('namest')
 multiColumnEnd = self.attrib.get('nameend')
+moreRows = int(self.attrib['morerows'])
 if (multiColumnStart is not None) and (multiColumnEnd is not None):
+    if moreRows &gt; 0:
+        error_message('Cannot handle table entries that span multiple rows and columns')
     columnSpec = eval(self.getparent().getparent().getparent().attrib.get('columnSpec'))
     columnCount = columnSpec[multiColumnEnd] - columnSpec[multiColumnStart] + 1
 else:
@@ -1049,7 +1052,15 @@ else:
 if columnCount &gt; 1:
     return r'\multicolumn{' + str(columnCount) + r'}{|c|}{' + self.text.strip() + r'} &amp;'
 else:
-    return self.text.strip() + ' &amp;'
+    if moreRows &gt; 0:
+        text = self.text.strip()
+        while text[:4] == r'\par':
+            text = text[4:].lstrip()
+        while text[-4:] == r'\par':
+            text = text[:-4].rstrip()
+        return r'\multirow{' + str(moreRows+1) + '}{*}{' + text + r'} &amp;'
+    else:
+        return self.text.strip() + ' &amp;'
     </conversion-callback>
   </entry>
 
