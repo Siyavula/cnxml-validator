@@ -968,6 +968,9 @@ return self.text
     <conversion-callback name="latex">
 parentAttrib = self.getparent().attrib
 parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
+columnSpec = eval(parentAttrib.get('columnSpec', '{}'))
+columnSpec[self.attrib['colname']] = int(self.attrib['colnum'])-1
+parentAttrib['columnSpec'] = repr(columnSpec)
 if parentAttrib.get('latexColumnAlignment') is None:
     parentAttrib['latexColumnAlignment'] = '[]'
 parentAttrib['latexColumnAlignment'] = repr(eval(parentAttrib['latexColumnAlignment']) + [self.attrib['{http://siyavula.com/cnxml/style/0.1}latex-alignment']])
@@ -1036,7 +1039,17 @@ return '\\hline\n' + text[:-1] + r' \\' + '\n'
       </one-of>
     </children>
     <conversion-callback name="latex">
-return self.text.strip() + ' &amp;'
+multiColumnStart = self.attrib.get('namest')
+multiColumnEnd = self.attrib.get('nameend')
+if (multiColumnStart is not None) and (multiColumnEnd is not None):
+    columnSpec = eval(self.getparent().getparent().getparent().attrib.get('columnSpec'))
+    columnCount = columnSpec[multiColumnEnd] - columnSpec[multiColumnStart] + 1
+else:
+    columnCount = 1
+if columnCount &gt; 1:
+    return r'\multicolumn{' + str(columnCount) + r'}{|c|}{' + self.text.strip() + r'} &amp;'
+else:
+    return self.text.strip() + ' &amp;'
     </conversion-callback>
   </entry>
 
