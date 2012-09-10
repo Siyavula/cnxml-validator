@@ -413,7 +413,7 @@ return ''
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("tip",)</type>
+	<type>enum("tip","aside")</type>
       </entry>
     </attributes>
     <children>
