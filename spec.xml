@@ -912,7 +912,7 @@ return r'  \Caption{' + self.text + '}\n'
     <notext/>
     <conversion-callback name="latex">
 columnAlignment = eval(self.attrib['latexColumnAlignment'])
-return r'\par\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
+return r'\par'+'\n'+r'\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
     </conversion-callback>
   </entry>
 
