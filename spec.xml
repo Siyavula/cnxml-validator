@@ -212,7 +212,10 @@ return r'\item ' + self.text
     <children>
       <optional>title</optional>
       <any-number>
-	<element>entry</element>
+	<one-of>
+	  <element>problem-set</element>
+	  <element>entry</element>
+	</one-of>
       </any-number>
     </children>
     <notext/>
@@ -233,7 +236,35 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/entry</xpath>
+    <xpath>/document/content//exercises/problem-set</xpath>
+    <children>
+      <optional>header</optional>
+      <any-number>
+	<element>entry</element>
+      </any-number>
+      <optional>footer</optional>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/problem-set/header</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises/problem-set/footer</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//entry</xpath>
     <children>
       <any-number from="1"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
 	<element>shortcode</element>
@@ -249,7 +280,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/entry/shortcode</xpath>
+    <xpath>/document/content//exercises//entry/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
     <conversion-callback name="latex">
 return ''
@@ -257,11 +288,10 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/entry/problem</xpath>
+    <xpath>/document/content//exercises//entry/problem</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
-    <notext/>
     <conversion-callback name="latex">
 environment = 'ExercisesEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
@@ -269,7 +299,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/entry/solution</xpath>
+    <xpath>/document/content//exercises//entry/solution</xpath>
     <attributes>
       <entry>
 	<name>url</name>
@@ -280,7 +310,6 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
-    <notext/>
     <conversion-callback name="latex">
 return '' # Leave solutions out of textbook
     </conversion-callback>
