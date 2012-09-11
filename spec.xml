@@ -535,6 +535,8 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex">
+if self.text is None:
+    raise ValueError, "Worked example question should not be empty."
 environment = 'WorkedexampleQuestion'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
@@ -552,6 +554,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <notext/>
     <conversion-callback name="latex">
+if self.text is None:
+    raise ValueError, "Worked example answer should not be empty."
 environment = 'WorkedexampleAnswer'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
