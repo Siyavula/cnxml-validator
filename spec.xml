@@ -208,6 +208,184 @@ return r'\item ' + self.text
   </entry>
 
   <entry>
+    <xpath>/document/content//table</xpath>
+    <attributes>
+      <entry>
+	<name>frame</name>
+	<type>enum("none",)</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colsep</name>
+	<type>integer</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>rowsep</name>
+	<type>integer</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <element>tgroup</element>
+    </children>t
+    <notext/>
+    <conversion-callback name="latex">
+columnAlignment = eval(self.attrib['latexColumnAlignment'])
+return r'\par'+'\n'+r'\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup</xpath>
+    <attributes>
+      <entry>
+	<name>cols</name>
+	<type>integer(1,)</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <any-number from="1">
+	<element>colspec</element>
+      </any-number>
+      <element>tbody</element>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+cols = self.attrib.get('cols')
+if cols is not None:
+    if self.attrib.get('columnCount') is not None:
+        assert self.attrib.get('columnCount') == cols, "Table column count specified in 'cols' attribute does not match number of columns in colspec."
+    else:
+        self.attrib['columnCount'] = cols
+parentAttrib = self.getparent().attrib
+parentAttrib['columnCount'] = self.attrib['columnCount']
+parentAttrib['latexColumnAlignment'] = self.attrib['latexColumnAlignment']
+return self.text
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/colspec</xpath>
+    <attributes>
+      <entry>
+	<name>colname</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colnum</name>
+	<type>integer(1,)</type>
+      </entry>
+      <entry>
+	<name>style:latex-alignment</name>
+	<type>string</type>
+	<default>c</default>
+      </entry>
+    </attributes>
+    <notext/>
+    <conversion-callback name="latex">
+parentAttrib = self.getparent().attrib
+parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
+columnSpec = eval(parentAttrib.get('columnSpec', '{}'))
+columnSpec[self.attrib['colname']] = int(self.attrib['colnum'])-1
+parentAttrib['columnSpec'] = repr(columnSpec)
+if parentAttrib.get('latexColumnAlignment') is None:
+    parentAttrib['latexColumnAlignment'] = '[]'
+parentAttrib['latexColumnAlignment'] = repr(eval(parentAttrib['latexColumnAlignment']) + [self.attrib['{http://siyavula.com/cnxml/style/0.1}latex-alignment']])
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/tbody</xpath>
+    <children>
+      <any-number>
+	<element>row</element>
+      </any-number>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+text = self.text.strip()
+assert text[-2:] == r'\\', "Weird latex table error in /document/content//table/tgroup/tbody conversion."
+return text[:-2] + '\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/tbody/row</xpath>
+    <children>
+      <any-number>
+	<element>entry</element>
+      </any-number>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+text = self.text.strip()
+assert text[-1] == '&amp;', "Weird latex table error in /document/content//table/tgroup/tbody/row conversion."
+return '\\hline\n' + text[:-1] + r' \\' + '\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//table/tgroup/tbody/row/entry</xpath>
+    <!-- //table/tgroup/tbody/row/entry shadows //exercise//entry -->
+    <attributes>
+      <entry>
+	<name>namest</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>nameend</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>align</name>
+	<type>enum("center",)</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>morerows</name>
+	<type>integer</type>
+	<default>0</default>
+      </entry>
+    </attributes>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex">
+multiColumnStart = self.attrib.get('namest')
+multiColumnEnd = self.attrib.get('nameend')
+moreRows = int(self.attrib['morerows'])
+if (multiColumnStart is not None) and (multiColumnEnd is not None):
+    if moreRows &gt; 0:
+        error_message('Cannot handle table entries that span multiple rows and columns')
+    columnSpec = eval(self.getparent().getparent().getparent().attrib.get('columnSpec'))
+    columnCount = columnSpec[multiColumnEnd] - columnSpec[multiColumnStart] + 1
+else:
+    columnCount = 1
+if columnCount &gt; 1:
+    return r'\multicolumn{' + str(columnCount) + r'}{|c|}{' + self.text.strip() + r'} &amp;'
+else:
+    if moreRows &gt; 0:
+        text = self.text.strip()
+        while text[:4] == r'\par':
+            text = text[4:].lstrip()
+        while text[-4:] == r'\par':
+            text = text[:-4].rstrip()
+        return r'\multirow{' + str(moreRows+1) + '}{*}{' + text + r'} &amp;'
+    else:
+        return self.text.strip() + ' &amp;'
+    </conversion-callback>
+  </entry>
+
+  <entry>
     <xpath>/document/content//exercises</xpath>
     <children>
       <optional>title</optional>
@@ -917,183 +1095,6 @@ return ''
     </children>
     <conversion-callback name="latex">
 return r'  \Caption{' + self.text + '}\n'
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//table</xpath>
-    <attributes>
-      <entry>
-	<name>frame</name>
-	<type>enum("none",)</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>colsep</name>
-	<type>integer</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>rowsep</name>
-	<type>integer</type>
-	<default/>
-      </entry>
-    </attributes>
-    <children>
-      <element>tgroup</element>
-    </children>t
-    <notext/>
-    <conversion-callback name="latex">
-columnAlignment = eval(self.attrib['latexColumnAlignment'])
-return r'\par'+'\n'+r'\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//table/tgroup</xpath>
-    <attributes>
-      <entry>
-	<name>cols</name>
-	<type>integer(1,)</type>
-	<default/>
-      </entry>
-    </attributes>
-    <children>
-      <any-number from="1">
-	<element>colspec</element>
-      </any-number>
-      <element>tbody</element>
-    </children>
-    <notext/>
-    <conversion-callback name="latex">
-cols = self.attrib.get('cols')
-if cols is not None:
-    if self.attrib.get('columnCount') is not None:
-        assert self.attrib.get('columnCount') == cols, "Table column count specified in 'cols' attribute does not match number of columns in colspec."
-    else:
-        self.attrib['columnCount'] = cols
-parentAttrib = self.getparent().attrib
-parentAttrib['columnCount'] = self.attrib['columnCount']
-parentAttrib['latexColumnAlignment'] = self.attrib['latexColumnAlignment']
-return self.text
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//table/tgroup/colspec</xpath>
-    <attributes>
-      <entry>
-	<name>colname</name>
-	<type>string</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>colnum</name>
-	<type>integer(1,)</type>
-      </entry>
-      <entry>
-	<name>style:latex-alignment</name>
-	<type>string</type>
-	<default>c</default>
-      </entry>
-    </attributes>
-    <notext/>
-    <conversion-callback name="latex">
-parentAttrib = self.getparent().attrib
-parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
-columnSpec = eval(parentAttrib.get('columnSpec', '{}'))
-columnSpec[self.attrib['colname']] = int(self.attrib['colnum'])-1
-parentAttrib['columnSpec'] = repr(columnSpec)
-if parentAttrib.get('latexColumnAlignment') is None:
-    parentAttrib['latexColumnAlignment'] = '[]'
-parentAttrib['latexColumnAlignment'] = repr(eval(parentAttrib['latexColumnAlignment']) + [self.attrib['{http://siyavula.com/cnxml/style/0.1}latex-alignment']])
-return ''
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//table/tgroup/tbody</xpath>
-    <children>
-      <any-number>
-	<element>row</element>
-      </any-number>
-    </children>
-    <notext/>
-    <conversion-callback name="latex">
-text = self.text.strip()
-assert text[-2:] == r'\\', "Weird latex table error in /document/content//table/tgroup/tbody conversion."
-return text[:-2] + '\n'
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//table/tgroup/tbody/row</xpath>
-    <children>
-      <any-number>
-	<element>entry</element>
-      </any-number>
-    </children>
-    <notext/>
-    <conversion-callback name="latex">
-text = self.text.strip()
-assert text[-1] == '&amp;', "Weird latex table error in /document/content//table/tgroup/tbody/row conversion."
-return '\\hline\n' + text[:-1] + r' \\' + '\n'
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>/document/content//table/tgroup/tbody/row/entry</xpath>
-    <attributes>
-      <entry>
-	<name>namest</name>
-	<type>string</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>nameend</name>
-	<type>string</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>align</name>
-	<type>enum("center",)</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>morerows</name>
-	<type>integer</type>
-	<default>0</default>
-      </entry>
-    </attributes>
-    <children>
-      <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex">
-multiColumnStart = self.attrib.get('namest')
-multiColumnEnd = self.attrib.get('nameend')
-moreRows = int(self.attrib['morerows'])
-if (multiColumnStart is not None) and (multiColumnEnd is not None):
-    if moreRows &gt; 0:
-        error_message('Cannot handle table entries that span multiple rows and columns')
-    columnSpec = eval(self.getparent().getparent().getparent().attrib.get('columnSpec'))
-    columnCount = columnSpec[multiColumnEnd] - columnSpec[multiColumnStart] + 1
-else:
-    columnCount = 1
-if columnCount &gt; 1:
-    return r'\multicolumn{' + str(columnCount) + r'}{|c|}{' + self.text.strip() + r'} &amp;'
-else:
-    if moreRows &gt; 0:
-        text = self.text.strip()
-        while text[:4] == r'\par':
-            text = text[4:].lstrip()
-        while text[-4:] == r'\par':
-            text = text[:-4].rstrip()
-        return r'\multirow{' + str(moreRows+1) + '}{*}{' + text + r'} &amp;'
-    else:
-        return self.text.strip() + ' &amp;'
     </conversion-callback>
   </entry>
 
