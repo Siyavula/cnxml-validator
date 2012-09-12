@@ -628,7 +628,7 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex"><!-- type already creates start of environment -->
-environment = 'NoteTip'
+environment = 'Note' + self.attrib['type'].capitalize()
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
