@@ -104,7 +104,7 @@ return ''
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("chapter","section","subsection","subsubsection")</type>
+	<type>enum("chapter","section","subsection","subsubsection","subsubsubsection")</type>
 	<default/>
       </entry>
     </attributes>
@@ -131,7 +131,7 @@ while node is not None:
     if node.tag == 'section':
         level += 1
     node = node.getparent()
-section = ['chapter', 'section', 'subsection', 'subsubsection'][level]
+section = ['chapter', 'section', 'subsection', 'subsubsection', 'paragraph'][level]
 return '\\%s{%s}\n'%(section, self.text)
     </conversion-callback>
   </entry>
