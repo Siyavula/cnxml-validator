@@ -423,6 +423,10 @@ return ''
       <optional>footer</optional>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'ExercisesProblemset'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -431,6 +435,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'ExercisesProblemsetHeader'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -439,6 +447,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'ExercisesProblemsetFooter'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -452,8 +464,25 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'ExercisesEntry'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+if self.getparent().tag == 'problem-set':
+    count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
+    self.getparent().attrib['problem-set-entry-count'] = str(count)
+    if count == 1:
+        # First entry in problem set
+        environment = 'ExercisesProblemsetEntries'
+        result = '\n\\begin{' + environment + '}'
+    else:
+        result = ''
+    environment = 'ExercisesProblemsetEntry'
+    result += '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}'
+    if self.getnext() is None:
+        # Last entry in problem set
+        environment = 'ExercisesProblemsetEntries'
+        result += '\n\\end{' + environment + '}\n'
+    return result
+else:
+    environment = 'ExercisesEntry'
+    return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
@@ -471,7 +500,10 @@ return ''
       <reference>block-element-no-subsections</reference>
     </children>
     <conversion-callback name="latex">
-environment = 'ExercisesEntryProblem'
+if self.getparent().getparent().tag == 'problem-set':
+    environment = 'ExercisesProblemsetEntryProblem'
+else:
+    environment = 'ExercisesEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
