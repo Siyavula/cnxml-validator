@@ -1133,7 +1133,7 @@ return self.text
 if self.attrib.get('display') is None:
     self.attrib['display'] = 'inline' # TODO: remove
 if self.attrib['display'] == 'inline':
-    return r'\(' + self.text + r'\)'
+    return r'\(' + self.text.strip() + r'\)'
 else:
     foundMathEnvironment = False
     text = self.text.strip()
@@ -1143,7 +1143,7 @@ else:
             foundMathEnvironment = True
             break
     if not foundMathEnvironment:
-        return '\\[\n' + self.text + '\n\\]\n'
+        return '\\[' + self.text.strip() + '\\]\n'
     else:
         return self.text
     </conversion-callback>
