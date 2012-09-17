@@ -652,7 +652,7 @@ return ''
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("tip","aside","warning")</type>
+	<type>enum("note","tip","aside","warning","important")</type>
       </entry>
     </attributes>
     <children>
@@ -1303,6 +1303,8 @@ return r'\(' + tex + r'\)'
 	<element>note</element>
 	<element>math_extension</element>
 	<element>math_identity</element>
+	<element>keyconcepts</element>
+	<element>newwords</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
