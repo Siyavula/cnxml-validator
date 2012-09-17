@@ -712,6 +712,43 @@ return self.text
   </entry>
 
   <entry>
+    <xpath>/document/content//key-concepts</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = 'Keyconcepts'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//new-words</xpath>
+    <children>
+      <any-number>
+	<element>word</element>
+      </any-number>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = 'Newwords'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//new-words/word</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+    <conversion-callback name="latex">
+environment = 'NewwordsWord'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
     <xpath>/document/content//worked_example</xpath>
     <children>
       <element>title</element>
@@ -1303,8 +1340,8 @@ return r'\(' + tex + r'\)'
 	<element>note</element>
 	<element>math_extension</element>
 	<element>math_identity</element>
-	<element>keyconcepts</element>
-	<element>newwords</element>
+	<element>key-concepts</element>
+	<element>new-words</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
