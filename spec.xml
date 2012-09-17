@@ -456,7 +456,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   <entry>
     <xpath>/document/content//exercises//entry</xpath>
     <children>
-      <any-number from="1"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
+      <any-number from="0"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
 	<element>shortcode</element>
       </any-number>
       <element>problem</element>
@@ -800,7 +800,7 @@ return ''
     <children>
       <unordered>
 	<element>title</element>
-	<element>shortcode</element>
+	<optional>shortcode</optional>
 	<element>url</element>
       </unordered>
     </children>
@@ -833,7 +833,7 @@ return ''
     <children>
       <unordered>
 	<element>title</element>
-	<element>shortcode</element>
+	<optional>shortcode</optional>
 	<element>url</element>
 	<element>embed</element>
 	<optional>width</optional>
@@ -887,7 +887,7 @@ return ''
     <xpath>/document/content//video</xpath>
     <children>
       <element>title</element>
-      <element>shortcode</element>
+      <optional>shortcode</optional>
       <element>url</element>
       <optional>width</optional>
       <optional>height</optional>
