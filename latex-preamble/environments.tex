@@ -56,6 +56,12 @@
 \end{EnvWithBoxTitle}%
 }
 
+\newenvironment{ActivityProject}[1]{%
+\begin{EnvWithBoxTitle}{Project: #1}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
 \newenvironment{ActivitySection}[1]{%
 \begin{EnvWithTitle}{#1:}%
 }{%
@@ -121,6 +127,12 @@
 \begin{table}[h!]%
 }{%
 \end{table}%
+}
+
+\newenvironment{Keyconcepts}{%
+\begin{EnvWithBoxTitle}{Key Concepts}%
+}{%
+\end{EnvWithBoxTitle}%
 }
 
 \newenvironment{ListBulleted}{%

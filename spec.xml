@@ -232,7 +232,7 @@ return r'\item ' + self.text
     <notext/>
     <conversion-callback name="latex">
 columnAlignment = eval(self.attrib['latexColumnAlignment'])
-return r'\par'+'\n'+r'\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
+return r'\par'+'\n'+r'\begin{longtable}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{longtable}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -607,7 +607,10 @@ return ''
   <entry>
     <xpath>/document/content//theorem/statement</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -619,7 +622,10 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   <entry>
     <xpath>/document/content//theorem/given</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -631,7 +637,10 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   <entry>
     <xpath>/document/content//theorem/required</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -643,7 +652,10 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   <entry>
     <xpath>/document/content//theorem/proof</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -657,7 +669,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <attributes>
       <entry>
 	<name>type</name>
-	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment")</type>
+	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment","project")</type>
       </entry>
     </attributes>
     <children>
@@ -1730,9 +1742,9 @@ if target is not None:
 url = self.attrib.get('url')
 if url is not None:
     if self.text != '':
-        return r'\href{' + url + '}{' + self.text + '}'
+        return r'\href{' + escape_latex(url) + '}{' + escape_latex(self.text) + '}'
     else:
-        return r'\url{' + url + '}'
+        return r'\url{' + escape_latex(url) + '}'
     </conversion-callback>
   </entry>
 
