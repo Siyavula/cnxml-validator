@@ -563,50 +563,93 @@ return self.text
   </entry>
 
   <entry>
-    <xpath>/document/content//rule</xpath>
-    <attributes>
-      <entry>
-	<name>id</name>
-	<type>string</type>
-      </entry>
-      <entry>
-	<name>type</name>
-	<type>enum("theorem",)</type>
-      </entry>
-    </attributes>
+    <xpath>/document/content//theorem</xpath>
     <children>
-      <element>title</element>
+      <optional>label</optional>
+      <optional>title</optional>
       <element>statement</element>
+      <element>given</element>
+      <element>required</element>
       <element>proof</element>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+environment = 'Theorem'
+return r'''
+\begin{''' + environment + '}{' + self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','') + '''}
+''' + self.text + r'''
+\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//rule/title</xpath>
+    <xpath>/document/content//theorem/label</xpath>
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['theoremLabel'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//rule/statement</xpath>
+    <xpath>/document/content//theorem/title</xpath>
     <children>
-      <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
-      </one-of>
+      <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex">
+self.getparent().attrib['theoremTitle'] = self.text.strip()
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//rule/proof</xpath>
+    <xpath>/document/content//theorem/statement</xpath>
     <children>
-      <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
-      </one-of>
+      <reference>block-element-no-subsections</reference>
     </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = 'TheoremStatement'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//theorem/given</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = 'TheoremGiven'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//theorem/required</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = 'TheoremRequired'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//theorem/proof</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = 'TheoremProof'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1334,7 +1377,7 @@ return r'\(' + tex + r'\)'
 	<element>tikzpicture</element>
 	<element>table</element>
 	<element>definition</element>
-	<element>rule</element>
+	<element>theorem</element>
 	<element>activity</element>
 	<element>exercises</element>
 	<element>note</element>
