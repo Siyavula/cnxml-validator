@@ -231,8 +231,9 @@ return r'\item ' + self.text
     </children>t
     <notext/>
     <conversion-callback name="latex">
+tabularNewline = r'\tabularnewline'
 columnAlignment = eval(self.attrib['latexColumnAlignment'])
-return r'\par'+'\n'+r'\begin{longtable}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + r'\\' + '\n' + r'\hline' + '\n' + r'\end{longtable}' + '\n'
+return r'\par'+'\n'+r'\begin{longtable}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + tabularNewline + '\n' + r'\hline' + '\n' + r'\end{longtable}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -307,9 +308,10 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex">
+tabularNewline = r'\tabularnewline'
 text = self.text.strip()
-assert text[-2:] == r'\\', "Weird latex table error in /document/content//table/tgroup/tbody conversion."
-return text[:-2] + '\n'
+assert text[-len(tabularNewline):] == tabularNewline, "Weird latex table error in /document/content//table/tgroup/tbody conversion."
+return text[:-len(tabularNewline)] + '\n'
     </conversion-callback>
   </entry>
 
@@ -322,9 +324,10 @@ return text[:-2] + '\n'
     </children>
     <notext/>
     <conversion-callback name="latex">
+tabularNewline = r'\tabularnewline'
 text = self.text.strip()
 assert text[-1] == '&amp;', "Weird latex table error in /document/content//table/tgroup/tbody/row conversion."
-return '\\hline\n' + text[:-1] + r' \\' + '\n'
+return '\\hline\n' + text[:-1] + tabularNewline + '\n'
     </conversion-callback>
   </entry>
 
