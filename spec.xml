@@ -581,7 +581,7 @@ environment = 'Theorem'
 return r'''
 \begin{''' + environment + '}{' + self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','') + '''}
 ''' + self.text + r'''
-\end{' + environment + '}\n'
+\end{''' + environment + '}\n'
     </conversion-callback>
   </entry>
 
