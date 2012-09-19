@@ -612,7 +612,6 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <notext/>
     <conversion-callback name="latex">
 environment = 'TheoremStatement'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
@@ -627,7 +626,6 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <notext/>
     <conversion-callback name="latex">
 environment = 'TheoremGiven'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
@@ -642,7 +640,6 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <notext/>
     <conversion-callback name="latex">
 environment = 'TheoremRequired'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
@@ -657,7 +654,6 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <notext/>
     <conversion-callback name="latex">
 environment = 'TheoremProof'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
