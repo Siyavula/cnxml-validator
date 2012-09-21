@@ -1120,7 +1120,7 @@ return self.text
     <conversion-callback name="latex">
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     warning_message('UNHANDLED style:width in tikzpicture')
-return r'\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n'
+return r'\par\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n'
     </conversion-callback>
   </entry>
 
