@@ -225,6 +225,43 @@ class XmlValidator(object):
                 self.__log_error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
 
 
+    def monassis_to_cnxml(self):
+        for templateNode in self.dom.xpath('//monassis-template'):
+            renderer = templateNode.attrib.get('rendered-as', 'exercise')
+            if renderer == "example":
+                templateNode.tag = 'worked_example'
+                titleNode = templateNode[0]
+                assert titleNode.tag == 'title'
+                contentNode = templateNode[1]
+                assert contentNode.tag == 'content'
+                index = 0
+                if contentNode[index].tag == 'header':
+                    headerNode = contentNode[index]
+                    index += 1
+                else:
+                    headerNode = None
+                problemNode = contentNode[index]
+                assert problemNode.tag == 'problem'
+                problemNode.tag = 'question'
+                if headerNode is not None:
+                    for node in headerNode.getchildren():
+                        problemNode.insert(0, node)
+                responseNode = contentNode[index+1]
+                assert responseNode.tag == 'response'
+                solutionNode = contentNode[index+2]
+                assert solutionNode.tag == 'solution'
+                solutionNode.tag = 'answer'
+                del templateNode[1]
+                templateNode.append(problemNode)
+                templateNode.append(solutionNode)
+                if solutionNode[0].tag == 'step':
+                    for stepNode in solutionNode:
+                        assert stepNode.tag == 'step'
+                        stepNode.tag = 'workstep'
+            else:
+                raise ValueError, "Unknown renderer for monassis template: %s"%repr(renderer)
+
+
     def validate(self, iXml, iCleanUp=False):
         if isinstance(iXml, basestring):
             # This parser automatically strips comments
@@ -257,3 +294,24 @@ class XmlValidator(object):
         # Validate
         self.__validate_traverse(dom, iCleanUp=iCleanUp)
         self.dom = dom
+
+        # Convert monassis-style problems to worked examples and
+        # exercises.
+        # NOTE: This is temporary while we're transitioning to a new
+        # XML spec that unifies CNXML+ and Monassis XML.
+        self.monassis_to_cnxml()
+
+        # Redo info attached to nodes since monassis_to_cnxml() changed some nodes
+        # Normalize text and tail of nodes
+        self.documentNodePath = {None: []}
+        for node in dom.xpath('//*'):
+            self.documentNodePath[node] = self.documentNodePath[node.getparent()] + [node.tag]
+        # Attach relevant spec entries to nodes in the DOM
+        self.documentSpecEntries = {}
+        for entry in self.spec:
+            if entry.find('xpath') is None:
+                continue
+            for node in dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
+                if self.documentSpecEntries.get(node) is None:
+                    self.documentSpecEntries[node] = entry
+
