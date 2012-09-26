@@ -159,6 +159,16 @@
 \end{EnvWithBoxTitle}%
 }
 
+\newenvironment{Newwords}[1]{%
+\begin{EnvWithBoxTitle}{New Words}%
+}{%
+\end{EnvWithBoxTitle}%
+}
+
+\newenvironment{NewwordsWord}[1]{%
+}{%
+}
+
 \newenvironment{NoteAside}{%
 \begin{EnvWithBoxTitle}{Aside}%
 }{%
@@ -189,25 +199,25 @@
 \end{EnvWithBoxTitle}%
 }
 
-\newenvironment{TheoremStatement}[1]{%
+\newenvironment{TheoremStatement}{%
 \begin{EnvWithTitle}{Statement:}%
 }{%
 \end{EnvWithTitle}%
 }
 
-\newenvironment{TheoremGiven}[1]{%
+\newenvironment{TheoremGiven}{%
 \begin{EnvWithTitle}{Given:}%
 }{%
 \end{EnvWithTitle}%
 }
 
-\newenvironment{TheoremRequired}[1]{%
+\newenvironment{TheoremRequired}{%
 \begin{EnvWithTitle}{Required:}%
 }{%
 \end{EnvWithTitle}%
 }
 
-\newenvironment{TheoremProof}[1]{%
+\newenvironment{TheoremProof}{%
 \begin{EnvWithTitle}{Proof:}%
 }{%
 \end{EnvWithTitle}%
