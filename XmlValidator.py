@@ -287,7 +287,7 @@ class XmlValidator(object):
                     responseNode = None
                 solutionNode = contentNode[index]
                 assert solutionNode.tag == 'solution'
-                if solutionNode[0].tag == 'step':
+                if (len(solutionNode) > 0) and (solutionNode[0].tag == 'step'):
                     allSolutionChildren = []
                     while len(solutionNode) > 0:
                         assert solutionNode[0].tag == 'step'
