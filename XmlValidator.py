@@ -241,14 +241,18 @@ class XmlValidator(object):
                 else:
                     headerNode = None
                 problemNode = contentNode[index]
+                index += 1
                 assert problemNode.tag == 'problem'
                 problemNode.tag = 'question'
                 if headerNode is not None:
                     for node in headerNode.getchildren():
                         problemNode.insert(0, node)
-                responseNode = contentNode[index+1]
-                assert responseNode.tag == 'response'
-                solutionNode = contentNode[index+2]
+                if contentNode[index].tag == 'response':
+                    responseNode = contentNode[index]
+                    index += 1
+                else:
+                    responseNode = None
+                solutionNode = contentNode[index]
                 assert solutionNode.tag == 'solution'
                 solutionNode.tag = 'answer'
                 del templateNode[1]
@@ -258,6 +262,43 @@ class XmlValidator(object):
                     for stepNode in solutionNode:
                         assert stepNode.tag == 'step'
                         stepNode.tag = 'workstep'
+            elif renderer == "exercise":
+                titleNode = templateNode[0]
+                assert titleNode.tag == 'title'
+                contentNode = templateNode[1]
+                assert contentNode.tag == 'content'
+                contentNode.tag = 'entry'
+                index = 0
+                if contentNode[index].tag == 'header':
+                    headerNode = contentNode[index]
+                    del contentNode[0]
+                else:
+                    headerNode = None
+                problemNode = contentNode[index]
+                index += 1
+                assert problemNode.tag == 'problem'
+                if headerNode is not None:
+                    for node in headerNode.getchildren():
+                        problemNode.insert(0, node)
+                if contentNode[index].tag == 'response':
+                    responseNode = contentNode[index]
+                    del contentNode[index]
+                else:
+                    responseNode = None
+                solutionNode = contentNode[index]
+                assert solutionNode.tag == 'solution'
+                if solutionNode[0].tag == 'step':
+                    allSolutionChildren = []
+                    while len(solutionNode) > 0:
+                        assert solutionNode[0].tag == 'step'
+                        solutionNodeChildren = solutionNode[0].getchildren()
+                        if solutionNodeChildren[0].tag == 'title':
+                            del solutionNodeChildren[0]
+                        allSolutionChildren += solutionNodeChildren
+                        del solutionNode[0]
+                    for child in allSolutionChildren:
+                        solutionNode.append(child)
+                templateNode.getparent().replace(templateNode, contentNode)
             else:
                 raise ValueError, "Unknown renderer for monassis template: %s"%repr(renderer)
 

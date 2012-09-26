@@ -396,6 +396,7 @@ else:
 	<one-of>
 	  <element>problem-set</element>
 	  <element>entry</element>
+	  <element>monassis-template</element>
 	</one-of>
       </any-number>
     </children>
@@ -843,7 +844,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <children>
       <optional>header</optional>
       <element>problem</element>
-      <element>response</element>
+      <optional>response</optional>
       <element>solution</element>
     </children>
     <notext/>
