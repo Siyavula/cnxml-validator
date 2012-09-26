@@ -1664,6 +1664,7 @@ return self.text
   <entry>
     <xpath>/document/content//currency/number</xpath>
     <validation-callback>is_float</validation-callback>
+    <conversion-callback name="latex"/>
   </entry>
 
   <entry>
@@ -1800,6 +1801,40 @@ return convert_using(self, '/document/content//number') + r'\%'
       </unordered>
     </children>
     <notext/>
+    <conversion-callback name="latex">
+numberText = self.find('number').text.strip()
+try:
+    int(numberText.strip())
+    defaultPrecision = 0
+except ValueError:
+    defaultPrecision = 2
+currencyPrecision = int(self.attrib.get('precision', defaultPrecision))
+numberText = ("%%.%if"%currencyPrecision)%float(numberText)
+numberText = utils.format_number(numberText, thousandsSeparator=r'\ ')
+
+symbolNode = self.find('symbol')
+if symbolNode is None:
+    symbol = 'R'
+    symbolLocation = 'front'
+else:
+    symbol = symbolNode.text.strip()
+    symbolLocation = symbolNode.attrib.get('location', 'front')
+
+
+
+if symbolLocation == 'front':
+    result = symbol + r'\ ' + numberText
+else:
+    result = numberText + r'\ ' + symbol
+result = r'\text{' + result + '}'
+
+# Check whether already in math mode
+latexMode = ('latex' in utils.get_full_dom_path(self))
+if not latexMode:
+    result = r'\(' + result + r'\)'
+
+return result
+    </conversion-callback>
   </entry>
 
   <entry>
