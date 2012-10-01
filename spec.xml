@@ -120,6 +120,18 @@ return self.text.strip()
   </entry>
 
   <entry>
+    <xpath>/document/content//teachers-guide</xpath>
+    <children>
+      <reference>block-element</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+environment = "TeachersGuide"
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
     <xpath>/document/content//section/title</xpath>
     <children>
       <reference>inline-element</reference>
@@ -1589,6 +1601,7 @@ return r'\(' + tex + r'\)'
 	<element>math_identity</element>
 	<element>key-concepts</element>
 	<element>new-words</element>
+	<element>teachers-guide</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
