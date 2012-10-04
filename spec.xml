@@ -825,6 +825,11 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <xpath>/document/content//monassis-template</xpath>
     <attributes>
       <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
 	<name>rendered-as</name>
 	<type>enum("example","exercise")</type>
 	<default>exercise</default>
