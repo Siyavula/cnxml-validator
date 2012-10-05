@@ -1284,7 +1284,8 @@ return r'\par\begin{pspicture}' + self.text + r'\end{pspicture}' + '\n'
   <entry>
     <xpath>/document/content//pspicture/usepackage</xpath>
     <conversion-callback name="latex">
-warning_message('REQUIRED PSTRICKS PACKAGE: ' + self.text)
+if self.text.strip() not in ['pst-solides3d', 'pst-3dplot']:
+    warning_message('REQUIRED PSTRICKS PACKAGE: ' + self.text)
 return ''
     </conversion-callback>
   </entry>
