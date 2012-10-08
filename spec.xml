@@ -1487,22 +1487,27 @@ return self.text
       </any-number>
     </children>
     <conversion-callback name="latex">
-if self.attrib.get('display') is None:
-    self.attrib['display'] = 'inline' # TODO: remove
+numberEquations = False
 if self.attrib['display'] == 'inline':
     return r'\(' + self.text.strip() + r'\)'
 else:
     foundMathEnvironment = False
     text = self.text.strip()
     for environmentName in ['align', 'align*', 'equation', 'equation*', 'eqnarray', 'eqnarray*']:
-        substr = r'\begin{%s}'%environmentName
-        if text[:len(substr)] == substr:
+        beginSubstr = r'\begin{%s}'%environmentName
+        if text[:len(beginSubstr)] == beginSubstr:
+            endSubstr = r'\end{%s}'%environmentName
+            if text[-len(endSubstr):] != endSubstr:
+                error_message('You are either missing a \\end{%s} in a LaTeX environment or there is a mismatch between the \\begin and \\end.'%environmentName)
             foundMathEnvironment = True
+            if not numberEquations:
+                if environmentName[-1] != '*':
+                    text = beginSubstr[:-1] + '*}' + text[len(beginSubstr):-len(endSubstr)] + endSubstr[:-1] + '*}'
             break
     if not foundMathEnvironment:
-        return '\\[' + self.text.strip() + '\\]\n'
+        return '\\[' + text + '\\]\n'
     else:
-        return self.text
+        return text
     </conversion-callback>
   </entry>
 
