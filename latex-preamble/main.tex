@@ -4,6 +4,11 @@
 \parindent 0pt
 \parskip 0.2\baselineskip
 
+\usepackage{fp}
+\makeatletter
+\newcommand*{\getlengthinpt}[1]{\strip@pt#1}
+\makeatother
+
 \usepackage{graphicx}
 \usepackage{amsmath, amsthm, amsfonts, amssymb}
 

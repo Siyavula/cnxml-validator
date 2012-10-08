@@ -1276,8 +1276,32 @@ return result
     <notext/>
     <conversion-callback name="latex">
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
-    warning_message('UNHANDLED style:width in pspicture')
-return r'\par\begin{pspicture}' + self.text + r'\end{pspicture}' + '\n'
+    relativeWidth = float(self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width'))
+    # Get width of pspicture
+    start = self.text.find('(')+1
+    stop = self.text.find(',', start)
+    xmin = float(self.text[start:stop])
+    start = self.text.find('(', stop)+1
+    stop = self.text.find(',', start)
+    xmax = float(self.text[start:stop])
+    pspictureWidthInCm = xmax-xmin
+    pspictureWidthInPt = pspictureWidthInCm * 28.3464567
+    head = r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{pspicture}'
+    tail = r'\end{pspicture}}' + '\n'
+else:
+    head = r'\par\begin{pspicture}'
+    tail = r'\end{pspicture}' + '\n'
+
+if False: # Put frame at bounding box of every pspicture
+    start = self.text.find('(')
+    stop = self.text.find(')', start)
+    stop = self.text.find(')', stop+1)+1
+    nextLine = self.text.find('\n', stop)+1
+    text = self.text[:nextLine] + r'\psframe' + self.text[start:stop] + '\n' + self.text[nextLine:]
+else:
+    text = self.text
+
+return head + text + tail
     </conversion-callback>
   </entry>
 
