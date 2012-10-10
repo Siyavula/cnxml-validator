@@ -520,7 +520,7 @@ if self.getparent().tag == 'problem-set':
         result = ''
     environment = 'ExercisesProblemsetEntry'
     result += '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}'
-    if self.getnext() is None:
+    if (self.getnext() is None) or (self.getnext().tag == 'footer'):
         # Last entry in problem set
         environment = 'ExercisesProblemsetEntries'
         result += '\n\\end{' + environment + '}\n'
