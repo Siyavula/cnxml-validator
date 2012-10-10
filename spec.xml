@@ -1471,7 +1471,10 @@ return self.text
       </entry>-->
     </attributes>
     <children>
-      <element>src</element>
+      <subset-of>
+        <element>src</element>
+        <element>attribution</element>
+      </subset-of>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -1500,6 +1503,16 @@ if extension != 'eps':
 self.getparent().attrib['src'] = src
 return ''
     </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//image/attribution</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
   </entry>
 
   <entry>
