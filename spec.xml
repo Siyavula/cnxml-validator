@@ -572,7 +572,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <conversion-callback name="latex">
 if self.getparent().getparent().tag == 'problem-set':
-    return '' # Leave solutions out of textbook
+    environment = 'ExercisesProblemsetEntrySolution'
+    #return '' # Leave solutions out of textbook
 else:
     environment = 'ExercisesEntrySolution'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
