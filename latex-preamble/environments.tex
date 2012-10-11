@@ -80,29 +80,9 @@
 \end{EnvWithBoxTitle}%
 }
 
-\newenvironment{ExercisesEntry}{}{}
-
-\newenvironment{ExercisesEntryProblem}{%
-\begin{EnvWithTitle}{Problem:}%
-}{%
-\end{EnvWithTitle}%
-}
-
-\newenvironment{ExercisesEntrySolution}{%
-\begin{EnvWithTitle}{Solution:}%
-}{%
-\end{EnvWithTitle}%
-}
-
 \newenvironment{ExercisesProblemset}{%
-\begin{ExercisesEntryProblem}%
 }{%
-\end{ExercisesEntryProblem}%
 }
-
-\newenvironment{ExercisesProblemsetHeader}{}{}
-
-\newenvironment{ExercisesProblemsetFooter}{}{}
 
 \newenvironment{ExercisesProblemsetEntries}{%
 \begin{enumerate}%
@@ -110,15 +90,22 @@
 \end{enumerate}%
 }
 
-\newenvironment{ExercisesProblemsetEntry}{}{}
+\newenvironment{ExercisesProblemsetHeader}{}{}
 
-\newenvironment{ExercisesProblemsetEntryProblem}{%
+\newenvironment{ExercisesProblemsetEntry}{%
 \item %
 }{%
 }
 
+\newenvironment{ExercisesProblemsetFooter}{}{}
+
+\newenvironment{ExercisesProblemsetEntryProblem}{%
+\par\textbf{Problem: }%
+}{%
+}
+
 \newenvironment{ExercisesProblemsetEntrySolution}{%
-\item[] \textbf{Solution:} %
+\par\textbf{Solution: }%
 }{%
 }
 

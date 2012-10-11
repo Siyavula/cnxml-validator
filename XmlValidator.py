@@ -303,6 +303,17 @@ class XmlValidator(object):
                 raise ValueError, "Unknown renderer for monassis template: %s"%repr(renderer)
 
 
+    def convert_exercises(self, dom):
+        for exercisesNode in dom.xpath('//exercises'):
+            assert exercisesNode[0].tag == 'title'
+            if (len(exercisesNode) > 2) or (exercisesNode[1].tag != 'problem-set'):
+                problemsetNode = etree.Element('problem-set')
+                for child in exercisesNode.getchildren()[1:]:
+                    problemsetNode.append(child)
+                assert len(exercisesNode) == 1
+                exercisesNode.append(problemsetNode)
+        
+
     def validate(self, iXml, iCleanUp=False):
         if isinstance(iXml, basestring):
             # This parser automatically strips comments
@@ -322,6 +333,11 @@ class XmlValidator(object):
             if node.tail is None:
                 node.tail = ''
             self.documentNodePath[node] = self.documentNodePath[node.getparent()] + [node.tag]
+
+        # Convert old style <exercises> to new-style <exercises> with recursive <problem-set>s
+        # NOTE: This is temporary while we're transitioning to a new
+        # XML spec that requires <exercises> to contain <title> and <problem-set> only
+        self.convert_exercises(dom)
 
         # Attach relevant spec entries to nodes in the DOM
         self.documentSpecEntries = {}

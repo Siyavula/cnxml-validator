@@ -433,13 +433,7 @@ else:
     <xpath>/document/content//exercises</xpath>
     <children>
       <optional>title</optional>
-      <any-number>
-	<one-of>
-	  <element>problem-set</element>
-	  <element>entry</element>
-	  <element>monassis-template</element>
-	</one-of>
-      </any-number>
+      <element>problem-set</element>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -459,23 +453,47 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/problem-set</xpath>
+    <xpath>/document/content//exercises//problem-set</xpath>
     <children>
       <optional>header</optional>
       <any-number>
-	<element>entry</element>
+	<one-of>
+	  <element>problem-set</element>
+	  <element>entry</element>
+	  <element>monassis-template</element>
+	</one-of>
       </any-number>
       <optional>footer</optional>
     </children>
     <notext/>
     <conversion-callback name="latex">
-environment = 'ExercisesProblemset'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+problemsetEnvironment = 'ExercisesProblemset'
+entryEnvironment = 'ExercisesProblemsetEntry'
+entriesEnvironment = 'ExercisesProblemsetEntries'
+if self.getparent().tag == 'exercises':
+    # First level of numbering in exercise environment
+    return '\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
+else:
+    count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
+    self.getparent().attrib['problem-set-entry-count'] = str(count)
+    if count == 1:
+        # First entry in problem set
+        result = '\n\\begin{' + entriesEnvironment + '}'
+    else:
+        result = ''
+
+    result += '\n\\begin{' + entryEnvironment + '}\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n' + r'\end{' + entryEnvironment + '}\n'
+
+    if (self.getnext() is None) or (self.getnext().tag == 'footer'):
+        # Last entry in problem set
+        result += '\n\\end{' + entriesEnvironment + '}\n'
+
+    return result
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/problem-set/header</xpath>
+    <xpath>/document/content//exercises//problem-set/header</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
@@ -487,7 +505,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/problem-set/footer</xpath>
+    <xpath>/document/content//exercises//problem-set/footer</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
@@ -499,7 +517,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//entry</xpath>
+    <xpath>/document/content//exercises//problem-set/entry</xpath>
     <children>
       <any-number from="0"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
 	<element>shortcode</element>
@@ -509,30 +527,26 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <notext/>
     <conversion-callback name="latex">
-if self.getparent().tag == 'problem-set':
-    count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
-    self.getparent().attrib['problem-set-entry-count'] = str(count)
-    if count == 1:
-        # First entry in problem set
-        environment = 'ExercisesProblemsetEntries'
-        result = '\n\\begin{' + environment + '}'
-    else:
-        result = ''
-    environment = 'ExercisesProblemsetEntry'
-    result += '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}'
-    if (self.getnext() is None) or (self.getnext().tag == 'footer'):
-        # Last entry in problem set
-        environment = 'ExercisesProblemsetEntries'
-        result += '\n\\end{' + environment + '}\n'
-    return result
+problemsetEnvironment = 'ExercisesProblemset'
+entryEnvironment = 'ExercisesProblemsetEntry'
+entriesEnvironment = 'ExercisesProblemsetEntries'
+count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
+self.getparent().attrib['problem-set-entry-count'] = str(count)
+if count == 1:
+    # First entry in problem set
+    result = '\n\\begin{' + entriesEnvironment + '}'
 else:
-    environment = 'ExercisesEntry'
-    return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    result = ''
+result += '\n\\begin{' + entryEnvironment + '}\n' + self.text + r'\end{' + entryEnvironment + '}'
+if (self.getnext() is None) or (self.getnext().tag == 'footer'):
+    # Last entry in problem set
+    result += '\n\\end{' + entriesEnvironment + '}\n'
+return result
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//entry/shortcode</xpath>
+    <xpath>/document/content//exercises//problem-set/entry/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
     <conversion-callback name="latex">
 return ''
@@ -540,21 +554,18 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//entry/problem</xpath>
+    <xpath>/document/content//exercises//problem-set/entry/problem</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
     <conversion-callback name="latex">
-if self.getparent().getparent().tag == 'problem-set':
-    environment = 'ExercisesProblemsetEntryProblem'
-else:
-    environment = 'ExercisesEntryProblem'
+environment = 'ExercisesProblemsetEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//entry/solution</xpath>
+    <xpath>/document/content//exercises//problem-set/entry/solution</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -571,11 +582,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       <reference>block-element-no-subsections</reference>
     </children>
     <conversion-callback name="latex">
-if self.getparent().getparent().tag == 'problem-set':
-    environment = 'ExercisesProblemsetEntrySolution'
-    #return '' # Leave solutions out of textbook
-else:
-    environment = 'ExercisesEntrySolution'
+#return '' # Leave solutions out of textbook
+environment = 'ExercisesProblemsetEntrySolution'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
