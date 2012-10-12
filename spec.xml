@@ -1527,6 +1527,9 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
   </entry>
 
   <entry>
