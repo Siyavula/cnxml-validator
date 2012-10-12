@@ -737,7 +737,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </entry>
     </attributes>
     <children>
-      <element>title</element>
+      <optional>title</optional>
       <reference>block-element</reference>
     </children>
     <notext/>
@@ -751,7 +751,7 @@ elif activityType == 'i_experiment':
     environment = 'ActivityInformalexperiment'
 else:
     environment = 'Activity' + activityType.capitalize()
-return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
