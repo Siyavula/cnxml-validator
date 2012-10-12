@@ -1249,12 +1249,15 @@ return ''
   <entry>
     <xpath>/document/content//video</xpath>
     <children>
-      <element>title</element>
-      <optional>shortcode</optional>
-      <element>url</element>
-      <optional>width</optional>
-      <optional>height</optional>
-      <optional>url</optional>
+      <unordered>
+	<element>title</element>
+	<any-number from="1"><!-- with multiple urls, the first one will be linked to and the rest are for reference only -->
+	  <element>url</element>
+	</any-number>
+	<optional>shortcode</optional>
+	<optional>width</optional>
+	<optional>height</optional>
+      </unordered>
     </children>
     <conversion-callback name="latex">
 return ''
