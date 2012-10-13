@@ -305,12 +305,14 @@ class XmlValidator(object):
 
     def convert_exercises(self, dom):
         for exercisesNode in dom.xpath('//exercises'):
-            assert exercisesNode[0].tag == 'title'
-            if (len(exercisesNode) > 2) or (exercisesNode[1].tag != 'problem-set'):
+            index = 0
+            if exercisesNode[0].tag == 'title':
+                index += 1
+            if (len(exercisesNode) > index+1) or (exercisesNode[index].tag != 'problem-set'):
                 problemsetNode = etree.Element('problem-set')
-                for child in exercisesNode.getchildren()[1:]:
+                for child in exercisesNode.getchildren()[index:]:
                     problemsetNode.append(child)
-                assert len(exercisesNode) == 1
+                assert len(exercisesNode) == index
                 exercisesNode.append(problemsetNode)
         
 
