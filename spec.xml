@@ -2133,22 +2133,39 @@ return pattern%self.text
 
   <entry>
     <xpath>/document/content//nth</xpath>
+    <attributes>
+      <entry>
+	<name>format</name>
+	<type>enum("word","superscript")</type>
+	<default>word</default>
+      </entry>
+    </attributes>
     <conversion-callback name="latex">
 try:
     value = int(self.text)
-    if (value % 10 == 1) and (value//10 % 10 != 1):
-        suffix = 'st'
-    elif (value % 10 == 2) and (value//10 % 10 != 1):
-        suffix = 'nd'
-    elif (value % 10 == 3) and (value//10 % 10 != 1):
-        suffix = 'rd'
-    else:
-        suffix = 'th'
-    value = str(value)
+    isInt = True
 except ValueError:
     value = self.text.strip()
-    suffix = 'th'
-return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
+    isInt = False
+
+format = self.attrib['format']
+if (format == 'word') and isInt and (value &lt; 12):
+    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value-1]
+else:
+    # format == 'superscript'
+    if isInt:
+        if (value % 10 == 1) and (value//10 % 10 != 1):
+            suffix = 'st'
+        elif (value % 10 == 2) and (value//10 % 10 != 1):
+            suffix = 'nd'
+        elif (value % 10 == 3) and (value//10 % 10 != 1):
+            suffix = 'rd'
+        else:
+            suffix = 'th'
+        value = str(value)
+    else:
+        suffix = 'th'
+    return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
     </conversion-callback>
   </entry>
 
