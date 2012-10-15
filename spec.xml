@@ -1398,6 +1398,7 @@ return ''
 	  <element>chem_compound</element>
 	  <element>spec_note</element>
 	  <element>nuclear_notation</element>
+	  <element>nth</element>
 	</one-of>
       </any-number>
     </children>
@@ -1455,6 +1456,7 @@ return ''
 	  <element>chem_compound</element>
 	  <element>spec_note</element>
 	  <element>nuclear_notation</element>
+	  <element>nth</element>
 	</one-of>
       </any-number>
     </children>
@@ -1770,6 +1772,7 @@ return r'\(' + tex + r'\)'
 	  <element>emphasis</element>
 	  <element>sub</element>
 	  <element>sup</element>
+	  <element>nth</element>
 	  <element>list</element>
 	  <element>media</element>
 	  <element>image</element>
@@ -1799,6 +1802,7 @@ return r'\(' + tex + r'\)'
 	  <element>emphasis</element>
 	  <element>sub</element>
 	  <element>sup</element>
+	  <element>nth</element>
 	  <element>link</element>
 	  <element>unit_number</element>
 	  <element>number</element>
@@ -2124,6 +2128,27 @@ pattern = {
     'normal': '%s',
 }[self.attrib['effect']]
 return pattern%self.text
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//nth</xpath>
+    <conversion-callback name="latex">
+try:
+    value = int(self.text)
+    if (value % 10 == 1) and (value//10 % 10 != 1):
+        suffix = 'st'
+    elif (value % 10 == 2) and (value//10 % 10 != 1):
+        suffix = 'nd'
+    elif (value % 10 == 3) and (value//10 % 10 != 1):
+        suffix = 'rd'
+    else:
+        suffix = 'th'
+    value = str(value)
+except ValueError:
+    value = self.text.strip()
+    suffix = 'th'
+return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
     </conversion-callback>
   </entry>
 
