@@ -369,7 +369,6 @@ return '\\hline\n' + text[:-1] + tabularNewline + '\n'
 
   <entry>
     <xpath>/document/content//table/tgroup/tbody/row/entry</xpath>
-    <!-- //table/tgroup/tbody/row/entry shadows //exercise//entry -->
     <attributes>
       <entry>
 	<name>id</name>
@@ -524,6 +523,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </any-number>
       <element>problem</element>
       <element>solution</element>
+      <optional>correct</optional>
     </children>
     <notext/>
     <conversion-callback name="latex">
@@ -585,6 +585,19 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 #return '' # Leave solutions out of textbook
 environment = 'ExercisesProblemsetEntrySolution'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//problem-set/entry/correct</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex">
+return ''
     </conversion-callback>
   </entry>
 
