@@ -1901,7 +1901,7 @@ for key in text:
 result = text['coeff'] if nodes['coeff'] is not None else ''
 if nodes['exp'] is not None:
     if nodes['coeff'] is not None:
-        result += r'\ \times\ '
+        result += r' \times '
     result += text['base'] + '^{' + text['exp'] + '}'
 
 # Check whether already in math mode
