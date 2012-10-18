@@ -2,12 +2,12 @@ import sys
 import entities
 
 def warning_message(message, newLine=True):
-    sys.stderr.write('WARNING: ' + message)
+    sys.stderr.write('WARNING: ' + message.encode('utf-8'))
     if newLine:
         sys.stderr.write('\n')
 
 def error_message(message, newLine=True, terminate=True):
-    sys.stderr.write('ERROR: ' + message)
+    sys.stderr.write('ERROR: ' + message.encode('utf-8'))
     if newLine:
         sys.stderr.write('\n')
 
