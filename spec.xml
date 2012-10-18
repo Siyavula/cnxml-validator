@@ -1181,7 +1181,7 @@ return ''
       </unordered>
     </children>
     <conversion-callback name="latex">
-return ''
+return r'\presentation{SHORTCODE}{' + self.attrib['title'] + '}\n'
     </conversion-callback>
   </entry>
 
@@ -1190,7 +1190,9 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex"/>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1218,7 +1220,7 @@ return ''
     </children>
     <validation-callback>simulation_has_url_or_embed</validation-callback>
     <conversion-callback name="latex">
-return ''
+return r'\simulation{SHORTCODE}{' + self.attrib['title'] + '}\n'
     </conversion-callback>
   </entry>
 
@@ -1227,7 +1229,9 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex"/>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1273,7 +1277,7 @@ return ''
       </unordered>
     </children>
     <conversion-callback name="latex">
-return ''
+return r'\video{SHORTCODE}{' + self.attrib['title'] + '}\n'
     </conversion-callback>
   </entry>
 
@@ -1282,7 +1286,9 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex"/>
+    <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text
+    </conversion-callback>
   </entry>
 
   <entry>
