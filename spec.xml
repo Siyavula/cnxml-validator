@@ -1608,6 +1608,7 @@ return self.text
 	  <element>unit_number</element>
 	  <element>percentage</element>
 	  <element>currency</element>
+	  <element>correct</element>
 	</one-of>
       </any-number>
     </children>
@@ -1834,6 +1835,7 @@ return r'\(' + tex + r'\)'
 	  <element>spec_note</element>
 	  <element>nuclear_notation</element>
 	  <element>image</element>
+	  <element>correct</element>
 	</one-of>
       </any-number>
     </children>
@@ -2147,6 +2149,16 @@ pattern = {
     'normal': '%s',
 }[self.attrib['effect']]
 return pattern%self.text
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//problem-set/entry/solution//correct</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+    <conversion-callback name="latex">
+return self.text
     </conversion-callback>
   </entry>
 
