@@ -127,7 +127,7 @@ return self.text.strip()
     <notext/>
     <conversion-callback name="latex">
 environment = "TeachersGuide"
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+return '\n\\begin{' + environment + '}\n' + self.text.strip() + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
@@ -316,9 +316,14 @@ return self.text
 	<type>integer(1,)</type>
       </entry>
       <entry>
+	<name>colwidth</name>
+	<type>string</type> <!-- 475.4 -->
+	<default/>
+      </entry>
+      <entry>
 	<name>style:latex-alignment</name>
 	<type>string</type>
-	<default>c</default>
+	<default/> <!-- default: c -->
       </entry>
     </attributes>
     <notext/>
@@ -328,9 +333,23 @@ parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
 columnSpec = eval(parentAttrib.get('columnSpec', '{}'))
 columnSpec[self.attrib.get('colname')] = int(self.attrib['colnum'])-1
 parentAttrib['columnSpec'] = repr(columnSpec)
+
+latexAlignmentKey = '{http://siyavula.com/cnxml/style/0.1}latex-alignment'
 if parentAttrib.get('latexColumnAlignment') is None:
     parentAttrib['latexColumnAlignment'] = '[]'
-parentAttrib['latexColumnAlignment'] = repr(eval(parentAttrib['latexColumnAlignment']) + [self.attrib['{http://siyavula.com/cnxml/style/0.1}latex-alignment']])
+if self.attrib.get(latexAlignmentKey) is None:
+    colwidth = self.attrib.get('colwidth')
+    if colwidth is not None:
+        # Set LaTeX column width based on colwidth attribute
+        assert colwidth[-2:] == 'pt'
+        colwidth = float(colwidth[:-2])
+        relativeWidth = colwidth / 480
+        self.attrib[latexAlignmentKey] = r'&gt;{\centering}p{%.6f\textwidth}'%(0.85*relativeWidth)
+    else:
+        # Set default value
+        self.attrib[latexAlignmentKey] = 'c'
+parentAttrib['latexColumnAlignment'] = repr(eval(parentAttrib['latexColumnAlignment']) + [self.attrib[latexAlignmentKey]])
+
 return ''
     </conversion-callback>
   </entry>
