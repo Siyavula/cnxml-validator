@@ -136,7 +136,7 @@ class MmlTex:
         MY_PATH = os.path.realpath(os.path.dirname(__file__))
         self.__call__ = etree.XSLT(etree.parse(os.path.join(MY_PATH, 'mmltex/mmltex.xsl')))
 
-def escape_latex(iText, iIgnore=''):
+def escape_latex(iText, iIgnore='', iUnescape=False):
     """
     Escape the LaTeX special symbols in a string.
 
@@ -144,6 +144,8 @@ def escape_latex(iText, iIgnore=''):
 
       iText - The string to escape.
       iIgnore - A sequence of characters that should *not* be escaped.
+      iUnescape - If True, do the reverse operation unescaping all
+        previously escaped characters
 
     Output:
 
@@ -160,4 +162,13 @@ def escape_latex(iText, iIgnore=''):
         '{': r'\{',
         '}': r'\}',
     }
-    return ''.join(map(lambda x: x if x in iIgnore else mapping.get(x, x), iText))
+    if iUnescape:
+        import re
+        inverseMapping = dict((v,k) for k,v in mapping.iteritems())
+        pattern = re.compile('(' + ')|('.join([re.escape(v) for v in mapping.values()]) + ')')
+        result = iText
+        for span in reversed([x.span() for x in pattern.finditer(iText)]):
+            result = result[:span[0]] + inverseMapping[iText[span[0]:span[1]]] + result[span[1]:]
+        return result
+    else:
+        return ''.join(map(lambda x: x if x in iIgnore else mapping.get(x, x), iText))
