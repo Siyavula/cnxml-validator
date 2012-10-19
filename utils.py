@@ -162,6 +162,8 @@ def escape_latex(iText, iIgnore='', iUnescape=False):
         '{': r'\{',
         '}': r'\}',
     }
+    if iText is None:
+        iText = ''
     if iUnescape:
         import re
         inverseMapping = dict((v,k) for k,v in mapping.iteritems())
