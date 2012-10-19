@@ -1811,24 +1811,24 @@ return r'\(' + tex + r'\)'
       <any-number>
 	<one-of>
 	  <element>br</element>
+	  <element>chem_compound</element>
+	  <element>correct</element>
+	  <element>currency</element>
 	  <element>emphasis</element>
+	  <element>image</element>
+	  <element>latex</element>
+	  <element>link</element>
+	  <element>list</element>
+	  <element>m:math</element>
+	  <element>nth</element>
+	  <element>nuclear_notation</element>
+	  <element>number</element>
+	  <element>percentage</element>
+	  <element>spec_note</element>
 	  <element>sub</element>
 	  <element>sup</element>
-	  <element>nth</element>
-	  <element>list</element>
-	  <element>media</element>
-	  <element>image</element>
-	  <element>link</element>
 	  <element>unit_number</element>
-	  <element>number</element>
 	  <element>unit</element>
-	  <element>percentage</element>
-	  <element>currency</element>
-	  <element>m:math</element>
-	  <element>latex</element>
-	  <element>chem_compound</element>
-	  <element>spec_note</element>
-	  <element>nuclear_notation</element>
 
 	  <element>todo</element><!-- This needs to go away before publising the print textbooks -->
 	</one-of>
@@ -1841,23 +1841,23 @@ return r'\(' + tex + r'\)'
       <any-number>
 	<one-of>
 	  <element>br</element>
+	  <element>chem_compound</element>
+	  <element>correct</element>
+	  <element>currency</element>
 	  <element>emphasis</element>
+	  <element>image</element>
+	  <element>latex</element>
+	  <element>link</element>
+	  <element>m:math</element>
+	  <element>nth</element>
+	  <element>nuclear_notation</element>
+	  <element>number</element>
+	  <element>percentage</element>
+	  <element>spec_note</element>
 	  <element>sub</element>
 	  <element>sup</element>
-	  <element>nth</element>
-	  <element>link</element>
 	  <element>unit_number</element>
-	  <element>number</element>
 	  <element>unit</element>
-	  <element>percentage</element>
-	  <element>currency</element>
-	  <element>m:math</element>
-	  <element>latex</element>
-	  <element>chem_compound</element>
-	  <element>spec_note</element>
-	  <element>nuclear_notation</element>
-	  <element>image</element>
-	  <element>correct</element>
 	</one-of>
       </any-number>
     </children>
