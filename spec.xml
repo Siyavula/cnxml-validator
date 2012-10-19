@@ -598,7 +598,10 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </entry>
     </attributes>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
     </children>
     <conversion-callback name="latex">
 #return '' # Leave solutions out of textbook
