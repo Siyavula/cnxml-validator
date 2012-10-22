@@ -871,6 +871,73 @@ return self.text
   </entry>
 
   <entry>
+    <xpath>/document/content//linked-concepts</xpath>
+    <children>
+      <any-number from="1">
+	<element>concept</element>
+      </any-number>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+return r'\paragraph{Key Mathematics Concepts} \begin{itemize}' + '\n' + self.text.strip() + '\n' + r'\end{itemize}' + '\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//linked-concepts/concept</xpath>
+    <children>
+      <element>text</element>
+      <element>subject</element>
+      <element>grade</element>
+      <element>chapter</element>
+      <optional>shortcode</optional>
+    </children>
+    <notext/>
+    <conversion-callback name="latex">
+return r'\item ' + self.text + '\n'
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//linked-concepts/concept/text</xpath>
+    <conversion-callback name="latex">
+return self.text
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//linked-concepts/concept/subject</xpath>
+    <validation-callback>is_subject</validation-callback>
+    <conversion-callback name="latex">
+subject = self.text.strip().lower()
+return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subject]
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//linked-concepts/concept/grade</xpath>
+    <validation-callback>is_integer</validation-callback>
+    <conversion-callback name="latex">
+return ', Grade %i'%(int(self.text))
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//linked-concepts/concept/chapter</xpath>
+    <conversion-callback name="latex">
+return ', ' + self.text.capitalize()
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//linked-concepts/concept/shortcode</xpath>
+    <validation-callback>is_section_shortcode</validation-callback>
+    <conversion-callback name="latex">
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry>
     <xpath>/document/content//key-concepts</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
@@ -1805,6 +1872,7 @@ return r'\(' + tex + r'\)'
 	<element>math_identity</element>
 	<element>key-concepts</element>
 	<element>new-words</element>
+	<element>linked-concepts</element>
 	<element>teachers-guide</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
