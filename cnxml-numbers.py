@@ -8,10 +8,10 @@ import sys, time
 termColors = {
     'autosave': '\033[1m\033[34m', # bold blue
     'warning': '\033[1m\033[31m', # bold red
-    'passed': '\033[1m\033[32m', # bold red
+    'passed': '\033[1m\033[32m', # bold green
     'failed': '\033[1m\033[31m', # bold red
-    'old': '\033[47m\033[30m', # inverted black/white
-    'new': '\033[47m\033[30m', # inverted black/white
+    'old': '\033[1m\033[44m\033[37m', # bold white on blue
+    'new': '\033[1m\033[44m\033[37m', # bold white on blue
     'bold': '\033[1m',
     'stop': '\033[0m',
 }
