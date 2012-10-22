@@ -259,7 +259,7 @@ return r'\item ' + self.text
     <conversion-callback name="latex">
 tabularNewline = r'\tabularnewline'
 columnAlignment = eval(self.attrib['latexColumnAlignment'])
-return r'\par'+'\n'+r'\begin{longtable}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + tabularNewline + '\n' + r'\hline' + '\n' + r'\end{longtable}' + '\n'
+return r'\par'+'\n'+r'\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + tabularNewline + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
     </conversion-callback>
   </entry>
 
