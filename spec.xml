@@ -259,7 +259,7 @@ return r'\item ' + self.text
     <conversion-callback name="latex">
 tabularNewline = r'\tabularnewline'
 columnAlignment = eval(self.attrib['latexColumnAlignment'])
-return r'\par'+'\n'+r'\begin{tabular}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + tabularNewline + '\n' + r'\hline' + '\n' + r'\end{tabular}' + '\n'
+return r'\par'+'\n'+r'\begin{Table}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + tabularNewline + '\n' + r'\hline' + '\n' + r'\end{Table}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -1454,8 +1454,13 @@ return result
     </children>
     <notext/>
     <conversion-callback name="latex">
-head = '\\begin{Image}\n'
-tail = '\\end{Image}\n'
+tableMode = ('table' in utils.get_full_dom_path(self))
+if tableMode:
+    head = ''
+    tail = ''
+else:
+    head = '\\begin{Image}\n'
+    tail = '\\end{Image}\n'
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     relativeWidth = float(self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width'))
     # Get width of pspicture
@@ -1539,8 +1544,13 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex">
-head = '\\begin{Image}\n'
-tail = '\\end{Image}\n'
+tableMode = ('table' in utils.get_full_dom_path(self))
+if tableMode:
+    head = ''
+    tail = ''
+else:
+    head = '\\begin{Image}\n'
+    tail = '\\end{Image}\n'
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     warning_message('UNHANDLED style:width in tikzpicture')
 return head + r'\par\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n' + tail
@@ -1604,8 +1614,13 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex">
-head = '\\begin{Image}\n'
-tail = '\\end{Image}\n'
+tableMode = ('table' in utils.get_full_dom_path(self))
+if tableMode:
+    head = ''
+    tail = ''
+else:
+    head = '\\begin{Image}\n'
+    tail = '\\end{Image}\n'
 result = r'\includegraphics'
 width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
 if width is not None:
