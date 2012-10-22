@@ -102,17 +102,17 @@ def prompt_replace(iOld, iNew, iContext=('',''), iContextWarning=(0,0)):
         termColors['new'] + iNew + termColors['stop'] +\
         termColors['context warning'] + iContext[1][:iContextWarning[1]] + termColors['stop'] +\
         iContext[1][iContextWarning[1]:]
-    sys.stdout.write('? ')
+    sys.stdout.write('[y/n]? ')
     response = getch()
     if response == '\x03':
         # Catch Ctrl-C
         raise KeyboardInterrupt
-    sys.stdout.write('\n')
     passed = response in ['y','Y']
     if passed:
         print termColors['passed'] + 'yes' + termColors['stop']
     else:
         print termColors['failed'] + 'no' + termColors['stop']
+    sys.stdout.write('\n')
     return passed
 
 def find_substitutions(iText, iNodeTag=None, iTailTag=None):
