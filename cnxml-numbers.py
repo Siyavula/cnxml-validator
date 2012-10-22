@@ -128,7 +128,7 @@ def prompt_replace(iOld, iNew, iContext=('',''), iContextWarning=(0,0)):
     sys.stdout.write('\n')
     return passed
 
-def find_substitutions(iText, iNodeTag=None, iTailTag=None):
+def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None):
     global numberAndCurrencyPattern
     oSubstitutions = []
     for match in numberAndCurrencyPattern.finditer(iText):
@@ -205,13 +205,10 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
             while (postContextWarning < contextLength) and (stop+postContextWarning+1 < len(iText)) and (iText[stop+postContextWarning+1] in '.,0123456789'):
                 postContextWarning += 1
 
-
-        # TODO: also find units
-
         if iNodeTag is not None:
             context[0] = '<' + iNodeTag + '>'
-            if iTailTag is not None:
-                context[0] += ' ... </' + iTailTag + '>'
+            if iPreTailTag is not None:
+                context[0] += ' ... </' + iPreTailTag + '>'
         else:
             context[0] = ''
         if start < contextLength:
@@ -220,6 +217,8 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
             context[0] += ' ...' + iText[start-contextLength:start]
         if stop+contextLength > len(iText):
             context[1] = iText[stop:]
+            if iPostTailTag is not None:
+                context[1] += '<' + iPostTailTag + '>' + ' ... '
         else:
             context[1] = iText[stop:stop+contextLength] + '... '
         context[1] += '</' + iNodeTag + '>'
@@ -240,7 +239,11 @@ def traverse(iNode):
     else:
         # check text for regex matches
         text = iNode.text or ''
-        substitutions = find_substitutions(text, iNode.tag)
+        if len(iNode) > 0:
+            postTailTag = iNode[0].tag
+        else:
+            postTailTag = None
+        substitutions = find_substitutions(text, iNodeTag=iNode.tag, iPostTailTag=postTailTag)
 
         # traverse children (traverse before replacing to avoid double-checking text)
         for child in iNode.getchildren():
@@ -257,7 +260,11 @@ def traverse(iNode):
     myParent = iNode.getparent()
     myIndex = myParent.index(iNode)
     text = iNode.tail or ''
-    substitutions = find_substitutions(text, iNodeTag = myParent.tag, iTailTag = iNode.tag)
+    if iNode.getnext() is not None:
+        postTailTag = iNode.getnext().tag
+    else:
+        postTailTag = None
+    substitutions = find_substitutions(text, iNodeTag=myParent.tag, iPreTailTag=iNode.tag, iPostTailTag=postTailTag)
     for start, stop, replacement in sorted(substitutions, reverse=True):
         replacement.tail = iNode.tail[stop:]
         iNode.tail = iNode.tail[:start]
