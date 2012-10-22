@@ -8,6 +8,7 @@ import sys, time
 termColors = {
     'autosave': '\033[1m\033[34m', # bold blue
     'warning': '\033[1m\033[31m', # bold red
+    'error': '\033[1m\033[31m', # bold red
     'passed': '\033[1m\033[32m', # bold green
     'failed': '\033[1m\033[31m', # bold red
     'old': '\033[1m\033[44m\033[37m', # bold white on blue
@@ -56,6 +57,11 @@ getch = _Getch()
 
 # --- END PREAMBLE ---
 
+if len(sys.argv) != 3:
+    import os
+    print termColors['error'] + 'ERROR:' + termColors['stop'] + ' Incorrect number of arguments.'
+    print 'Usage: %s inputfile outputfile'%os.path.basename(sys.argv[0])
+    sys.exit()
 inputFilename = sys.argv[1]
 outputFilename = sys.argv[2]
 
