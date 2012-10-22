@@ -1387,6 +1387,8 @@ return result
     </children>
     <notext/>
     <conversion-callback name="latex">
+head = '\\begin{Image}\n'
+tail = '\\end{Image}\n'
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     relativeWidth = float(self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width'))
     # Get width of pspicture
@@ -1398,11 +1400,11 @@ if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     xmax = float(self.text[start:stop])
     pspictureWidthInCm = xmax-xmin
     pspictureWidthInPt = pspictureWidthInCm * 28.3464567
-    head = r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{pspicture}'
-    tail = r'\end{pspicture}}' + '\n'
+    head += r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{pspicture}'
+    tail = r'\end{pspicture}}' + '\n' + tail
 else:
-    head = r'\par\begin{pspicture}'
-    tail = r'\end{pspicture}' + '\n'
+    head += r'\par\begin{pspicture}'
+    tail = r'\end{pspicture}' + '\n' + tail
 
 if True: # Put frame at bounding box of every pspicture
     start = self.text.find('(')
@@ -1470,9 +1472,11 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex">
+head = '\\begin{Image}\n'
+tail = '\\end{Image}\n'
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     warning_message('UNHANDLED style:width in tikzpicture')
-return r'\par\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n'
+return head + r'\par\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n' + tail
     </conversion-callback>
   </entry>
 
@@ -1533,12 +1537,14 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex">
+head = '\\begin{Image}\n'
+tail = '\\end{Image}\n'
 result = r'\includegraphics'
 width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
 if width is not None:
     result += r'[width=%s\textwidth]'%width
 result += '{' + self.attrib['src'] + '}\n'
-return result
+return head + result + tail
     </conversion-callback>
   </entry>
 
