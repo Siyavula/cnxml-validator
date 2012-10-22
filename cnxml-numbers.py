@@ -3,17 +3,60 @@ import re
 from lxml import etree
 import sys, time
 
-inputFilename = sys.argv[1]
-outputFilename = sys.argv[2]
+# --- START PREAMBLE ---
 
 termColors = {
     'autosave': '\033[1m\033[34m', # bold blue
     'warning': '\033[1m\033[31m', # bold red
+    'passed': '\033[1m\033[32m', # bold red
+    'failed': '\033[1m\033[31m', # bold red
     'old': '\033[47m\033[30m', # inverted black/white
     'new': '\033[47m\033[30m', # inverted black/white
     'bold': '\033[1m',
     'stop': '\033[0m',
 }
+
+class _Getch:
+    """Gets a single character from standard input.  Does not echo to the
+screen."""
+    def __init__(self):
+        try:
+            self.impl = _GetchWindows()
+        except ImportError:
+            self.impl = _GetchUnix()
+
+    def __call__(self): return self.impl()
+
+
+class _GetchUnix:
+    def __init__(self):
+        import tty, sys
+
+    def __call__(self):
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+class _GetchWindows:
+    def __init__(self):
+        import msvcrt
+
+    def __call__(self):
+        import msvcrt
+        return msvcrt.getch()
+
+getch = _Getch()
+
+# --- END PREAMBLE ---
+
+inputFilename = sys.argv[1]
+outputFilename = sys.argv[2]
 
 with open(inputFilename, 'rt') as fp:
     xml = fp.read()
@@ -40,8 +83,18 @@ def auto_save(force=False):
 def prompt_replace(old, new, context=('','')):
     print termColors['bold'] + 'Replace: ' + termColors['stop'] + context[0] + termColors['old'] + old + termColors['stop'] + context[1]
     print termColors['bold'] + '   with: ' + termColors['stop'] + context[0] + termColors['new'] + new + termColors['stop'] + context[1]
-    response = raw_input('? ')
-    return response in ['y','Y']
+    sys.stdout.write('? ')
+    response = getch()
+    if response == '\x03':
+        # Catch Ctrl-C
+        raise KeyboardInterrupt
+    sys.stdout.write('\n')
+    passed = response in ['y','Y']
+    if passed:
+        print termColors['passed'] + 'yes' + termColors['stop']
+    else:
+        print termColors['failed'] + 'no' + termColors['stop']
+    return passed
 
 def find_substitutions(iText, iNodeTag=None, iTailTag=None):
     global numberAndCurrencyPattern
