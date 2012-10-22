@@ -12,6 +12,7 @@ termColors = {
     'failed': '\033[1m\033[31m', # bold red
     'old': '\033[1m\033[44m\033[37m', # bold white on blue
     'new': '\033[1m\033[44m\033[37m', # bold white on blue
+    'context warning': '\033[1m\033[41m\033[37m', # bold white on red
     'bold': '\033[1m',
     'stop': '\033[0m',
 }
@@ -80,9 +81,21 @@ def auto_save(force=False):
         sys.stderr.write(termColors['autosave'] + ' done.\n' + termColors['stop'])
         autoSaveTime = time.time()
 
-def prompt_replace(old, new, context=('','')):
-    print termColors['bold'] + 'Replace: ' + termColors['stop'] + context[0] + termColors['old'] + old + termColors['stop'] + context[1]
-    print termColors['bold'] + '   with: ' + termColors['stop'] + context[0] + termColors['new'] + new + termColors['stop'] + context[1]
+def prompt_replace(iOld, iNew, iContext=('',''), iContextWarning=(0,0)):
+    print \
+        termColors['bold'] + 'Replace: ' + termColors['stop'] +\
+        iContext[0][:len(iContext[0])-iContextWarning[0]] +\
+        termColors['context warning'] + iContext[0][len(iContext[0])-iContextWarning[0]:] + termColors['stop'] +\
+        termColors['old'] + iOld + termColors['stop'] +\
+        termColors['context warning'] + iContext[1][:iContextWarning[1]] + termColors['stop'] +\
+        iContext[1][iContextWarning[1]:]
+    print \
+        termColors['bold'] + '   with: ' + termColors['stop'] +\
+        iContext[0][:len(iContext[0])-iContextWarning[0]] +\
+        termColors['context warning'] + iContext[0][len(iContext[0])-iContextWarning[0]:] + termColors['stop'] +\
+        termColors['new'] + iNew + termColors['stop'] +\
+        termColors['context warning'] + iContext[1][:iContextWarning[1]] + termColors['stop'] +\
+        iContext[1][iContextWarning[1]:]
     sys.stdout.write('? ')
     response = getch()
     if response == '\x03':
@@ -100,6 +113,11 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
     global numberAndCurrencyPattern
     oSubstitutions = []
     for match in numberAndCurrencyPattern.finditer(iText):
+        context = [None, None]
+        contextLength = 20
+        preContextWarning = 0
+        postContextWarning = 0
+
         start, stop = match.span()
         oldNumber = iText[start:stop]
         if oldNumber[0] == 'R':
@@ -111,16 +129,37 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
             pos = newNode[0].text.find('.')
             if (pos != -1) and (pos < len(newNode[0].text)-3):
                 newNode.attrib['precision'] = str(len(newNode[0].text) - pos - 1)
+            # Check if the pre-context is funny
+            while (preContextWarning < contextLength) and (start-preContextWarning > 0) and ('a' <= iText[start-preContextWarning-1].lower() <= 'z'):
+                preContextWarning += 1
         else:
             # Number
             newNode = etree.Element('number')
             newNode.text = oldNumber.replace(' ','').replace(',','.')
-            pass
+            # Check if the pre-context is funny
+            offset = 0
+            while (start-offset > 0) and (iText[start-offset-1] == ' '):
+                offset += 1
+            if (start-offset > 0) and (iText[start-offset-1] in '.,0123456789'):
+                preContextWarning = min(contextLength, offset+1)
+            while (preContextWarning < contextLength) and (start-preContextWarning > 0) and (iText[start-preContextWarning-1] in '.,0123456789'):
+                preContextWarning += 1
+            # Check if the post-context is funny
+            if iText[stop:stop+2] in ['st', 'nd', 'rd', 'th']:
+                postContextWarning = 2
+        # Check if the post-context is funny (for both currency and number)
+        if postContextWarning == 0:
+            offset = 0
+            while (stop+offset+1 < len(iText)) and (iText[stop+offset+1] == ' '):
+                offset += 1
+            if (stop+offset+1 < len(iText)) and (iText[stop+offset+1] in '.,0123456789'):
+                postContextWarning = min(contextLength, offset+1)
+            while (postContextWarning < contextLength) and (stop+postContextWarning+1 < len(iText)) and (iText[stop+postContextWarning+1] in '.,0123456789'):
+                postContextWarning += 1
+
 
         # TODO: also find units
 
-        context = [None, None]
-        contextLength = 20
         if iNodeTag is not None:
             context[0] = '<' + iNodeTag + '>'
             if iTailTag is not None:
@@ -137,7 +176,7 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
             context[1] = iText[stop:stop+contextLength] + '... '
         context[1] += '</' + iNodeTag + '>'
 
-        if prompt_replace(oldNumber, etree.tostring(newNode), context):
+        if prompt_replace(oldNumber, etree.tostring(newNode), context, (preContextWarning, postContextWarning)):
             oSubstitutions.append((start, stop, newNode))
 
     return oSubstitutions
