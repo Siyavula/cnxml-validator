@@ -1,3 +1,4 @@
+# encoding: utf-8
 from __future__ import division
 import re
 from lxml import etree
@@ -71,9 +72,21 @@ dom = etree.fromstring(xml)
 
 numberAndCurrencyPattern = re.compile(r'(R ?)?[+-]?\d+( \d+)*([,\.]\d+( \d+)*)?')
 for valid in ['1.3', '-1,3', '+100 000,99', '1000'] + ['R1.3', 'R-1,3', 'R +100 000,99', 'R 1000']:
-    assert numberAndCurrencyPattern.match(valid).group() == valid
+    assert numberAndCurrencyPattern.match(valid).group() == valid, valid
 for invalid in ['1.3a', ' 1.3', '1\n2'] + ['R1.3a', 'R  1.3', 'R 1\n2', '-R1.3']:
     match = numberAndCurrencyPattern.match(invalid)
+    assert (match is None) or (match.group() != invalid), invalid
+unitPattern = re.compile(r' *[a-zA-Z]{1,2}\b')
+for valid in ['mm', ' cm', '  km']:
+    assert unitPattern.match(valid).group() == valid, valid
+for invalid in ['1mm', '1 cm']:
+    match = unitPattern.match(invalid)
+    assert (match is None) or (match.group() != invalid), invalid
+latexUnitPattern = re.compile(r' *((\\textrm\{ *[a-zA-Z]{1,2}\})|(\\ell\b))')
+for valid in [r' \textrm{ mm}', r'\textrm{  cm}', r'\textrm{km}', r'\ell', r'  \ell']:
+    assert latexUnitPattern.match(valid).group() == valid, valid
+for invalid in ['mm', ' cm', '  km', r'\ellb']:
+    match = latexUnitPattern.match(invalid)
     assert (match is None) or (match.group() != invalid), invalid
 
 autoSaveTime = time.time()
@@ -148,11 +161,40 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
                 offset += 1
             if (start-offset > 0) and (iText[start-offset-1] in '.,0123456789'):
                 preContextWarning = min(contextLength, offset+1)
-            while (preContextWarning < contextLength) and (start-preContextWarning > 0) and (iText[start-preContextWarning-1] in '.,0123456789'):
-                preContextWarning += 1
+                while (preContextWarning < contextLength) and (start-preContextWarning > 0) and (iText[start-preContextWarning-1] in '.,0123456789'):
+                    preContextWarning += 1
             # Check if the post-context is funny
             if iText[stop:stop+2] in ['st', 'nd', 'rd', 'th']:
                 postContextWarning = 2
+            else:
+                # Check if there are units
+                match = unitPattern.match(iText[stop:])
+                if match is not None:
+                    numberNode = newNode
+                    newNode = etree.Element('unit_number')
+                    newNode.append(numberNode)
+                    newNode.append(etree.Element('unit'))
+                    newNode[-1].text = match.group().strip()
+                    oldNumber += iText[stop:stop+len(match.group())]
+                    stop += len(match.group())
+                else:
+                    # Check if there are units in LaTeX mode
+                    match = latexUnitPattern.match(iText[stop:])
+                    if match is not None:
+                        numberNode = newNode
+                        newNode = etree.Element('unit_number')
+                        newNode.append(numberNode)
+                        newNode.append(etree.Element('unit'))
+                        unitText = match.group().strip()
+                        if unitText == r'\ell':
+                            unitText = u'ℓ'
+                        else:
+                            assert unitText[:8] == r'\textrm{'
+                            assert unitText[-1] == '}'
+                            unitText = unitText[8:-1].strip()
+                        newNode[-1].text = unitText
+                        oldNumber += iText[stop:stop+len(match.group())]
+                        stop += len(match.group())
         # Check if the post-context is funny (for both currency and number)
         if postContextWarning == 0:
             offset = 0
@@ -182,7 +224,7 @@ def find_substitutions(iText, iNodeTag=None, iTailTag=None):
             context[1] = iText[stop:stop+contextLength] + '... '
         context[1] += '</' + iNodeTag + '>'
 
-        if prompt_replace(oldNumber, etree.tostring(newNode), context, (preContextWarning, postContextWarning)):
+        if prompt_replace(oldNumber, etree.tostring(newNode, encoding='utf-8'), context, (preContextWarning, postContextWarning)):
             oSubstitutions.append((start, stop, newNode))
 
     return oSubstitutions
