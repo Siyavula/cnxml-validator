@@ -6,6 +6,11 @@ import sys, time
 
 # --- START PREAMBLE ---
 
+'''
+Some handy emacs regexes:
+{\(-?[0-9]+\)}^{°} -> \1°
+'''
+
 termColors = {
     'autosave': '\033[1m\033[34m', # bold blue
     'warning': '\033[1m\033[31m', # bold red
@@ -58,19 +63,25 @@ getch = _Getch()
 
 # --- END PREAMBLE ---
 
-if len(sys.argv) != 3:
+arguments = sys.argv[1:]
+if '--lazy' in arguments:
+    lazyMode = True
+    del arguments[arguments.index('--lazy')]
+else:
+    lazyMode = False
+if len(arguments) != 2:
     import os
     print termColors['error'] + 'ERROR:' + termColors['stop'] + ' Incorrect number of arguments.'
-    print 'Usage: %s inputfile outputfile'%os.path.basename(sys.argv[0])
+    print 'Usage: %s [--lazy] inputfile outputfile'%os.path.basename(sys.argv[0])
     sys.exit()
-inputFilename = sys.argv[1]
-outputFilename = sys.argv[2]
+inputFilename = arguments[0]
+outputFilename = arguments[1]
 
 with open(inputFilename, 'rt') as fp:
     xml = fp.read()
 dom = etree.fromstring(xml)
 
-numberAndCurrencyPattern = re.compile(r'(R ?)?[+-]?\d+( \d+)*([,\.]\d+( \d+)*)?')
+numberAndCurrencyPattern = re.compile(r'(\bR ?)?[+\-]?\d+( \d+)*([,\.]\d+( \d+)*)?')
 for valid in ['1.3', '-1,3', '+100 000,99', '1000'] + ['R1.3', 'R-1,3', 'R +100 000,99', 'R 1000']:
     assert numberAndCurrencyPattern.match(valid).group() == valid, valid
 for invalid in ['1.3a', ' 1.3', '1\n2'] + ['R1.3a', 'R  1.3', 'R 1\n2', '-R1.3']:
@@ -129,7 +140,7 @@ def prompt_replace(iOld, iNew, iContext=('',''), iContextWarning=(0,0)):
     return passed
 
 def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None):
-    global numberAndCurrencyPattern
+    global numberAndCurrencyPattern, lazyMode
     oSubstitutions = []
     for match in numberAndCurrencyPattern.finditer(iText):
         context = [None, None]
@@ -169,7 +180,7 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
             else:
                 # Check if there are units
                 match = unitPattern.match(iText[stop:])
-                if match is not None:
+                if (iNodeTag != 'latex') and (match is not None):
                     numberNode = newNode
                     newNode = etree.Element('unit_number')
                     newNode.append(numberNode)
@@ -197,6 +208,15 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
                         newNode[-1].text = unitText
                         oldNumber += iText[stop:stop+len(match.group())]
                         stop += len(match.group())
+                    else:
+                        if lazyMode and (iNodeTag == 'latex'):
+                            # Skip unit-less numbers that are small integers and in LaTeX mode
+                            try:
+                                value = int(oldNumber.replace(' ','').replace(',','.'))
+                                if abs(value) < 100:
+                                    continue
+                            except ValueError:
+                                pass
         # Check if the post-context is funny (for both currency and number)
         if postContextWarning == 0:
             offset = 0
@@ -275,6 +295,14 @@ def traverse(iNode):
         myParent.insert(myIndex+1, replacement)
     auto_save()
 
+# Find numbers in <latex> elements
+for latexNode in dom.xpath('//latex'):
+    if len(latexNode) == 0:
+        try:
+            float(latexNode.text or '')
+            latexNode.tag = 'number'
+        except ValueError:
+            continue
 
 # don't traverse top-level element
 for child in dom.getchildren():
