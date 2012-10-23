@@ -82,8 +82,8 @@ for valid in ['mm', ' cm', '  km']:
 for invalid in ['1mm', '1 cm']:
     match = unitPattern.match(invalid)
     assert (match is None) or (match.group() != invalid), invalid
-latexUnitPattern = re.compile(r' *((\\textrm\{ *[a-zA-Z]{1,2}\})|(\\ell\b))')
-for valid in [r' \textrm{ mm}', r'\textrm{  cm}', r'\textrm{km}', r'\ell', r'  \ell']:
+latexUnitPattern = re.compile(ur' *((\\textrm\{ *[a-zA-Z]{1,2}\})|(\\ell\b)|(°))')
+for valid in [r' \textrm{ mm}', r'\textrm{  cm}', r'\textrm{km}', r'\ell', r'  \ell', u'°']:
     assert latexUnitPattern.match(valid).group() == valid, valid
 for invalid in ['mm', ' cm', '  km', r'\ellb']:
     match = latexUnitPattern.match(invalid)
@@ -188,6 +188,8 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
                         unitText = match.group().strip()
                         if unitText == r'\ell':
                             unitText = u'ℓ'
+                        elif unitText == u'°':
+                            unitText = u'°'
                         else:
                             assert unitText[:8] == r'\textrm{'
                             assert unitText[-1] == '}'
@@ -223,7 +225,7 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
             context[1] = iText[stop:stop+contextLength] + '... '
         context[1] += '</' + iNodeTag + '>'
 
-        if prompt_replace(oldNumber, etree.tostring(newNode, encoding='utf-8'), context, (preContextWarning, postContextWarning)):
+        if prompt_replace(oldNumber, etree.tostring(newNode, encoding='utf-8').decode('utf-8'), context, (preContextWarning, postContextWarning)):
             oSubstitutions.append((start, stop, newNode))
 
     return oSubstitutions
@@ -236,6 +238,8 @@ def traverse(iNode):
         if (not mathmlWarningIssued) and (iNode.tag == '{http://www.w3.org/1998/Math/MathML}math'):
             sys.stderr.write(termColors['warning'] + 'WARNING: Found (and ignored) MathML\n' + termColors['stop'])
             mathmlWarningIssued = True
+    elif isinstance(iNode, etree._Comment):
+        pass
     else:
         # check text for regex matches
         text = iNode.text or ''
