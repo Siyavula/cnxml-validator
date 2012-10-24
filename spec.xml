@@ -2255,7 +2255,7 @@ return r'\\'
 pattern = {
     'bold': r'\textbf{%s}',
     'italics': r'\textit{%s}',
-    'underline': r'\ul{%s}', # requires soul package
+    'underline': r'\underline{%s}',
     'smallcaps': r'\textsc{%s}',
     'normal': '%s',
 }[self.attrib['effect']]
