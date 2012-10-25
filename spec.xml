@@ -2064,7 +2064,7 @@ return result
     </children>
     <validation-callback>is_unit</validation-callback>
     <conversion-callback name="latex">
-unitsWithoutSpace = [u'°', u'℃']
+unitsWithoutSpace = [u'°']
 inUnitNumber = (self.getparent().tag == 'unit_number')
 result = r'\text{' + self.text + '}'
 # Check whether already in math mode
