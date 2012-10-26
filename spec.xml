@@ -2285,7 +2285,10 @@ return pattern%self.text
   <entry>
     <xpath>/document/content//exercises//problem-set/entry/solution//correct</xpath>
     <children>
-      <reference>inline-element</reference>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
     </children>
     <conversion-callback name="latex">
 return self.text
