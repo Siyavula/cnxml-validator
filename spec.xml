@@ -550,6 +550,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       <optional>correct</optional>
     </children>
     <notext/>
+    <!--<validation-callback>problemset_entry_contains_correct</validation-callback>-->
     <conversion-callback name="latex">
 problemsetEnvironment = 'ExercisesProblemset'
 entryEnvironment = 'ExercisesProblemsetEntry'

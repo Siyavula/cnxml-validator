@@ -3,8 +3,12 @@ DEBUG = True
 def raise_error(message, element=None, exception=ValueError):
     from lxml import etree
     if element is not None:
-        message = message + ': ' + etree.tostring(element)
-    raise exception, message
+        message = message + '\n' + etree.tostring(element).replace(' xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml/0.4" xmlns:style="http://siyavula.com/cnxml/style/0.1"', '')
+    if exception is not None:
+        raise exception, message
+    else:
+        import sys
+        sys.stderr.write('WARNING: ' + message + '\n')
 
 def is_version_number(element):
     text = element.text
@@ -147,4 +151,12 @@ def is_subject(element):
     subject = element.text.strip().lower()
     if subject not in valid:
         raise_error("linked-concepts/concept/subject must be one of %s, found '%s' instead"%(repr(valid), element.text))
+    return True
+
+def problemset_entry_contains_correct(iEntryNode):
+    assert iEntryNode.tag == 'entry'
+    innerCount = len(iEntryNode.xpath('./solution//correct'))
+    outerCount = len(iEntryNode.xpath('./solution/correct'))
+    if innerCount + outerCount != 1:
+        raise_error("Problem entry must contain exactly one correct element. Found %i inside the solution and %i outside the solution."%(innerCount, outerCount), iEntryNode, exception=None)
     return True
