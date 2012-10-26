@@ -74,6 +74,7 @@ def cache_conversion_function(iSpec):
             'error_message': utils.error_message,
             'mathml_transform': mathml_transform,
             'escape_latex': utils.escape_latex,
+            'latex_math_function_check': utils.latex_math_function_check,
             'convert_image': convert_image,
         }
         exec(conversionFunctionSource, localVars)

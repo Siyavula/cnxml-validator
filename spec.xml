@@ -1731,6 +1731,11 @@ return self.text
       </any-number>
     </children>
     <conversion-callback name="latex">
+# First check that there aren't any funny functions
+unslashedFunctions = latex_math_function_check(self.text)
+if len(unslashedFunctions) > 0:
+    warning_message('Found the following functions: (%s) without a backslash in a latex element:\n%s'%(', '.join(unslashedFunctions), self.text))
+
 numberEquations = False
 if self.attrib['display'] == 'inline':
     return r'\(' + self.text.strip() + r'\)'

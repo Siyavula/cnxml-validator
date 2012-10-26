@@ -174,3 +174,18 @@ def escape_latex(iText, iIgnore='', iUnescape=False):
         return result
     else:
         return ''.join(map(lambda x: x if x in iIgnore else mapping.get(x, x), iText))
+
+
+def latex_math_function_check(iLatex):
+    # Returns a list of all standard LaTeX math functions that were
+    # found without a leading backslash.
+    functions = ["sin", "cos", "tan", "log", "csc", "cosec", "min", "max", "cot", "sec", "sqrt", "frac"]
+
+    import re
+    pattern = re.compile(r"[^\\a-zA-Z](" + '|'.join(functions) + r")[^a-zA-Z]")
+    paddedText = ' ' + iLatex + ' '
+    matches = []
+    for match in reversed([m for m in pattern.finditer(paddedText)]):
+        start, stop = match.span()
+        matches.append(paddedText[start+1:stop-1])
+    return matches
