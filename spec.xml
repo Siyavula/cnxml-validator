@@ -1797,6 +1797,11 @@ tex = tex.replace(u'×', r'\times ')
 for func in ['sin', 'cos', 'tan', 'cot']:
     tex = tex.replace(' ' + func, '\\' + func + ' ')
 
+# Check that there aren't any funny functions
+unslashedFunctions = latex_math_function_check(tex)
+if len(unslashedFunctions) > 0:
+    warning_message('Found the following functions: (%s) without a backslash in a m:math element (converted to LaTeX):\n%s'%(', '.join(unslashedFunctions), tex))
+
 return r'\(' + tex + r'\)'
     </conversion-callback>
   </entry>
