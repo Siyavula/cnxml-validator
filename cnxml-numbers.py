@@ -3,6 +3,7 @@ from __future__ import division
 import re
 from lxml import etree
 import sys, time
+from utils import get_full_dom_path
 
 # --- START PREAMBLE ---
 
@@ -139,7 +140,7 @@ def prompt_replace(iOld, iNew, iContext=('',''), iContextWarning=(0,0)):
     sys.stdout.write('\n')
     return passed
 
-def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None):
+def find_substitutions(iText, iNode=None, iPreTailTag=None, iPostTailTag=None):
     global numberAndCurrencyPattern, lazyMode
     oSubstitutions = []
     for match in numberAndCurrencyPattern.finditer(iText):
@@ -180,7 +181,7 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
             else:
                 # Check if there are units
                 match = unitPattern.match(iText[stop:])
-                if (iNodeTag != 'latex') and (match is not None):
+                if (iNode.tag != 'latex') and (match is not None):
                     numberNode = newNode
                     newNode = etree.Element('unit_number')
                     newNode.append(numberNode)
@@ -209,11 +210,11 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
                         oldNumber += iText[stop:stop+len(match.group())]
                         stop += len(match.group())
                     else:
-                        if lazyMode and (iNodeTag == 'latex'):
+                        if lazyMode and ((iNode.tag == 'latex') or ((iNode.tag == 'correct') and ('latex' in get_full_dom_path(iNode)))):
                             # Skip unit-less numbers that are small integers and in LaTeX mode
                             try:
                                 value = int(oldNumber.replace(' ','').replace(',','.'))
-                                if abs(value) < 100:
+                                if abs(value) < 1000:
                                     continue
                             except ValueError:
                                 pass
@@ -227,8 +228,8 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
             while (postContextWarning < contextLength) and (stop+postContextWarning+1 < len(iText)) and (iText[stop+postContextWarning+1] in '.,0123456789'):
                 postContextWarning += 1
 
-        if iNodeTag is not None:
-            context[0] = '<' + iNodeTag + '>'
+        if iNode.tag is not None:
+            context[0] = '<' + iNode.tag + '>'
             if iPreTailTag is not None:
                 context[0] += ' ... </' + iPreTailTag + '>'
         else:
@@ -243,7 +244,7 @@ def find_substitutions(iText, iNodeTag=None, iPreTailTag=None, iPostTailTag=None
                 context[1] += '<' + iPostTailTag + '>' + ' ... '
         else:
             context[1] = iText[stop:stop+contextLength] + '... '
-        context[1] += '</' + iNodeTag + '>'
+        context[1] += '</' + iNode.tag + '>'
 
         if prompt_replace(oldNumber, etree.tostring(newNode, encoding='utf-8').decode('utf-8'), context, (preContextWarning, postContextWarning)):
             oSubstitutions.append((start, stop, newNode))
@@ -267,7 +268,7 @@ def traverse(iNode):
             postTailTag = iNode[0].tag
         else:
             postTailTag = None
-        substitutions = find_substitutions(text, iNodeTag=iNode.tag, iPostTailTag=postTailTag)
+        substitutions = find_substitutions(text, iNode=iNode, iPostTailTag=postTailTag)
 
         # traverse children (traverse before replacing to avoid double-checking text)
         for child in iNode.getchildren():
@@ -288,7 +289,7 @@ def traverse(iNode):
         postTailTag = iNode.getnext().tag
     else:
         postTailTag = None
-    substitutions = find_substitutions(text, iNodeTag=myParent.tag, iPreTailTag=iNode.tag, iPostTailTag=postTailTag)
+    substitutions = find_substitutions(text, iNode=myParent, iPreTailTag=iNode.tag, iPostTailTag=postTailTag)
     for start, stop, replacement in sorted(substitutions, reverse=True):
         replacement.tail = iNode.tail[stop:]
         iNode.tail = iNode.tail[:start]
