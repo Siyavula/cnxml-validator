@@ -613,7 +613,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </one-of>
     </children>
     <conversion-callback name="latex">
-renderSolutions = False # Put full solutions in textbook?
+renderSolutions = True # Put full solutions in textbook?
 
 if renderSolutions:
     environment = 'ExercisesProblemsetEntrySolution'
@@ -1467,7 +1467,7 @@ return result
     </children>
     <notext/>
     <conversion-callback name="latex">
-redBoundingBox = False # Put red frame at bounding box of every pspicture?
+redBoundingBox = True # Put red frame at bounding box of every pspicture?
 
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
