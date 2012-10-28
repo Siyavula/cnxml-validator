@@ -613,9 +613,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </one-of>
     </children>
     <conversion-callback name="latex">
-#return '' # Leave solutions out of textbook
-environment = 'ExercisesProblemsetEntrySolution'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+renderSolutions = False # Put full solutions in textbook?
+
+if renderSolutions:
+    environment = 'ExercisesProblemsetEntrySolution'
+    return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+else:
+    return ''
     </conversion-callback>
   </entry>
 
@@ -1463,6 +1467,8 @@ return result
     </children>
     <notext/>
     <conversion-callback name="latex">
+redBoundingBox = False # Put red frame at bounding box of every pspicture?
+
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
     head = ''
@@ -1487,7 +1493,7 @@ else:
     head += r'\par\begin{pspicture}'
     tail = r'\end{pspicture}' + '\n' + tail
 
-if True: # Put frame at bounding box of every pspicture
+if redBoundingBox:
     start = self.text.find('(')
     stop = self.text.find(')', start)
     stop = self.text.find(')', stop+1)+1
