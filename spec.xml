@@ -477,6 +477,13 @@ return ''
 
   <entry>
     <xpath>/document/content//exercises//problem-set</xpath>
+    <attributes>
+      <entry>
+	<name>style:columns</name>
+	<type>integer(1,)</type>
+	<default>1</default>
+      </entry>
+    </attributes>
     <children>
       <optional>header</optional>
       <any-number>
