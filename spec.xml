@@ -491,8 +491,8 @@ return ''
     <notext/>
     <conversion-callback name="latex">
 problemsetEnvironment = 'ExercisesProblemset'
-entryEnvironment = 'ExercisesProblemsetEntry'
-entriesEnvironment = 'ExercisesProblemsetEntries'
+#entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
+entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
 if self.getparent().tag == 'exercises':
     # First level of numbering in exercise environment
     return '\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
@@ -505,7 +505,9 @@ else:
     else:
         result = ''
 
-    result += '\n\\begin{' + entryEnvironment + '}\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n' + r'\end{' + entryEnvironment + '}\n'
+    # HACK to solve number scrunching problem
+    # result += '\n\\begin{' + entryEnvironment + '}\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n' + r'\end{' + entryEnvironment + '}\n'
+    result += '\n\\item\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
 
     if (self.getnext() is None) or (self.getnext().tag == 'footer'):
         # Last entry in problem set
@@ -553,8 +555,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <!--<validation-callback>problemset_entry_contains_correct</validation-callback>-->
     <conversion-callback name="latex">
 problemsetEnvironment = 'ExercisesProblemset'
-entryEnvironment = 'ExercisesProblemsetEntry'
-entriesEnvironment = 'ExercisesProblemsetEntries'
+#entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
+entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
 count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
 self.getparent().attrib['problem-set-entry-count'] = str(count)
 if count == 1:
@@ -562,7 +564,11 @@ if count == 1:
     result = '\n\\begin{' + entriesEnvironment + '}'
 else:
     result = ''
-result += '\n\\begin{' + entryEnvironment + '}\n' + self.text + r'\end{' + entryEnvironment + '}'
+
+# HACK to solve number scrunching problem
+#result += '\n\\begin{' + entryEnvironment + '}\n' + self.text + r'\end{' + entryEnvironment + '}'
+result += '\n\item ' + self.text
+
 if (self.getnext() is None) or (self.getnext().tag == 'footer'):
     # Last entry in problem set
     result += '\n\\end{' + entriesEnvironment + '}\n'
