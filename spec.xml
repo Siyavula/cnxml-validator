@@ -1654,6 +1654,8 @@ width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
 if width is not None:
     result += r'[width=%s\textwidth]'%width
 result += '{' + self.attrib['src'] + '}\n'
+if self.attrib.has_key('attribution'):
+    result += r'\ImageAttribution{' + self.attrib['attribution'] + '}\n'
 return head + result + tail
     </conversion-callback>
   </entry>
@@ -1661,19 +1663,7 @@ return head + result + tail
   <entry>
     <xpath>/document/content//image/src</xpath>
     <conversion-callback name="latex">
-src = self.text.strip()
-"""
-pos = src.rfind('.')
-if pos != -1:
-    extension = src[pos+1:]
-else:
-    extension = None
-if extension != 'eps':
-    oldSrc = src
-    src = src[:-len(extension)] + 'eps'
-    convert_image(oldSrc, src)
-"""
-self.getparent().attrib['src'] = src
+self.getparent().attrib['src'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
@@ -1687,6 +1677,7 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex">
+self.getparent().attrib['attribution'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
