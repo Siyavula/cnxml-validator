@@ -1472,6 +1472,11 @@ return result
 	<type>number</type>
 	<default/>
       </entry>
+      <entry>
+	<name>crop</name>
+	<type>enum("true","false")</type>
+	<default>false</default>
+      </entry>
     </attributes>
     <children>
       <any-number>
@@ -1482,6 +1487,11 @@ return result
     <notext/>
     <conversion-callback name="latex">
 redBoundingBox = False # Put red frame at bounding box of every pspicture?
+
+if self.attrib['crop'] == 'true':
+    pspictureEnvironment = 'pspicture*'
+else:
+    pspictureEnvironment = 'pspicture'
 
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
@@ -1501,11 +1511,11 @@ if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     xmax = float(self.text[start:stop])
     pspictureWidthInCm = xmax-xmin
     pspictureWidthInPt = pspictureWidthInCm * 28.3464567
-    head += r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{pspicture}'
-    tail = r'\end{pspicture}}' + '\n' + tail
+    head += r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{' + pspictureEnvironment + '}'
+    tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
 else:
-    head += r'\par\begin{pspicture}'
-    tail = r'\end{pspicture}' + '\n' + tail
+    head += r'\par\begin{' + pspictureEnvironment + '}'
+    tail = r'\end{' + pspictureEnvironment + '}\n' + tail
 
 if redBoundingBox:
     start = self.text.find('(')
