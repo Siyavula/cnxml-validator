@@ -461,7 +461,7 @@ else:
     <notext/>
     <conversion-callback name="latex">
 environment = 'Exercises'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
@@ -471,6 +471,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       <reference>inline-element</reference>
     </children>
     <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
