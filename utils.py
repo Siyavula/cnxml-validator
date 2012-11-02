@@ -77,7 +77,7 @@ def etree_replace_with_node_list(parent, child, dummyNode, keepTail=True):
         for i in range(len(dummyNode)-1, -1, -1):
             parent.insert(index, dummyNode[i])
 
-def format_number(numString, decimalSeparator=',', thousandsSeparator=entities.unicode['nbsp'], minusSymbol=entities.unicode['minus'], iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>'):
+def format_number(numString, decimalSeparator=',', thousandsSeparator=entities.unicode['nbsp'], thousandthsSeparator=entities.unicode['nbsp'], minusSymbol=entities.unicode['minus'], iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>'):
     """
     Replace standard decimal point with new decimal separator
     (default: comma); add thousands and thousandths separators
@@ -117,8 +117,8 @@ def format_number(numString, decimalSeparator=',', thousandsSeparator=entities.u
     if (fracPart is not None) and (len(fracPart) > 4):
         pos = 3
         while pos < len(fracPart):
-            fracPart = fracPart[:pos] + thousandsSeparator + fracPart[pos:]
-            pos += 3 + len(thousandsSeparator)
+            fracPart = fracPart[:pos] + thousandthsSeparator + fracPart[pos:]
+            pos += 3 + len(thousandthsSeparator)
     numString = sign + intPart
     if fracPart is not None:
         numString += decimalSeparator + fracPart

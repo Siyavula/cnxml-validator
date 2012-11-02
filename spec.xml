@@ -461,7 +461,7 @@ else:
     <notext/>
     <conversion-callback name="latex">
 environment = 'Exercises'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
@@ -471,12 +471,20 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       <reference>inline-element</reference>
     </children>
     <conversion-callback name="latex">
+self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//exercises//problem-set</xpath>
+    <attributes>
+      <entry>
+	<name>style:columns</name>
+	<type>integer(1,)</type>
+	<default>1</default>
+      </entry>
+    </attributes>
     <children>
       <optional>header</optional>
       <any-number>
@@ -491,8 +499,8 @@ return ''
     <notext/>
     <conversion-callback name="latex">
 problemsetEnvironment = 'ExercisesProblemset'
-entryEnvironment = 'ExercisesProblemsetEntry'
-entriesEnvironment = 'ExercisesProblemsetEntries'
+#entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
+entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
 if self.getparent().tag == 'exercises':
     # First level of numbering in exercise environment
     return '\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
@@ -505,7 +513,9 @@ else:
     else:
         result = ''
 
-    result += '\n\\begin{' + entryEnvironment + '}\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n' + r'\end{' + entryEnvironment + '}\n'
+    # HACK to solve number scrunching problem
+    # result += '\n\\begin{' + entryEnvironment + '}\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n' + r'\end{' + entryEnvironment + '}\n'
+    result += '\n\\item\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
 
     if (self.getnext() is None) or (self.getnext().tag == 'footer'):
         # Last entry in problem set
@@ -553,8 +563,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <!--<validation-callback>problemset_entry_contains_correct</validation-callback>-->
     <conversion-callback name="latex">
 problemsetEnvironment = 'ExercisesProblemset'
-entryEnvironment = 'ExercisesProblemsetEntry'
-entriesEnvironment = 'ExercisesProblemsetEntries'
+#entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
+entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
 count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
 self.getparent().attrib['problem-set-entry-count'] = str(count)
 if count == 1:
@@ -562,7 +572,11 @@ if count == 1:
     result = '\n\\begin{' + entriesEnvironment + '}'
 else:
     result = ''
-result += '\n\\begin{' + entryEnvironment + '}\n' + self.text + r'\end{' + entryEnvironment + '}'
+
+# HACK to solve number scrunching problem
+#result += '\n\\begin{' + entryEnvironment + '}\n' + self.text + r'\end{' + entryEnvironment + '}'
+result += '\n\item ' + self.text
+
 if (self.getnext() is None) or (self.getnext().tag == 'footer'):
     # Last entry in problem set
     result += '\n\\end{' + entriesEnvironment + '}\n'
@@ -1458,6 +1472,11 @@ return result
 	<type>number</type>
 	<default/>
       </entry>
+      <entry>
+	<name>crop</name>
+	<type>enum("true","false")</type>
+	<default>false</default>
+      </entry>
     </attributes>
     <children>
       <any-number>
@@ -1468,6 +1487,11 @@ return result
     <notext/>
     <conversion-callback name="latex">
 redBoundingBox = True # Put red frame at bounding box of every pspicture?
+
+if self.attrib['crop'] == 'true':
+    pspictureEnvironment = 'pspicture*'
+else:
+    pspictureEnvironment = 'pspicture'
 
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
@@ -1487,11 +1511,11 @@ if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     xmax = float(self.text[start:stop])
     pspictureWidthInCm = xmax-xmin
     pspictureWidthInPt = pspictureWidthInCm * 28.3464567
-    head += r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{pspicture}'
-    tail = r'\end{pspicture}}' + '\n' + tail
+    head += r'\FPdiv\scaleparam{\getlengthinpt{\textwidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{' + pspictureEnvironment + '}'
+    tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
 else:
-    head += r'\par\begin{pspicture}'
-    tail = r'\end{pspicture}' + '\n' + tail
+    head += r'\par\begin{' + pspictureEnvironment + '}'
+    tail = r'\end{' + pspictureEnvironment + '}\n' + tail
 
 if redBoundingBox:
     start = self.text.find('(')
@@ -1641,6 +1665,8 @@ width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
 if width is not None:
     result += r'[width=%s\textwidth]'%width
 result += '{' + self.attrib['src'] + '}\n'
+if self.attrib.has_key('attribution'):
+    result += r'\ImageAttribution{' + self.attrib['attribution'] + '}\n'
 return head + result + tail
     </conversion-callback>
   </entry>
@@ -1648,19 +1674,7 @@ return head + result + tail
   <entry>
     <xpath>/document/content//image/src</xpath>
     <conversion-callback name="latex">
-src = self.text.strip()
-"""
-pos = src.rfind('.')
-if pos != -1:
-    extension = src[pos+1:]
-else:
-    extension = None
-if extension != 'eps':
-    oldSrc = src
-    src = src[:-len(extension)] + 'eps'
-    convert_image(oldSrc, src)
-"""
-self.getparent().attrib['src'] = src
+self.getparent().attrib['src'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
@@ -1674,6 +1688,7 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex">
+self.getparent().attrib['attribution'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
