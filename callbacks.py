@@ -153,10 +153,19 @@ def is_subject(element):
         raise_error("linked-concepts/concept/subject must be one of %s, found '%s' instead"%(repr(valid), element.text))
     return True
 
-def problemset_entry_contains_correct(iEntryNode):
+def problemset_entry_contains_correct_and_shortcode(iEntryNode):
     assert iEntryNode.tag == 'entry'
+    # Count number of <correct> elements
     innerCount = len(iEntryNode.xpath('./solution//correct'))
     outerCount = len(iEntryNode.xpath('./correct'))
     if innerCount + outerCount != 1:
         raise_error("Problem entry must contain exactly one correct element. Found %i inside the solution and %i outside the solution."%(innerCount, outerCount), iEntryNode, exception=None)
+    '''
+    # Count number of <shortcode> elements
+    shortcodes = [element.text for element in iEntryNode.xpath('./shortcode')]
+    if len(shortcodes) == 0:
+        raise_error("Found problem entry without shortcode.", iEntryNode, exception=None)
+    elif len(shortcodes) != 1:
+        raise_error("Found problem entry with multiple (%i) shortcodes, namely %s."%(count, repr(shortcodes)), iEntryNode, exception=None)
+    '''
     return True
