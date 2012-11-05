@@ -157,6 +157,7 @@ return '\\%s{%s}\n'%(section, self.text)
     <xpath>/document/content//section/shortcode</xpath>
     <validation-callback>is_section_shortcode</validation-callback>
     <conversion-callback name="latex">
+self.getparent().attrib['shortcode'] = self.text
 return ''
     </conversion-callback>
   </entry>
@@ -501,19 +502,18 @@ return ''
 problemsetEnvironment = 'ExercisesProblemset'
 #entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
 entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
-
-columnCount = int(self.attrib['{http://siyavula.com/cnxml/style/0.1}columns'])
-if columnCount > 1:
-    columnsBegin = r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n'
-    columnsEnd = '\\end{ExercisesProblemsetColumns}\n'
-else:
-    columnsBegin = ''
-    columnsEnd = ''
-
 if self.getparent().tag == 'exercises':
     # First level of numbering in exercise environment
     return '\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
 else:
+    columnCount = int(self.getparent().attrib['{http://siyavula.com/cnxml/style/0.1}columns'])
+    if columnCount > 1:
+        columnsBegin = r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n'
+        columnsEnd = '\\end{ExercisesProblemsetColumns}\n'
+    else:
+        columnsBegin = ''
+        columnsEnd = ''
+
     count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
     self.getparent().attrib['problem-set-entry-count'] = str(count)
     if count == 1:
@@ -1334,6 +1334,7 @@ self.getparent().attrib['title'] = self.text
     <validation-callback>is_rich_media_shortcode</validation-callback>
     <conversion-callback name="latex">
 self.getparent().attrib['shortcode'] = self.text
+return ''
     </conversion-callback>
   </entry>
 
@@ -1375,6 +1376,7 @@ self.getparent().attrib['title'] = self.text
     <validation-callback>is_rich_media_shortcode</validation-callback>
     <conversion-callback name="latex">
 self.getparent().attrib['shortcode'] = self.text
+return ''
     </conversion-callback>
   </entry>
 
@@ -1434,6 +1436,7 @@ self.getparent().attrib['title'] = self.text
     <validation-callback>is_rich_media_shortcode</validation-callback>
     <conversion-callback name="latex">
 self.getparent().attrib['shortcode'] = self.text
+return ''
     </conversion-callback>
   </entry>
 
