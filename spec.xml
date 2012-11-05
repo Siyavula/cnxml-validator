@@ -115,7 +115,11 @@ return ''
     </children>
     <notext/>
     <conversion-callback name="latex">
-return self.text.strip()
+result = self.text.strip()
+if self.attrib.get('shortcode') is not None:
+    pass
+    #result = r'\setsectionshortcode{' + self.attrib['shortcode'] + '}\n' + result
+return result
     </conversion-callback>
   </entry>
 
