@@ -560,7 +560,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       <optional>correct</optional>
     </children>
     <notext/>
-    <validation-callback>problemset_entry_contains_correct</validation-callback>
+    <validation-callback>problemset_entry_contains_correct_and_shortcode</validation-callback>
     <conversion-callback name="latex">
 problemsetEnvironment = 'ExercisesProblemset'
 #entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
