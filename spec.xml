@@ -1297,7 +1297,7 @@ return ''
       </unordered>
     </children>
     <conversion-callback name="latex">
-return r'\presentation{SHORTCODE}{' + self.attrib.get('title', 'TITLE') + '}\n'
+return r'\presentation{' + self.attrib.get('shortcode', 'SHORTCODE') + '}{' + self.attrib.get('title', 'TITLE') + '}\n'
     </conversion-callback>
   </entry>
 
@@ -1314,7 +1314,9 @@ self.getparent().attrib['title'] = self.text
   <entry>
     <xpath>/document/content//presentation/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
-    <conversion-callback name="latex"/>
+    <conversion-callback name="latex">
+self.getparent().attrib['shortcode'] = self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1336,7 +1338,7 @@ self.getparent().attrib['title'] = self.text
     </children>
     <validation-callback>simulation_has_url_or_embed</validation-callback>
     <conversion-callback name="latex">
-return r'\simulation{SHORTCODE}{' + self.attrib.get('title', 'TITLE') + '}\n'
+return r'\simulation{' + self.attrib.get('shortcode', 'SHORTCODE') + '}{' + self.attrib.get('title', 'TITLE') + '}\n'
     </conversion-callback>
   </entry>
 
@@ -1353,7 +1355,9 @@ self.getparent().attrib['title'] = self.text
   <entry>
     <xpath>/document/content//simulation/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
-    <conversion-callback name="latex"/>
+    <conversion-callback name="latex">
+self.getparent().attrib['shortcode'] = self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1393,7 +1397,7 @@ self.getparent().attrib['title'] = self.text
       </unordered>
     </children>
     <conversion-callback name="latex">
-return r'\video{SHORTCODE}{' + self.attrib.get('title', 'TITLE') + '}\n'
+return r'\video{' + self.attrib.get('shortcode', 'SHORTCODE') + '}{' + self.attrib.get('title', 'TITLE') + '}\n'
     </conversion-callback>
   </entry>
 
@@ -1410,7 +1414,9 @@ self.getparent().attrib['title'] = self.text
   <entry>
     <xpath>/document/content//video/shortcode</xpath>
     <validation-callback>is_rich_media_shortcode</validation-callback>
-    <conversion-callback name="latex"/>
+    <conversion-callback name="latex">
+self.getparent().attrib['shortcode'] = self.text
+    </conversion-callback>
   </entry>
 
   <entry>
