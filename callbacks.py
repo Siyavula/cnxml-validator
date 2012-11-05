@@ -156,7 +156,7 @@ def is_subject(element):
 def problemset_entry_contains_correct(iEntryNode):
     assert iEntryNode.tag == 'entry'
     innerCount = len(iEntryNode.xpath('./solution//correct'))
-    outerCount = len(iEntryNode.xpath('./solution/correct'))
+    outerCount = len(iEntryNode.xpath('./correct'))
     if innerCount + outerCount != 1:
         raise_error("Problem entry must contain exactly one correct element. Found %i inside the solution and %i outside the solution."%(innerCount, outerCount), iEntryNode, exception=None)
     return True
