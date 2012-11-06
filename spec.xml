@@ -513,6 +513,7 @@ return ''
       <any-number>
 	<one-of>
 	  <element>problem-set</element>
+	  <element>multi-part</element>
 	  <element>entry</element>
 	  <element>monassis-template</element>
 	</one-of>
@@ -2434,6 +2435,155 @@ return pattern%self.text
     </children>
     <conversion-callback name="latex learner correct teacher">
 return self.text
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part</xpath>
+    <attributes>
+      <entry>
+	<name>style:columns</name>
+	<type>integer(1,)</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>shortcode</optional>
+      <optional>header</optional>
+      <any-number>
+	<one-of>
+	  <element>problem-set</element>
+	  <element>multi-part</element>
+	  <element>entry</element>
+	  <element>monassis-template</element>
+	</one-of>
+      </any-number>
+      <optional>footer</optional>
+    </children>
+    <notext/>
+    <conversion-callback name="latex learner teacher">
+return convert_using(self, '/document/content//exercises//problem-set')
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+return convert_using(self, '/document/content//exercises//problem-set')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/header</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex learner teacher">
+return convert_using(self, '/document/content//exercises//problem-set/header')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/footer</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex learner teacher">
+return convert_using(self, '/document/content//exercises//problem-set/footer')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/entry</xpath>
+    <children>
+      <element>problem</element>
+      <element>solution</element>
+      <optional>correct</optional>
+    </children>
+    <notext/>
+    <validation-callback>problemset_entry_contains_correct_and_shortcode</validation-callback>
+    <conversion-callback name="latex learner teacher">
+return convert_using(self, '/document/content//exercises//problem-set/entry')
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+return convert_using(self, '/document/content//exercises//problem-set/entry')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/shortcode</xpath>
+    <validation-callback>is_exercise_shortcode</validation-callback>
+    <conversion-callback name="latex learner teacher">
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/entry/problem</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex learner teacher">
+return convert_using(self, '/document/content//exercises//problem-set/entry/problem')
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+return convert_using(self, '/document/content//exercises//problem-set/entry/problem')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/entry/solution</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>url</name>
+	<type>url</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex teacher">
+return convert_using(self, '/document/content//exercises//problem-set/entry/solution')
+    </conversion-callback>
+    <conversion-callback name="latex learner correct">
+return convert_using(self, '/document/content//exercises//problem-set/entry/solution')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/entry/correct</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex correct">
+return convert_using(self, '/document/content//exercises//problem-set/entry/correct')
+    </conversion-callback>
+    <conversion-callback name="latex learner teacher"/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//exercises//multi-part/entry/solution//correct</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex learner correct teacher">
+return convert_using(self, '/document/content//exercises//problem-set/entry/solution//correct')
     </conversion-callback>
   </entry>
 
