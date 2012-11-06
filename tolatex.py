@@ -14,6 +14,10 @@ argumentParser.add_argument(
     default="spec.xml",
     help='Filename of the XML specification document.')
 argumentParser.add_argument(
+    '--audience', dest='audience',
+    default="learner",
+    help='Target audience of the transform ( learner | teacher | correct ).')
+argumentParser.add_argument(
     '-o', dest='outputFilename',
     help='Write output to given filename rather than stdout.')
 argumentParser.add_argument(
@@ -32,7 +36,7 @@ mathml_transform = utils.MmlTex()
 
 conversionFunctions = {} # Cache
 def cache_conversion_function(iSpec):
-    global conversionFunctions, validator, utils
+    global conversionFunctions, validator, utils, commandlineArguments
 
     if isinstance(iSpec, basestring):
         # xpath given rather than node
@@ -51,7 +55,7 @@ def cache_conversion_function(iSpec):
 
     if conversionFunction is None:
         # Cache conversion function
-        conversionFunctionNodes = specEntry.xpath('.//conversion-callback[@name="latex"]')
+        conversionFunctionNodes = specEntry.xpath('.//conversion-callback[contains(@name, "latex") and contains(@name, "%s")]'%commandlineArguments.audience)
         if len(conversionFunctionNodes) == 0:
             utils.warning_message('No conversion entry for ' + specEntry.find('xpath').text)
             conversionFunctionSource = 'conversionFunction = lambda self: None'
