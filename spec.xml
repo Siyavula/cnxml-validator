@@ -1963,6 +1963,7 @@ return r'\(' + tex + r'\)'
 	<element>new-words</element>
 	<element>linked-concepts</element>
 	<element>teachers-guide</element>
+	<element>correct</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
