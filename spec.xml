@@ -649,7 +649,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </one-of>
     </children>
     <conversion-callback name="latex">
-if self.text.strip():
+if self.text.strip() == '':
     warning_message("Empty solution.")
 
 renderSolutions = False # Put full solutions in textbook?
