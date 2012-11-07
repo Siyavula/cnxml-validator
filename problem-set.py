@@ -249,8 +249,6 @@ for problemsetNode in dom.xpath('//problem-set'):
         stop = output.rfind('<')
         output = output[start:stop]
         print output.strip()
-        #for child in headerNode.getchildren():
-        #    print strip_namespaces(etree.tostring(child, encoding='utf-8', with_tail=True)).strip()
     entries = problemsetNode.xpath('./entry/problem')
     for i in range(min(len(entries), 3)):
         print termColors['old'] + 'ENTRY %i:'%(i+1) + termColors['stop']
@@ -259,10 +257,26 @@ for problemsetNode in dom.xpath('//problem-set'):
         stop = output.rfind('<')
         output = output[start:stop]
         print output.strip()
-        #for child in entries[i].getchildren():
-        #    print strip_namespaces(etree.tostring(child, encoding='utf-8', with_tail=True)).strip()
     if prompt_replace('problem-set', 'multi-part'):
+        # Rename
         problemsetNode.tag = 'multi-part'
+
+        # Move shortcode out of first entry into multi-part, or delete them if they're all todo
+        entries = problemsetNode.xpath('./entry')
+        shortcodes = [entry.find('shortcode') for entry in entries]
+        absent = [(shortcode is None) or (shortcode.text is None) or (shortcode.text.lower() == 'todo') for shortcode in shortcodes]
+        if all(absent):
+            for entry in entries:
+                shortcode = entry.find('shortcode')
+                if shortcode is not None:
+                    entry.remove(shortcode)
+        elif (shortcodes[0] is not None) and all(absent[1:]):
+            problemsetNode.insert(0, shortcodes[0])
+            for entry in entries[1:]:
+                shortcode = entry.find('shortcode')
+                if shortcode is not None:
+                    entry.remove(shortcode)
+                
         auto_save()
 
 auto_save(force=True)
