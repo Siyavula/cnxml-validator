@@ -709,7 +709,7 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <conversion-callback name="latex teacher">
+    <conversion-callback name="latex learner teacher">
 if self.text.strip() == '':
     warning_message("Empty solution.")
 
@@ -721,7 +721,7 @@ if renderSolutions:
 else:
     return ''
     </conversion-callback>
-    <conversion-callback name="latex learner correct">
+    <conversion-callback name="latex correct">
 return ''
     </conversion-callback>
   </entry>
