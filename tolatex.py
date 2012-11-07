@@ -61,7 +61,7 @@ def cache_conversion_function(iSpec):
             conversionFunctionSource = 'conversionFunction = lambda self: None'
         else:
             if len(conversionFunctionNodes) != 1:
-                utils.error_message('More than 1 conversion entry for ' + utils.get_full_dom_path(iNode, iValidator.spec))
+                utils.error_message('More than 1 conversion entry for ' + specEntry.find('xpath').text)
             conversionFunctionSource = conversionFunctionNodes[0].text.strip()
             if conversionFunctionSource == '':
                 conversionFunctionSource = 'conversionFunction = lambda self: None'
