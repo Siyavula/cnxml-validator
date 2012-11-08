@@ -508,9 +508,9 @@ while len(shortcodeStack) > 0:
         shortcodeArray.append((shortcodePrefix, shortcodeEntry))
 
 if len(shortcodeArray) > 0:
-    result += r'\begin{ExercisesShortcodes}' + '\n' + r'\begin{tabular}{' + 'c'*shortcodeColumns + '}\n'
+    result += r'\begin{ExercisesShortcodes}' + '\n' + r'\begin{tabular}{' + 'r@{ }l'*shortcodeColumns + '}\n'
     while True:
-        row = [entry[0] + '. ' + entry[1] for entry in shortcodeArray[:shortcodeColumns]]
+        row = [entry[0] + '. &amp; ' + entry[1] for entry in shortcodeArray[:shortcodeColumns]]
         shortcodeArray = shortcodeArray[shortcodeColumns:]
         result += ' &amp; '.join(row)
         if len(shortcodeArray) == 0:
