@@ -77,7 +77,7 @@ def etree_replace_with_node_list(parent, child, dummyNode, keepTail=True):
         for i in range(len(dummyNode)-1, -1, -1):
             parent.insert(index, dummyNode[i])
 
-def format_number(numString, decimalSeparator=',', thousandsSeparator=entities.unicode['nbsp'], thousandthsSeparator=entities.unicode['nbsp'], minusSymbol=entities.unicode['minus'], iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>'):
+def format_number(numString, decimalSeparator=',', thousandsSeparator=entities.unicode['nbsp'], thousandthsSeparator='', minusSymbol=entities.unicode['minus'], iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>'):
     """
     Replace standard decimal point with new decimal separator
     (default: comma); add thousands and thousandths separators
