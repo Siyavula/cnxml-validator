@@ -566,7 +566,7 @@ if self.tag == 'problem-set': # multi-part also uses this transform, guard again
     else:
         myShortcodesRepr = self.attrib.get('shortcodes')
         if myShortcodesRepr is not None:
-            count = self.getparent().index(self) + 1
+            count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
             parentShortcodes = eval(self.getparent().attrib.get('shortcodes', '{}'))
             parentShortcodes[count] = eval(myShortcodesRepr)
             self.getparent().attrib['shortcodes'] = repr(parentShortcodes)
