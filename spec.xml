@@ -484,7 +484,41 @@ else:
     <notext/>
     <conversion-callback name="latex learner correct teacher">
 environment = 'Exercises'
-return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
+result = '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
+
+# Shortcodes
+shortcodeColumns = 6
+numbering = [
+    lambda index: '',
+    lambda index: str(index),
+    lambda index: chr(ord('a') + index - 1),
+    lambda index: ['i','ii','iii','iv','v','vi','vii','viii','ix','x'][index-1],
+]
+shortcodes = eval(self.attrib.get('shortcodes'))
+shortcodeStack = [(0, '', 1, shortcodes)] # (depth, numbering prefix, numbering index, shortcodes)
+shortcodeArray = []
+while len(shortcodeStack) > 0:
+    depth, shortcodePrefix, shortcodeIndex, shortcodeEntry = shortcodeStack.pop()
+    shortcodePrefix += numbering[depth](shortcodeIndex)
+    if isinstance(shortcodeEntry, dict):
+        keys = shortcodeEntry.keys()
+	for key in sorted(keys, reverse=True):
+            shortcodeStack.append((depth+1, shortcodePrefix, key, shortcodeEntry[key]))
+    else:
+        shortcodeArray.append((shortcodePrefix, shortcodeEntry))
+
+if len(shortcodeArray) > 0:
+    result += r'\begin{ExercisesShortcodes}' + '\n' + r'\begin{tabular}{' + 'c'*shortcodeColumns + '}\n'
+    while True:
+        row = [entry[0] + '. ' + entry[1] for entry in shortcodeArray[:shortcodeColumns]]
+        shortcodeArray = shortcodeArray[shortcodeColumns:]
+        result += ' &amp; '.join(row)
+        if len(shortcodeArray) == 0:
+            break
+        result += r'\\' + '\n'
+    result += '\n' + r'\end{tabular}' + '\n' + r'\end{ExercisesShortcodes}' + '\n'
+
+return result
     </conversion-callback>
   </entry>
 
@@ -515,13 +549,28 @@ return ''
 	  <element>problem-set</element>
 	  <element>multi-part</element>
 	  <element>entry</element>
-	  <element>monassis-template</element>
+	  <!--<element>monassis-template</element>-->
 	</one-of>
       </any-number>
       <optional>footer</optional>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
+# Store shortcode in problem-set
+if self.tag == 'problem-set': # multi-part also uses this transform, guard against it for shortcodes
+    parentTag = self.getparent().tag
+    assert parentTag in ['exercises', 'problem-set'], "&lt;problem-set&gt; should only every be a child of &lt;exercises&gt; or &lt;problem-set&gt;, got &lt;%s&gt; instead."%parentTag
+    if parentTag == 'exercises':
+        # This is the top-level problem-set
+        self.getparent().attrib['shortcodes'] = self.attrib.get('shortcodes', '{}')
+    else:
+        myShortcodesRepr = self.attrib.get('shortcodes')
+        if myShortcodesRepr is not None:
+            count = self.getparent().index(self) + 1
+            parentShortcodes = eval(self.getparent().attrib.get('shortcodes', '{}'))
+            parentShortcodes[count] = eval(myShortcodesRepr)
+            self.getparent().attrib['shortcodes'] = repr(parentShortcodes)
+
 problemsetEnvironment = 'ExercisesProblemset'
 #entryEnvironment = 'ExercisesProblemsetEntry' # HACK to solve number scrunching problem
 entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
@@ -668,6 +717,11 @@ return result
     <xpath>/document/content//exercises//problem-set/entry/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
     <conversion-callback name="latex learner teacher">
+# Store shortcode in problem-set
+count = int(self.getparent().getparent().attrib.get('problem-set-entry-count', 0)) + 1
+shortcodes = eval(self.getparent().getparent().attrib.get('shortcodes', '{}'))
+shortcodes[count] = self.text
+self.getparent().getparent().attrib['shortcodes'] = repr(shortcodes)
 return ''
     </conversion-callback>
   </entry>
@@ -2452,7 +2506,6 @@ return self.text
       <optional>header</optional>
       <any-number>
 	<one-of>
-	  <element>problem-set</element>
 	  <element>multi-part</element>
 	  <element>entry</element>
 	  <element>monassis-template</element>
@@ -2512,6 +2565,13 @@ return convert_using(self, '/document/content//exercises//problem-set/entry')
     <xpath>/document/content//exercises//multi-part/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
     <conversion-callback name="latex learner teacher">
+# Store shortcode in parent problem-set
+problemsetParent = self.getparent().getparent()
+if problemsetParent.tag == 'problem-set': # multi-part can also have multi-part as a parent
+    count = int(problemsetParent.attrib.get('problem-set-entry-count', 0)) + 1
+    shortcodes = eval(problemsetParent.attrib.get('shortcodes', '{}'))
+    shortcodes[count] = self.text
+    problemsetParent.attrib['shortcodes'] = repr(shortcodes)
 return ''
     </conversion-callback>
   </entry>
