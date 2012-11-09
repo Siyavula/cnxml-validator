@@ -1,14 +1,17 @@
 from __future__ import division
 from lxml import etree
 import sys
-
-xml = sys.stdin.read()
-dom = etree.fromstring(xml)
-
 from utils import get_full_dom_path
 
+def remove_ampersands(iNode, iWithTail=False):
+    iNode.text = (iNode.text or '').replace('&', '')
+    if iWithTail:
+        iNode.tail = (iNode.tail or '').replace('&', '')
+    for child in iNode.getchildren():
+        remove_ampersands(child, True)
+
 def traverse(iNode):
-    if (iNode.tag == 'document') or ((iNode.tag == 'content') and (iNode.getparent().tag == 'document')) or (iNode.tag == 'metadata') or ((iNode.tag == 'section') and (iNode.getparent().tag != 'activity')):
+    if (iNode.tag == 'document') or ((iNode.tag == 'content') and (iNode.getparent().tag == 'document')) or ((iNode.tag == 'section') and (iNode.getparent().tag != 'activity')):
         children = iNode.getchildren()
         for child in children:
             if not traverse(child):
@@ -25,6 +28,7 @@ def traverse(iNode):
                 while entryNode.tag != 'entry':
                     entryNode = entryNode.getparent()
                 if 'latex' in fullDomPath:
+                    remove_ampersands(correctNode)
                     correctNode.tag = 'latex'
                     entryNode.append(etree.Element('correct'))
                     entryNode[-1].append(correctNode)
@@ -46,15 +50,17 @@ def traverse(iNode):
             sys.stderr.write(etree.tostring(iNode) + '\n')
         return False
 
-traverse(dom)
-sys.stdout.write(etree.tostring(dom, xml_declaration=True, encoding='utf-8'))
 
-'''
+filenames = sys.argv[1:]
+doms = []
+for filename in filenames:
+    sys.stderr.write('*** ' + filename + '\n')
+    xml = open(filename, 'rt').read()
+    doms.append(etree.fromstring(xml))
+    traverse(doms[-1])
 
-\section{TITLE}
-\begin{Exercises}{TITLE}
-\begin{enumerate}
-\item
-\end{enumerate}
-\end{Exercises}
-'''
+assert (doms[0].tag == 'document') and (len(doms[0]) == 1) and (doms[0][0].tag == 'content') and (len(doms[0][0]) == 1)
+for i in range(1, len(doms)):
+    assert (doms[i].tag == 'document') and (len(doms[i]) == 1) and (doms[i][0].tag == 'content') and (len(doms[i][0]) == 1)
+    doms[0][0].append(doms[i][0][0])
+sys.stdout.write(etree.tostring(doms[0], xml_declaration=True, encoding='utf-8'))
