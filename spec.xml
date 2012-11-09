@@ -117,7 +117,7 @@ return ''
     <conversion-callback name="latex learner teacher">
 result = self.text.strip()
 if self.attrib.get('shortcode') is not None:
-    result = r'\setsectionshortcode{' + self.attrib['shortcode'] + '}\n' + result
+    result = '\n' + r'\setsectionshortcode{' + self.attrib['shortcode'] + '}\n' + result
 return result
     </conversion-callback>
     <conversion-callback name="latex correct">
