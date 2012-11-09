@@ -2,7 +2,6 @@ from __future__ import division
 from lxml import etree
 import sys
 
-arguments = sys.argv[1:]
 xml = sys.stdin.read()
 dom = etree.fromstring(xml)
 
