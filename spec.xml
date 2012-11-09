@@ -1946,10 +1946,6 @@ else:
                 error_message('You are either missing a \\end{%s} in a LaTeX environment or there is a mismatch between the \\begin and \\end.'%environmentName)
             if environmentName in ['eqnarray', 'eqnarray*']:
                 warning_message('You should really be using align rather eqnarray in your &lt;latex&gt; elements')
-            if insideTable and (environmentName in ['align', 'align*']):
-                warning_message('Found align inside table, replacing with aligned')
-            if not insideTable and (environmentName in ['aligned', 'aligned*']):
-                warning_message('Found aligned outside table, replacing with align')
 
             # Normalise align
             if environmentName in ['align', 'align*', 'aligned', 'aligned*']:

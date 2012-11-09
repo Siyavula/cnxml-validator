@@ -127,9 +127,12 @@ def traverse(iNode, iValidator):
 
 
 for filename in commandlineArguments.filename:
-
+    if filename == '-':
+        fp = sys.stdin
+    else:
+        fp = open(filename,'rt')
     validator.validate(
-        open(filename,'rt').read(),
+        fp.read(),
         iCleanUp=True)
     document = validator.dom
 
