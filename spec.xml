@@ -1928,20 +1928,42 @@ unslashedFunctions = latex_math_function_check(self.text)
 if len(unslashedFunctions) > 0:
     warning_message('Found the following functions: (%s) without a backslash in a latex element:\n%s'%(', '.join(unslashedFunctions), self.text))
 
+insideTable = ('table' in utils.get_full_dom_path(self))
+
 numberEquations = False
 if self.attrib['display'] == 'inline':
     return r'\(' + self.text.strip() + r'\)'
 else:
     foundMathEnvironment = False
     text = self.text.strip()
-    for environmentName in ['align', 'align*', 'equation', 'equation*', 'eqnarray', 'eqnarray*']:
-        beginSubstr = r'\begin{%s}'%environmentName
+    beginPattern = r'\begin{%s}'
+    endPattern = r'\end{%s}'
+    for environmentName in ['align', 'align*', 'aligned', 'aligned*', 'equation', 'equation*', 'eqnarray', 'eqnarray*']:
+        beginSubstr = beginPattern%environmentName
         if text[:len(beginSubstr)] == beginSubstr:
-            endSubstr = r'\end{%s}'%environmentName
+            endSubstr = endPattern%environmentName
             if text[-len(endSubstr):] != endSubstr:
                 error_message('You are either missing a \\end{%s} in a LaTeX environment or there is a mismatch between the \\begin and \\end.'%environmentName)
             if environmentName in ['eqnarray', 'eqnarray*']:
                 warning_message('You should really be using align rather eqnarray in your &lt;latex&gt; elements')
+            if insideTable and (environmentName in ['align', 'align*']):
+                warning_message('Found align inside table, replacing with aligned')
+            if not insideTable and (environmentName in ['aligned', 'aligned*']):
+                warning_message('Found aligned outside table, replacing with align')
+
+            # Normalise align
+            if environmentName in ['align', 'align*', 'aligned', 'aligned*']:
+                if insideTable:
+                    replacement = 'aligned'
+                else:
+                    replacement = 'align'
+                newBeginSubstr = beginPattern%replacement
+                newEndSubstr = endPattern%replacement
+                text = newBeginSubstr + text[len(beginSubstr):-len(endSubstr)] + newEndSubstr
+                environmentName = replacement
+                beginSubstr = newBeginSubstr
+                endSubstr = newEndSubstr
+
             foundMathEnvironment = True
             if not numberEquations:
                 if environmentName[-1] != '*':
