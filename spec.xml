@@ -611,7 +611,11 @@ else:
 entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
 if self.getparent().tag == 'exercises':
     # First level of numbering in exercise environment
-    return self.text
+    # Check if my sub-list had all its entries skipped
+    if self.text.count(r'\item') == 0:
+        return ''
+    else:
+        return self.text
 else:
     count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
     self.getparent().attrib['problem-set-entry-count'] = str(count)
@@ -621,7 +625,16 @@ else:
     else:
         result = ''
 
-    result += '\n\\item\n' + self.text
+    # Check if my sub-list had all its entries skipped
+    if self.text.count(r'\item') == 0:
+        depth = 0
+        node = self.getparent()
+        while node.tag in ['problem-set', 'multi-part']:
+            depth += 1
+            node = node.getparent()
+        result += r'\stepcounter{enum' + 'i'*depth + '}\n'
+    else:
+        result += '\n\\item\n' + self.text
 
     if self.getnext() is None:
         # Last entry in problem set
@@ -707,7 +720,15 @@ if count == 1:
 else:
     result = ''
 
-result += '\n\item ' + self.text
+if self.text.strip() == '':
+    depth = 0
+    node = self.getparent()
+    while node.tag in ['problem-set', 'multi-part']:
+        depth += 1
+        node = node.getparent()
+    result += r'\stepcounter{enum' + 'i'*depth + '}\n'
+else:
+    result += '\n\item ' + self.text
 
 if self.getnext() is None:
     # Last entry in problem set
