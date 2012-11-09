@@ -168,7 +168,7 @@ while node is not None:
         level += 1
     node = node.getparent()
 if level == 0:
-    return '\\section{%s}\n'%(self.text)
+    return '\\SolutionsChapter{%s}\n'%(self.text)
 else:
     return ''
     </conversion-callback>
@@ -520,7 +520,8 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
     </conversion-callback>
     <conversion-callback name="latex correct">
 environment = 'Exercises'
-return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
+columnCount = 2
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n' + self.text + r'\end{ExercisesProblemsetColumns}' + '\n' + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
