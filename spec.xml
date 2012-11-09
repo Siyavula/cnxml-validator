@@ -1677,7 +1677,7 @@ return result
       <element>code</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex learner teacher">
 redBoundingBox = False # Put red frame at bounding box of every pspicture?
 
 if self.attrib['crop'] == 'true':
@@ -1719,6 +1719,35 @@ else:
     text = self.text
 
 return head + text + tail
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+if self.attrib['crop'] == 'true':
+    pspictureEnvironment = 'pspicture*'
+else:
+    pspictureEnvironment = 'pspicture'
+
+tableMode = ('table' in utils.get_full_dom_path(self))
+if tableMode:
+    head = ''
+    tail = ''
+else:
+    head = '\\begin{Image}\n'
+    tail = '\\end{Image}\n'
+
+relativeWidth = 1
+# Get width of pspicture
+start = self.text.find('(')+1
+stop = self.text.find(',', start)
+xmin = float(self.text[start:stop])
+start = self.text.find('(', stop)+1
+stop = self.text.find(',', start)
+xmax = float(self.text[start:stop])
+pspictureWidthInCm = xmax-xmin
+pspictureWidthInPt = pspictureWidthInCm * 28.3464567
+head += r'\FPdiv\scaleparam{\getlengthinpt{\linewidth}}{' + str(pspictureWidthInPt/relativeWidth) + r'}\par\par\scalebox{\scaleparam}{\begin{' + pspictureEnvironment + '}'
+tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
+
+return head + self.text + tail
     </conversion-callback>
   </entry>
 
@@ -1774,7 +1803,7 @@ return self.text
       <element>code</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex learner teacher">
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
     head = ''
@@ -1785,6 +1814,16 @@ else:
 if self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width') is not None:
     warning_message('UNHANDLED style:width in tikzpicture')
 return head + r'\par\begin{tikzpicture}' + self.text + r'\end{tikzpicture}' + '\n' + tail
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+tableMode = ('table' in utils.get_full_dom_path(self))
+if tableMode:
+    head = ''
+    tail = ''
+else:
+    head = '\\begin{Image}\n'
+    tail = '\\end{Image}\n'
+return head + r'\par\scalebox{0.5}{\begin{tikzpicture}' + self.text + r'\end{tikzpicture}}' + '\n' + tail
     </conversion-callback>
   </entry>
 
@@ -1844,7 +1883,7 @@ return self.text
       </subset-of>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex learner teacher">
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
     head = ''
@@ -1859,6 +1898,19 @@ if width is not None:
 result += '{' + self.attrib['src'] + '}\n'
 if self.attrib.has_key('attribution'):
     result += r'\ImageAttribution{' + self.attrib['attribution'] + '}\n'
+return head + result + tail
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+tableMode = ('table' in utils.get_full_dom_path(self))
+if tableMode:
+    head = ''
+    tail = ''
+else:
+    head = '\\begin{Image}\n'
+    tail = '\\end{Image}\n'
+result = r'\includegraphics'
+result += r'[width=\linewidth]'
+result += '{' + self.attrib['src'] + '}\n'
 return head + result + tail
     </conversion-callback>
   </entry>
