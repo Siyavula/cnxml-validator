@@ -481,7 +481,7 @@ else:
       <element>problem-set</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex learner teacher">
 environment = 'Exercises'
 
 # Shortcodes
@@ -517,6 +517,10 @@ if len(shortcodeArray) > 0:
     shortcodeLatex += '\n' + r'\end{tabular}' + '\n' + r'\end{ExercisesShortcodes}' + '\n'
 
 return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + shortcodeLatex + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+environment = 'Exercises'
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
@@ -787,14 +791,7 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex correct">
-contents = self.text
-
-# Check whether in latex math mode
-latexMode = ('latex' in utils.get_full_dom_path(self))
-if not latexMode:
-    contents = r'\(' + contents.strip() + r'\)'
-
-return '\n' + contents.strip() + '\n'
+return '\n' + self.text.strip() + '\n'
     </conversion-callback>
     <conversion-callback name="latex learner teacher"/>
   </entry>
