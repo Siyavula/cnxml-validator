@@ -483,7 +483,6 @@ else:
     <notext/>
     <conversion-callback name="latex learner correct teacher">
 environment = 'Exercises'
-result = '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
 
 # Shortcodes
 shortcodeColumns = 6
@@ -505,19 +504,19 @@ while len(shortcodeStack) > 0:
             shortcodeStack.append((depth+1, shortcodePrefix, key, shortcodeEntry[key]))
     else:
         shortcodeArray.append((shortcodePrefix, shortcodeEntry))
-
+shortcodeLatex = ''
 if len(shortcodeArray) > 0:
-    result += r'\begin{ExercisesShortcodes}' + '\n' + r'\begin{tabular}{' + 'r@{ }l'*shortcodeColumns + '}\n'
+    shortcodeLatex += r'\begin{ExercisesShortcodes}' + '\n' + r'\begin{tabular}{' + 'r@{ }l'*shortcodeColumns + '}\n'
     while True:
         row = [entry[0] + r'. &amp; \shortcode{' + entry[1] + '}' for entry in shortcodeArray[:shortcodeColumns]]
         shortcodeArray = shortcodeArray[shortcodeColumns:]
-        result += ' &amp; '.join(row)
+        shortcodeLatex += ' &amp; '.join(row)
         if len(shortcodeArray) == 0:
             break
-        result += r'\\' + '\n'
-    result += '\n' + r'\end{tabular}' + '\n' + r'\end{ExercisesShortcodes}' + '\n'
+        shortcodeLatex += r'\\' + '\n'
+    shortcodeLatex += '\n' + r'\end{tabular}' + '\n' + r'\end{ExercisesShortcodes}' + '\n'
 
-return result
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + shortcodeLatex + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
