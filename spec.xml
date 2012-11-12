@@ -2290,6 +2290,10 @@ return self.text
     </children>
     <validation-callback>is_number</validation-callback>
     <conversion-callback name="latex learner correct teacher">
+textMode = False # Whether numbers should be rendered with the text font (rather than the math font)
+
+numberCommand = [r'\textrm', r'\text'][int(textMode)]
+
 if len(self) == 0:
     if 'e' in self.text:
         # Number in exponential notation: convert to coeff and exp
@@ -2322,14 +2326,14 @@ for key in text:
         text[key] = text[key][1:]
     else:
         minus = ''
-    text[key] = minus + r'\text{' + utils.format_number(text[key], thousandsSeparator=r'\ ') + '}'
+    text[key] = minus + numberCommand + '{' + utils.format_number(text[key], thousandsSeparator=r'\ ') + '}'
 
 # Build LaTeX representation
 result = text['coeff'] if nodes['coeff'] is not None else ''
 if nodes['exp'] is not None:
     if nodes['coeff'] is not None:
         result += r' \times '
-    result += text['base'] + '^{' + text['exp'] + '}'
+    result += numberCommand + '{' + text['base'] + '}^{' + numberCommand + '{' + text['exp'] + '}}'
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
