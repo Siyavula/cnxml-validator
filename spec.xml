@@ -521,7 +521,12 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
     <conversion-callback name="latex correct">
 environment = 'Exercises'
 columnCount = 2
-return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n' + self.text + r'\end{ExercisesProblemsetColumns}' + '\n' + r'\end{' + environment + '}\n'
+
+if self.text.strip() == '':
+    # No one-liners for this exercise block: skip it and increment the exercise counter
+    return r'\stepcounter{ExerciseCounter}' + '\n'
+else:
+    return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n' + self.text + r'\end{ExercisesProblemsetColumns}' + '\n' + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
