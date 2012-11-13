@@ -874,7 +874,7 @@ return self.text
     <conversion-callback name="latex learner teacher">
 environment = 'Theorem'
 return r'''
-\begin{''' + environment + '}{' + self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','') + '''}
+\begin{''' + environment + '}{' + self.attrib.get('theoremLabel', 'Teorema') + ': ' + self.attrib.get('theoremTitle','') + '''}
 ''' + self.text + r'''
 \end{''' + environment + '}\n'
     </conversion-callback>
@@ -1081,7 +1081,7 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
-return r'\paragraph{Key Mathematics Concepts} \begin{itemize}' + '\n' + self.text.strip() + '\n' + r'\end{itemize}' + '\n'
+return r'\paragraph{Sleutelkonsepte} \begin{itemize}' + '\n' + self.text.strip() + '\n' + r'\end{itemize}' + '\n'
     </conversion-callback>
   </entry>
 
@@ -1112,7 +1112,7 @@ return self.text
     <validation-callback>is_subject</validation-callback>
     <conversion-callback name="latex learner teacher">
 subject = self.text.strip().lower()
-return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subject]
+return u' — ' + {'maths': 'Wiskunde', 'science': 'Fisiese Wetenskappe'}[subject]
     </conversion-callback>
   </entry>
 
@@ -1120,7 +1120,7 @@ return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subje
     <xpath>/document/content//linked-concepts/concept/grade</xpath>
     <validation-callback>is_integer</validation-callback>
     <conversion-callback name="latex learner teacher">
-return ', Grade %i'%(int(self.text))
+return ', Graad %i'%(int(self.text))
     </conversion-callback>
   </entry>
 
@@ -2761,22 +2761,21 @@ except ValueError:
     isInt = False
 
 format = self.attrib['format']
-if (format == 'word') and isInt and (value &lt; 12):
-    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value-1]
+if (format == 'word') and isInt and (value &lt;= 12):
+    return ['eerste', 'tweede', 'derde', 'vierde', 'vyfde', 'sesde', 'sewende', 'agtste', 'neënde', 'tiende', 'elfde', 'twaalfde'][value-1]
 else:
     # format == 'superscript'
     if isInt:
-        if (value % 10 == 1) and (value//10 % 10 != 1):
-            suffix = 'st'
-        elif (value % 10 == 2) and (value//10 % 10 != 1):
-            suffix = 'nd'
-        elif (value % 10 == 3) and (value//10 % 10 != 1):
-            suffix = 'rd'
+        suffixValue = value % 100
+        if suffixValue in [0, 1, 8]:
+            suffix = 'ste'
+        elif suffixValue &lt;= 19:
+            suffix = 'de'
         else:
-            suffix = 'th'
+            suffix = 'ste'
         value = str(value)
     else:
-        suffix = 'th'
+        suffix = 'de'
     return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
     </conversion-callback>
   </entry>
