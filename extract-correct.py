@@ -45,7 +45,7 @@ def traverse(iNode):
                 del child.attrib['{http://siyavula.com/cnxml/style/0.1}columns']
         return True
     else:
-        if len(iNode.xpath('.//exercises')):
+        if len(iNode.xpath('.//exercises')) > 0:
             sys.stderr.write('WARNING: Deleting node that contains exercises.\n')
             sys.stderr.write(etree.tostring(iNode) + '\n')
         return False
