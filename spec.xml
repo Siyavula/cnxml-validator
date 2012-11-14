@@ -1081,7 +1081,7 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
-return r'\paragraph{Sleutelkonsepte} \begin{itemize}' + '\n' + self.text.strip() + '\n' + r'\end{itemize}' + '\n'
+return r'\paragraph{Sleutel Wiskunde Konsepte} \begin{itemize}' + '\n' + self.text.strip() + '\n' + r'\end{itemize}' + '\n'
     </conversion-callback>
   </entry>
 
