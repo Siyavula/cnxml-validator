@@ -5,11 +5,6 @@ from lxml import etree
 import sys, time
 from utils import get_full_dom_path
 
-OPTIONS = {
-    'blanketIgnore': ['exercises'],
-    'checkPictureCode': True,
-}
-
 # --- START PREAMBLE ---
 
 termColors = {
@@ -19,7 +14,7 @@ termColors = {
     'passed': '\033[1m\033[32m', # bold green
     'failed': '\033[1m\033[31m', # bold red
     'old': '\033[1m\033[41m\033[37m', # bold white on red
-    'new': '\033[1m\033[44m\033[37m', # bold white on blue
+    'new': '\033[1m\033[41m\033[37m', # bold white on red
     'context warning': '\033[1m\033[41m\033[37m', # bold white on red
     'bold': '\033[1m',
     'reset': '\033[0m',
@@ -64,11 +59,6 @@ getch = _Getch()
 
 # --- END PREAMBLE ---
 
-'''
-extract exercises
-should solution and/or correct be overwritten? to-do, empty, much shorter
-'''
-
 arguments = sys.argv[1:]
 if len(arguments) != 2:
     import os
@@ -82,15 +72,13 @@ doms = [etree.fromstring(xml) for xml in xmls]
 autoSaveTime = time.time()
 autoSaveInterval = 60 # seconds
 def auto_save(force=False):
-    global dom, inputFilename, termColors, autoSaveTime, autoSaveInterval
+    global doms, filenames, termColors, autoSaveTime, autoSaveInterval
     if force or (time.time()-autoSaveTime >= autoSaveInterval):
-        sys.stderr.write(termColors['autosave'] + 'Auto saving...' + termColors['stop'])
-        with open(inputFilename, 'wt') as fp:
-            fp.write(etree.tostring(dom, xml_declaration=True, encoding='utf-8'))
-        sys.stderr.write(termColors['autosave'] + ' done.\n' + termColors['stop'])
+        sys.stderr.write(termColors['autosave'] + 'Auto saving...' + termColors['reset'])
+        with open(filenames[0], 'wt') as fp:
+            fp.write(etree.tostring(doms[0], xml_declaration=True, encoding="utf-8") + '\n')
+        sys.stderr.write(termColors['autosave'] + ' done.\n' + termColors['reset'])
         autoSaveTime = time.time()
-
-nodeLists = [dom.xpath('//*') for dom in doms]
 
 def xpath_with_namespaces(iNode, iXpath):
     namespaces = {}
@@ -132,66 +120,50 @@ def strip_namespaces(xml):
         xml = xml[:start] + xml[stop+1:]
     return xml
 
+import StringMatcher
 
-for nodeList in nodeLists:
-    i = 0
-    while i < len(nodeList):
-        if nodeList[i].tag in ['shortcode']:
-            del nodeList[i]
-        else:
-            node = nodeList[i]
-            while node is not None:
-                if node.attrib.get('ignore') is not None:
-                    del nodeList[i]
-                    break
-                node = node.getparent()
+nodeLists = [dom.xpath('//exercises//problem-set/entry | //exercises//multi-part/entry') for dom in doms]
+assert len(nodeLists[0]) == len(nodeLists[1])
+
+for tagName in ['solution','correct']:
+    for nodeIndex in range(len(nodeLists[0])):
+        entries = [nodeList[nodeIndex] for nodeList in nodeLists]
+        solutions = [entry.find(tagName) for entry in entries]
+        solutionStrings = []
+        for solution in solutions:
+            if solution is None:
+                solutionStrings.append('')
             else:
-                for tag in OPTIONS['blanketIgnore']:
-                    if ('/' + tag + '[') in build_absolute_xpath(nodeList[i]):
-                        del nodeList[i]
-                        break
-                else:
-                    i += 1
+                solutionStrings.append(strip_namespaces(etree.tostring(solution, with_tail=False)))
+        if solutionStrings[0] != solutionStrings[1]:
+            blocks = StringMatcher.matching_blocks(StringMatcher.editops(solutionStrings[0], solutionStrings[1]), solutionStrings[0], solutionStrings[1])
+            for i, col in [(0,'old'), (1,'new')]:
+                pos = 0
+                output = ''
+                for block in blocks:
+                    output += termColors[col] + solutionStrings[i][pos:block[i]] + termColors['reset']
+                    output += solutionStrings[i][block[i]:block[i]+block[2]]
+                    pos = block[i]+block[2]
+                if pos < len(solutionStrings[i]):
+                    output += termColors[col] + solutionStrings[i][pos:] + termColors['reset']
+                print '===', col.upper(), '===================================================='
+                print output
+            print '============================================================'
 
+            sys.stdout.write('[y/n]? ')
+            response = getch()
+            if response == '\x03':
+                # Catch Ctrl-C
+                raise KeyboardInterrupt
+            passed = response in ['y','Y']
+            if passed:
+                print termColors['passed'] + 'yes' + termColors['reset']
+            else:
+                print termColors['failed'] + 'no' + termColors['reset']
+            sys.stdout.write('\n')
 
-for i in range(2):
-    with open('xpaths%i'%(i+1),'wt') as fp:
-        for node in nodeLists[i]:
-            fp.write(build_absolute_xpath(node) + '\n')
+            if passed:
+                solutions[0].getparent().replace(solutions[0], solutions[1])
+                auto_save()
 
-for listIndex in range(len(nodeLists[0])):
-    if nodeLists[0][listIndex].tag == 'multi-part' and nodeLists[1][listIndex].tag == 'problem-set':
-        nodeLists[1][listIndex].tag = 'multi-part'
-    xpaths = [build_absolute_xpath(nodeList[listIndex]) for nodeList in nodeLists]
-    if xpaths[0] != xpaths[1]:
-        print '====================='
-        for i in range(2):
-            print termColors['bold'] + xpaths[i] + termColors['reset']
-            print strip_namespaces(etree.tostring(nodeLists[i][listIndex-1]))
-            print termColors[['old','new'][i]] + strip_namespaces(etree.tostring(nodeLists[i][listIndex])) + termColors['reset']
-            print strip_namespaces(etree.tostring(nodeLists[i][listIndex+1]))
-            print '====================='
-        sys.exit()
-
-if OPTIONS['checkPictureCode']:
-    codeList = ['code']
-else:
-    codeList = []
-for listIndex in range(len(nodeLists[0])):
-    if nodeLists[0][listIndex].tag in ['number', 'unit_number', 'url', 'width', 'height', 'embed', 'usepackage', 'src', 'type', 'currency', 'unit', 'percentage', 'chem_compound', 'spec_note', 'nuclear_notation', 'nth', 'link'] + codeList:
-        if ''.join(etree.tostring(nodeLists[0][listIndex], with_tail=False).split()) != ''.join(etree.tostring(nodeLists[1][listIndex], with_tail=False).split()):
-            for i in range(2):
-                print termColors[['old','new'][i]] + strip_namespaces(etree.tostring(nodeLists[i][listIndex])) + termColors['reset']
-
-'''
-for listIndex in range(len(nodeLists[0])):
-    if nodeLists[0][listIndex].tag == 'latex':
-        latex1 = ''.join(etree.tostring(nodeLists[0][listIndex], with_tail=False).split())
-        latex2 = ''.join(etree.tostring(nodeLists[1][listIndex], with_tail=False).split())
-        if latex1 != latex2:
-            for i in range(2):
-                print termColors[['old','new'][i]] + strip_namespaces(etree.tostring(nodeLists[i][listIndex])) + termColors['reset']
-'''
-
-with open(filenames[1], 'wt') as fp:
-    fp.write(etree.tostring(doms[1], xml_declaration="True", encoding="utf-8") + '\n')
+auto_save(True)
