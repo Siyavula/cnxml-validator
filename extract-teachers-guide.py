@@ -1,7 +1,7 @@
 from __future__ import division
 from lxml import etree
 import sys
-from utils import get_full_dom_path
+from utils import get_full_dom_path, etree_replace_with_node_list
 
 def remove_ampersands(iNode, iWithTail=False):
     iNode.text = (iNode.text or '').replace('&', '')
@@ -19,35 +19,16 @@ def traverse(iNode):
         return True
     elif (iNode.tag == 'title') and (iNode.getparent().tag == 'section'):
         return True
+    elif iNode.tag == 'teachers-guide':
+        etree_replace_with_node_list(iNode.getparent(), iNode, iNode, keepTail=True)
+        return True
     elif iNode.tag == 'exercises':
-        for correctNode in iNode.xpath('.//correct'):
-            fullDomPath = get_full_dom_path(correctNode)
-            if 'solution' in fullDomPath:
-                correctNode.tail = ''
-                entryNode = correctNode.getparent()
-                while entryNode.tag != 'entry':
-                    entryNode = entryNode.getparent()
-                if 'latex' in fullDomPath:
-                    remove_ampersands(correctNode)
-                    correctNode.tag = 'latex'
-                    entryNode.append(etree.Element('correct'))
-                    entryNode[-1].append(correctNode)
-                else:
-                    entryNode.append(correctNode)
-        for tag in ['header', 'footer', 'shortcode']:
-            for child in iNode.xpath('.//' + tag):
-                child.getparent().remove(child)
-        for tag in ['problem', 'solution']:
-            for child in iNode.xpath('.//' + tag):
-                child.clear()
-        for child in iNode.xpath('.//problem-set'):
-            if child.attrib.get('{http://siyavula.com/cnxml/style/0.1}columns') is not None:
-                del child.attrib['{http://siyavula.com/cnxml/style/0.1}columns']
         return True
     else:
-        if len(iNode.xpath('.//exercises')) > 0:
-            sys.stderr.write('WARNING: Deleting node that contains exercises.\n')
-            sys.stderr.write(etree.tostring(iNode) + '\n')
+        for tag in ['exercises', 'teachers-guide']:
+            if len(iNode.xpath('.//' + tag)) > 0:
+                sys.stderr.write('WARNING: Deleting node that contains %s.\n'%tag)
+                sys.stderr.write(etree.tostring(iNode) + '\n')
         return False
 
 
