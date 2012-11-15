@@ -23,6 +23,8 @@ def traverse(iNode):
         etree_replace_with_node_list(iNode.getparent(), iNode, iNode, keepTail=True)
         return True
     elif iNode.tag == 'exercises':
+        for tgNode in iNode.xpath('.//teachers-guide'):
+            etree_replace_with_node_list(tgNode.getparent(), tgNode, tgNode, keepTail=True)
         return True
     else:
         for tag in ['exercises', 'teachers-guide']:
