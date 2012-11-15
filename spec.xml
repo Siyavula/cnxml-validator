@@ -131,10 +131,6 @@ return self.text.strip()
       <reference>block-element</reference>
     </children>
     <notext/>
-    <conversion-callback name="latex teacher">
-environment = "TeachersGuide"
-return '\n\\begin{' + environment + '}\n' + self.text.strip() + r'\end{' + environment + '}\n'
-    </conversion-callback>
     <conversion-callback name="latex learner correct">
 return ''
     </conversion-callback>
@@ -481,7 +477,7 @@ else:
       <element>problem-set</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex learner">
 environment = 'Exercises'
 
 # Shortcodes
@@ -517,6 +513,10 @@ if len(shortcodeArray) > 0:
     shortcodeLatex += '\n' + r'\end{tabular}' + '\n' + r'\end{ExercisesShortcodes}' + '\n'
 
 return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + shortcodeLatex + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="latex teacher">
+environment = 'Exercises'
+return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="latex correct">
 environment = 'Exercises'
@@ -563,7 +563,7 @@ return ''
       <optional>footer</optional>
     </children>
     <notext/>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex learner">
 # Store shortcode in problem-set
 if self.tag == 'problem-set': # multi-part also uses this transform, guard against it for shortcodes
     parentTag = self.getparent().tag
@@ -605,6 +605,49 @@ else:
     # HACK to solve number scrunching problem
     # result += '\n\\begin{' + entryEnvironment + '}\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n' + r'\end{' + entryEnvironment + '}\n'
     result += '\n\\item\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
+
+    if (self.getnext() is None) or (self.getnext().tag == 'footer'):
+        # Last entry in problem set
+        result += '\n' + r'\end{' + entriesEnvironment + '}\n' + columnsEnd
+
+    return result
+    </conversion-callback>
+    <conversion-callback name="latex teacher">
+problemsetEnvironment = 'ExercisesProblemset'
+entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
+if self.getparent().tag == 'exercises':
+    # First level of numbering in exercise environment
+    return '\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
+else:
+    columnCount = int(self.getparent().attrib['{http://siyavula.com/cnxml/style/0.1}columns'])
+    if columnCount > 1:
+        columnsBegin = r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n'
+        columnsEnd = '\\end{ExercisesProblemsetColumns}\n'
+    else:
+        columnsBegin = ''
+        columnsEnd = ''
+
+    count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
+    self.getparent().attrib['problem-set-entry-count'] = str(count)
+    if count == 1:
+        # First entry in problem set
+        result = '\n' + columnsBegin + r'\begin{' + entriesEnvironment + '}'
+    else:
+        result = ''
+
+    result += '\n\\item\n\\begin{' + problemsetEnvironment + '}\n' + self.text
+    solutionListRepr = self.attrib.get('solutionList')
+    if solutionListRepr is not None:
+        solutionList = eval(solutionListRepr)
+        solutionList = '\n\\begin{enumerate}\n\\item ' + '\item '.join(solutionList) + r'\end{enumerate}' + '\n'
+        myPath = utils.get_full_dom_path(self)
+        if self.getparent().getparent().tag == 'exercises':
+            result += r'\item[] \textbf{Solution:} ' + solutionList
+        else:
+            parentSolutionList = eval(self.getparent().attrib.get('solutionList', '[]'))
+            parentSolutionList.append(solutionList)
+            self.getparent().attrib['solutionList'] = repr(parentSolutionList)
+    result += r'\end{' + problemsetEnvironment + '}\n'
 
     if (self.getnext() is None) or (self.getnext().tag == 'footer'):
         # Last entry in problem set
@@ -763,9 +806,17 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex learner">
 environment = 'ExercisesProblemsetEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="latex teacher">
+environment = 'ExercisesProblemsetEntryProblem'
+result = '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+#problemList = eval(self.getparent().getparent().attrib.get('problemList', '[]'))
+#problemList.append(result)
+#self.getparent().getparent().attrib['problemList'] = repr(problemList)
+return result
     </conversion-callback>
     <conversion-callback name="latex correct">
 return ''
@@ -793,15 +844,16 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex teacher">
-if self.text.strip() == '':
-    warning_message("Empty solution.")
+environment = 'ExercisesProblemsetEntrySolution'
+result = '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
 
-renderSolutions = False # Put full solutions in textbook?
-
-if renderSolutions:
-    environment = 'ExercisesProblemsetEntrySolution'
-    return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+myPath = utils.get_full_dom_path(self)
+if self.getparent().getparent().getparent().tag == 'exercises':
+    return r'\item[] \textbf{Solution:} ' + result
 else:
+    solutionList = eval(self.getparent().getparent().attrib.get('solutionList', '[]'))
+    solutionList.append(result)
+    self.getparent().getparent().attrib['solutionList'] = repr(solutionList)
     return ''
     </conversion-callback>
     <conversion-callback name="latex learner correct">
