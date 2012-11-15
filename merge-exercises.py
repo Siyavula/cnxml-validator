@@ -137,11 +137,14 @@ for tagName in ['solution','correct']:
                 solutionStrings.append(strip_namespaces(etree.tostring(solution, with_tail=False)))
         if solutionStrings[0] != solutionStrings[1]:
             blocks = StringMatcher.matching_blocks(StringMatcher.editops(solutionStrings[0], solutionStrings[1]), solutionStrings[0], solutionStrings[1])
+            if sum([block[2] for block in blocks])/max(len(solutionStrings[0]), len(solutionStrings[1])) < 0.1:
+                blocks = []
             for i, col in [(0,'old'), (1,'new')]:
                 pos = 0
                 output = ''
                 for block in blocks:
-                    output += termColors[col] + solutionStrings[i][pos:block[i]] + termColors['reset']
+                    if block[i] > pos:
+                        output += termColors[col] + solutionStrings[i][pos:block[i]] + termColors['reset']
                     output += solutionStrings[i][block[i]:block[i]+block[2]]
                     pos = block[i]+block[2]
                 if pos < len(solutionStrings[i]):
@@ -163,7 +166,10 @@ for tagName in ['solution','correct']:
             sys.stdout.write('\n')
 
             if passed:
-                solutions[0].getparent().replace(solutions[0], solutions[1])
+                if (tagName == 'correct') and (solutions[0] is None):
+                    entries[0].append(solutions[1])
+                else:
+                    entries[0].replace(solutions[0], solutions[1])
                 auto_save()
 
 auto_save(True)

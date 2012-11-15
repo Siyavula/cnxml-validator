@@ -6,7 +6,7 @@ import sys, time
 from utils import get_full_dom_path
 
 OPTIONS = {
-    'blanketIgnore': ['exercises'],
+    'blanketIgnore': [],#['exercises'],
     'checkPictureCode': True,
 }
 
@@ -158,7 +158,7 @@ for listIndex in range(len(nodeLists[0])):
     if nodeLists[0][listIndex].tag == 'multi-part' and nodeLists[1][listIndex].tag == 'problem-set':
         nodeLists[1][listIndex].tag = 'multi-part'
     xpaths = [build_absolute_xpath(nodeList[listIndex]) for nodeList in nodeLists]
-    if xpaths[0] != xpaths[1]:
+    if (xpaths[0] != xpaths[1]) or (nodeLists[0][listIndex].attrib != nodeLists[1][listIndex].attrib):
         print '====================='
         for i in range(2):
             print termColors['bold'] + xpaths[i] + termColors['reset']
