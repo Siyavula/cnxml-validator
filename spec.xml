@@ -2814,7 +2814,7 @@ except ValueError:
 
 format = self.attrib['format']
 if (format == 'word') and isInt and (value &lt;= 12):
-    return ['eerste', 'tweede', 'derde', 'vierde', 'vyfde', 'sesde', 'sewende', 'agtste', 'neënde', 'tiende', 'elfde', 'twaalfde'][value-1]
+    return ['eerste', 'tweede', 'derde', 'vierde', 'vyfde', 'sesde', 'sewende', 'agtste', u'neënde', 'tiende', 'elfde', 'twaalfde'][value-1]
 else:
     # format == 'superscript'
     if isInt:
