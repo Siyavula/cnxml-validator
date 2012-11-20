@@ -67,8 +67,8 @@ getch = _Getch()
 arguments = sys.argv[1:]
 if len(arguments) != 2:
     import os
-    print termColors['error'] + 'ERROR:' + termColors['stop'] + ' Incorrect number of arguments.'
-    print 'Usage: %s filename1 filename2'%os.path.basename(sys.argv[0])
+    print termColors['error'] + 'ERROR:' + termColors['reset'] + ' Incorrect number of arguments.'
+    print 'Usage: %s fromfilename tofilename'%os.path.basename(sys.argv[0])
     sys.exit()
 filenames = arguments
 xmls = [open(filename, 'rt').read() for filename in filenames]
@@ -79,10 +79,10 @@ autoSaveInterval = 60 # seconds
 def auto_save(force=False):
     global dom, inputFilename, termColors, autoSaveTime, autoSaveInterval
     if force or (time.time()-autoSaveTime >= autoSaveInterval):
-        sys.stderr.write(termColors['autosave'] + 'Auto saving...' + termColors['stop'])
+        sys.stderr.write(termColors['autosave'] + 'Auto saving...' + termColors['reset'])
         with open(inputFilename, 'wt') as fp:
             fp.write(etree.tostring(dom, xml_declaration=True, encoding='utf-8'))
-        sys.stderr.write(termColors['autosave'] + ' done.\n' + termColors['stop'])
+        sys.stderr.write(termColors['autosave'] + ' done.\n' + termColors['reset'])
         autoSaveTime = time.time()
 
 nodeLists = [dom.xpath('//*') for dom in doms]
@@ -131,7 +131,7 @@ def strip_namespaces(xml):
 for nodeList in nodeLists:
     i = 0
     while i < len(nodeList):
-        if nodeList[i].tag in ['shortcode']:
+        if False:#nodeList[i].tag in ['shortcode']:
             del nodeList[i]
         else:
             node = nodeList[i]
