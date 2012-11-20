@@ -642,7 +642,7 @@ else:
         solutionList = '\n\\begin{enumerate}\n\\item ' + '\item '.join(solutionList) + r'\end{enumerate}' + '\n'
         myPath = utils.get_full_dom_path(self)
         if self.getparent().getparent().tag == 'exercises':
-            result += r'\item[] \textbf{Solution:} ' + solutionList
+            result += r'\item[] \textbf{Oplossing:} ' + solutionList
         else:
             parentSolutionList = eval(self.getparent().attrib.get('solutionList', '[]'))
             parentSolutionList.append(solutionList)
@@ -849,7 +849,7 @@ result = '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment
 
 myPath = utils.get_full_dom_path(self)
 if self.getparent().getparent().getparent().tag == 'exercises':
-    return r'\item[] \textbf{Solution:} ' + result
+    return r'\item[] \textbf{Oplossing:} ' + result
 else:
     solutionList = eval(self.getparent().getparent().attrib.get('solutionList', '[]'))
     solutionList.append(result)
