@@ -62,7 +62,7 @@ getch = _Getch()
 arguments = sys.argv[1:]
 if len(arguments) != 2:
     import os
-    print termColors['error'] + 'ERROR:' + termColors['stop'] + ' Incorrect number of arguments.'
+    print termColors['error'] + 'ERROR:' + termColors['reset'] + ' Incorrect number of arguments.'
     print 'Usage: %s tofilename fromfilename'%os.path.basename(sys.argv[0])
     sys.exit()
 filenames = arguments
