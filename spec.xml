@@ -619,11 +619,19 @@ if self.getparent().tag == 'exercises':
     # First level of numbering in exercise environment
     return '\n\\begin{' + problemsetEnvironment + '}\n' + self.text + r'\end{' + problemsetEnvironment + '}\n'
 else:
+    columnCount = int(self.getparent().attrib['{http://siyavula.com/cnxml/style/0.1}columns'])
+    if columnCount > 1:
+        columnsBegin = r'\begin{ExercisesProblemsetColumns}{' + str(columnCount) + '}\n'
+        columnsEnd = '\\end{ExercisesProblemsetColumns}\n'
+    else:
+        columnsBegin = ''
+        columnsEnd = ''
+
     count = int(self.getparent().attrib.get('problem-set-entry-count', 0)) + 1
     self.getparent().attrib['problem-set-entry-count'] = str(count)
     if count == 1:
         # First entry in problem set
-        result = '\n' + r'\begin{' + entriesEnvironment + '}'
+        result = '\n' + columnsBegin + r'\begin{' + entriesEnvironment + '}'
     else:
         result = ''
 
@@ -643,7 +651,7 @@ else:
 
     if (self.getnext() is None) or (self.getnext().tag == 'footer'):
         # Last entry in problem set
-        result += '\n' + r'\end{' + entriesEnvironment + '}\n'
+        result += '\n' + r'\end{' + entriesEnvironment + '}\n' + columnsEnd
 
     return result
     </conversion-callback>
