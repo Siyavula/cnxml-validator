@@ -12,7 +12,7 @@
 The document element is the root.
 It may have a metadata element and must have a content element.
     </documentation>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -31,7 +31,7 @@ The metadata section contains information about the XML document itself.
 Only version numbers at this time.
 You must not edit this section manually, unless you really know what you're doing.
     </documentation>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return ''
     </conversion-callback>
   </entry>
@@ -42,7 +42,7 @@ return ''
       <pre-processing-callback>strip</pre-processing-callback>
     </text>
     <validation-callback>is_version_number</validation-callback>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -51,7 +51,7 @@ return ''
       <pre-processing-callback>strip</pre-processing-callback>
     </text>
     <validation-callback>is_version_number</validation-callback>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -65,7 +65,7 @@ return ''
       </one-of>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return self.text.strip()
     </conversion-callback>
   </entry>
@@ -1749,6 +1749,9 @@ tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
 
 return head + self.text + tail
     </conversion-callback>
+    <conversion-callback name="html">
+return None #'TODO: pspicture conversion to image format'
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2744,6 +2747,33 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/solu
       </entry>
     </attributes>
     <conversion-callback name="latex learner correct teacher">
+try:
+    value = int(self.text)
+    isInt = True
+except ValueError:
+    value = self.text.strip()
+    isInt = False
+
+format = self.attrib['format']
+if (format == 'word') and isInt and (value &lt; 12):
+    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value-1]
+else:
+    # format == 'superscript'
+    if isInt:
+        if (value % 10 == 1) and (value//10 % 10 != 1):
+            suffix = 'st'
+        elif (value % 10 == 2) and (value//10 % 10 != 1):
+            suffix = 'nd'
+        elif (value % 10 == 3) and (value//10 % 10 != 1):
+            suffix = 'rd'
+        else:
+            suffix = 'th'
+        value = str(value)
+    else:
+        suffix = 'th'
+    return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
 try:
     value = int(self.text)
     isInt = True
