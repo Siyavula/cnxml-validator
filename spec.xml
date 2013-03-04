@@ -81,6 +81,14 @@ return self.text.strip()
 environment = 'ActivitySection'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'ActivitySection'
+activitysection = etree.Element('div')
+activitysection.attrib['class'] = 'activitysection'
+activitysection.text = self.text
+activitysection.tail = '\n'
+return etree.tostring(activitysection)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -91,6 +99,13 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     <conversion-callback name="latex learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+title = etree.Element('h1')
+title.attrib['class'] = 'ActivitySectionTitle'
+title.text = self.text.strip()
+self.getparent().attrib['title'] = self.text.strip()
+return etree.tostring(title)
     </conversion-callback>
   </entry>
 
@@ -142,7 +157,14 @@ return self.text.strip()
 environment = "TeachersGuide"
 return '\n\\begin{' + environment + '}\n' + self.text.strip() + r'\end{' + environment + '}\n'
     </conversion-callback>
-    <conversion-callback name="latex learner correct">
+    <conversion-callback name="html teacher">
+environment = "TeachersGuide"
+tg = etree.Element('div')
+tg.attrib['class'] = 'teachersguide'
+tg.text = self.text
+return etree.tostring(tg)
+    </conversion-callback>
+    <conversion-callback name="html latex learner correct">
 return ''
     </conversion-callback>
   </entry>
@@ -206,7 +228,7 @@ return etree.tostring(newElement)
   <entry>
     <xpath>/document/content//section/shortcode</xpath>
     <validation-callback>is_section_shortcode</validation-callback>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="html latex learner correct teacher">
 self.getparent().attrib['shortcode'] = self.text
 return ''
     </conversion-callback>
@@ -574,6 +596,14 @@ if len(shortcodeArray) > 0:
 
 return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + shortcodeLatex + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = etree.Element('div')
+environment.attrib['class'] = 'Exercises'
+environment.text = self.text
+environment.tail = '\n'
+
+return etree.tostring(environment)
+    </conversion-callback>
     <conversion-callback name="latex correct">
 environment = 'Exercises'
 columnCount = 2
@@ -589,6 +619,13 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
     <conversion-callback name="latex learner correct teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+title = etree.Element('h1')
+title.text = self.text.strip()
+title.attrib['class'] = 'ExercisesTitle'
+
+return etree.tostring(title)
     </conversion-callback>
   </entry>
 
@@ -710,6 +747,12 @@ else:
 environment = 'ExercisesProblemsetHeader'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'ExercisesProblemsetHeader'
+header = etree.Element('div')
+header.attrib['class'] = environment
+return etree.tostring(header)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -721,6 +764,12 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="latex learner teacher">
 environment = 'ExercisesProblemsetFooter'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'ExercisesProblemsetHeader'
+footer = etree.Element('div')
+footer.attrib['class'] = environment
+return etree.tostring(footer)
     </conversion-callback>
   </entry>
 
@@ -796,7 +845,7 @@ return result
   <entry>
     <xpath>/document/content//exercises//problem-set/entry/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="html latex learner teacher">
 # Store shortcode in problem-set
 count = int(self.getparent().getparent().attrib.get('problem-set-entry-count', 0)) + 1
 shortcodes = eval(self.getparent().getparent().attrib.get('shortcodes', '{}'))
@@ -817,6 +866,13 @@ return ''
     <conversion-callback name="latex learner teacher">
 environment = 'ExercisesProblemsetEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'ExercisesProblemsetEntryProblem'
+problem = etree.Element('div')
+problem.attrib['class'] = environment
+problem.text = self.text
+return etree.tostring(problem)
     </conversion-callback>
     <conversion-callback name="latex correct">
 return ''
@@ -855,6 +911,21 @@ if renderSolutions:
 else:
     return ''
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+if self.text.strip() == '':
+    warning_message("Empty solution.")
+
+renderSolutions = True # Put full solutions in textbook?
+
+if renderSolutions:
+    environment = 'ExercisesProblemsetEntrySolution'
+    solution = etree.Element('div')
+    solution.attrib['class'] = environment
+    solution.text = self.text
+    return etree.tostring(solution)
+else:
+    return ''
+    </conversion-callback>
     <conversion-callback name="latex correct">
 return ''
     </conversion-callback>
@@ -868,10 +939,10 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <conversion-callback name="latex correct">
+    <conversion-callback name="html latex correct">
 return '\n' + self.text.strip() + '\n'
     </conversion-callback>
-    <conversion-callback name="latex learner teacher"/>
+    <conversion-callback name="html latex learner teacher"/>
   </entry>
 
   <entry>
