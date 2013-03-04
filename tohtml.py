@@ -2,6 +2,7 @@ from lxml import etree
 import sys, os
 import argparse
 
+from xml.sax.saxutils import unescape
 from XmlValidator import XmlValidator
 import utils
 
@@ -101,7 +102,6 @@ def traverse(iNode, iValidator):
 
     children = iNode.getchildren()
     for child in children:
-        print child.tag
         traverse(child, iValidator)
 
     # Get associated conversion function
@@ -114,15 +114,15 @@ def traverse(iNode, iValidator):
     converted = conversionFunction(iNode)
     if isinstance(converted, basestring):
         if parent is None:
-            return converted
+            return unescape(converted)
         else:
             from lxml import etree
             dummyNode = etree.Element('dummy')
-            dummyNode.text = converted
+            dummyNode.text = unescape(converted)
             utils.etree_replace_with_node_list(parent, iNode, dummyNode)
     elif converted is not None:
         if parent is None:
-            return converted
+            return unescape(converted)
         else:
             utils.etree_replace_with_node_list(iNode.getparent(), iNode, converted)
 
@@ -138,5 +138,13 @@ for filename in commandlineArguments.filename:
     document = validator.dom
 
     #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
-    print traverse(document, validator).encode('utf-8')
+    print '''<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello HTML</title>
+  </head>
+  <body>
+    %s
+  </body>
+</html>'''% traverse(document, validator).encode('utf-8')
     outputFile.flush()

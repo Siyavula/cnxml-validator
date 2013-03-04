@@ -120,6 +120,13 @@ if self.attrib.get('shortcode') is not None:
     result = '\n' + r'\setsectionshortcode{' + self.attrib['shortcode'] + '}\n' + result
 return result
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+result = self.text.strip()
+newElement = etree.Element('div')
+newElement.attrib['class'] = 'section'
+newElement.text = result
+return etree.tostring(newElement)
+    </conversion-callback>
     <conversion-callback name="latex correct">
 return self.text.strip()
     </conversion-callback>
@@ -172,6 +179,28 @@ if level == 0:
 else:
     return ''
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+level = -1
+node = self.getparent()
+while node is not None:
+    if node.tag == 'section':
+        level += 1
+    node = node.getparent()
+sections = ['chapter', 'section', 'subsection', 'subsubsection', 'paragraph']
+headinglevels = ['h1', 'h2', 'h3', 'h4', 'h5']
+if level >= len(sections):
+    warning_message("Exceeded maximum section level (title: %s)"%(repr(self.text)))
+    section = sections[-1]
+else:
+    section = sections[level]
+    headlevel = headinglevels[level]
+
+newElement = etree.Element(headlevel)
+newElement.attrib['class'] = '%stitle'%section
+newElement.text = self.text
+
+return etree.tostring(newElement)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -194,6 +223,13 @@ pos = text.find('"')
 if pos != -1:
     warning_message('Straight double quote in text, consider replacing with left/right quotes: %s'%repr(text[pos-20:pos+20]))
 return '\\par\n' + text + '\n'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+text = ' '.join(self.text.strip().split())
+newElement = etree.Element('p')
+newElement.attrib['class'] = 'para'
+newElement.text = self.text
+return '\n' + etree.tostring(newElement) + '\n'
     </conversion-callback>
   </entry>
 
@@ -240,6 +276,20 @@ elif listType == 'enumerated':
     environment = 'ListEnumerated'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+listType = self.attrib['list-type']
+if listType == 'bulleted':
+    environment = 'ListBulleted'
+    newlist = etree.Element('ul')
+elif listType == 'enumerated':
+    environment = 'ListEnumerated'
+    newlist = etree.Element('ol')
+
+newlist.text = self.text
+newlist.attrib['class'] = environment
+
+return etree.tostring(newlist)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -252,6 +302,12 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     </children>
     <conversion-callback name="latex learner correct teacher">
 return r'\item ' + self.text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+newitem = etree.Element('li')
+newitem.text = self.text
+newitem.tail = '\n'
+return etree.tostring(newitem)
     </conversion-callback>
   </entry>
 
@@ -983,6 +1039,23 @@ else:
     environment = 'Activity' + activityType.capitalize()
 return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+activityType = self.attrib['type']
+if activityType == 'f_experiment':
+    environment = 'ActivityFormalexperiment'
+elif activityType == 'g_experiment':
+    environment = 'ActivityGeneralexperiment'
+elif activityType == 'i_experiment':
+    environment = 'ActivityInformalexperiment'
+else:
+    environment = 'Activity' + activityType.capitalize()
+
+activity = etree.Element('div')
+activity.attrib['class'] = environment
+activity.text = self.text
+activity.tail = '\n'
+return etree.tostring(activity)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -993,6 +1066,12 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
     <conversion-callback name="latex learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+title = etree.Element('h1')
+title.attrib['class']= 'ActivityTitle'
+title.text = self.text
+return etree.tostring(title)
     </conversion-callback>
   </entry>
 
@@ -2865,7 +2944,7 @@ if url is not None:
       </any-number>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="html latex learner correct teacher">
 return ''
     </conversion-callback>
   </entry>
