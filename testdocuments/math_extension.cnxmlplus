@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<document xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml/0.4" xmlns:style="http://siyavula.com/cnxml/style/0.1">
+<its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+    <its:translateRule translate="no" selector="//link"/>
+    <its:translateRule translate="no" selector="//url"/>
+    <its:translateRule translate="no" selector="//latex"/>
+    <its:translateRule translate="no" selector="//number"/>
+    <its:translateRule translate="no" selector="//unit"/>
+    <its:translateRule translate="no" selector="//unit_number"/>
+    <its:translateRule translate="no" selector="//percentage"/>
+    <its:translateRule translate="no" selector="//symbol"/>
+    <its:translateRule translate="no" selector="//currency"/>
+    <its:translateRule translate="no" selector="//chem_compound"/>
+    <its:translateRule translate="no" selector="//spec_note"/>
+    <its:translateRule translate="no" selector="//nuclear_notation"/>
+    <its:translateRule translate="no" selector="//mass_number"/>
+    <its:translateRule translate="no" selector="//atomic_number"/>
+    <its:translateRule translate="no" selector="//code"/>
+    <its:translateRule translate="no" selector="//m:math"/>
+    <its:translateRule translate="no" selector="//shortcode"/>
+    <its:translateRule translate="no" selector="//metadata"/>
+    <its:translateRule translate="no" selector="//image"/>
+    <its:translateRule translate="no" selector="//video"/>
+    <its:translateRule translate="no" selector="//figure/type"/>
+    <its:translateRule translate="no" selector="//simulation"/>
+</its:rules>
+  <metadata>
+    <cnxml-version>0.1</cnxml-version>
+    <pspicture-generator-version>1.1</pspicture-generator-version>
+  </metadata>
+  <content>
+     <math_extension>
+<title>Diffraction</title>
+<body>
+<para>Diffraction effects are more clear for water waves with longer wavelengths. Diffraction can be demonstrated by placing small barriers and obstacles in a ripple tank and observing the path o     f the water waves as they encounter the obstacles. The waves are seen to pass around the barrier into the regions behind it; subsequently the water behind the barrier is disturbed. The amount of diffraction      (the sharpness of the bending) increases with increasing wavelength and decreases with decreasing wavelength. In fact, when the wavelength of the waves are smaller than the obstacle, no noticeable diffraction occurs.</para>
+</body>
+</math_extension>
+</content>
+</document>

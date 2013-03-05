@@ -956,6 +956,18 @@ return '\n' + self.text.strip() + '\n'
 environment = 'Definition'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+environment = 'Definition'
+definition = etree.Element('dl')
+definition.attrib['class'] = environment
+term = etree.Element('dt')
+meaning = etree.Element('dd')
+term.text = self.attrib['title']
+meaning.text = self.text
+definition.append(term)
+definition.append(meaning)
+return etree.tostring(definition)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -963,7 +975,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -977,7 +989,7 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -1000,6 +1012,17 @@ return r'''
 ''' + self.text + r'''
 \end{''' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'Theorem'
+theorem = etree.Element('div')
+theorem.attrib['class'] = environment
+title = etree.Element('h1')
+title.text = self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','')
+title.tail=self.text
+theorem.append(title)
+
+return etree.tostring(theorem)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1007,7 +1030,7 @@ return r'''
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['theoremLabel'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -1018,7 +1041,7 @@ return ''
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['theoremTitle'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -1036,6 +1059,13 @@ return ''
 environment = 'TheoremStatement'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'TheoremStatement'
+theoremstatement = etree.Element('div')
+theoremstatement.attrib['class'] = environment
+theoremstatement.text = self.text
+return etree.tostring(theoremstatement)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1049,6 +1079,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="latex learner teacher">
 environment = 'TheoremGiven'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'TheoremGiven'
+theoremgiven = etree.Element('div')
+theoremgiven.attrib['class'] = environment
+theoremgiven.text = self.text
+return etree.tostring(theoremgiven)
     </conversion-callback>
   </entry>
 
@@ -1064,6 +1101,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'TheoremRequired'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'TheoremRequired'
+theoremrequired = etree.Element('div')
+theoremrequired.attrib['class'] = environment
+theoremrequired.text = self.text
+return etree.tostring(theoremrequired)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1077,6 +1121,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="latex learner teacher">
 environment = 'TheoremProof'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'TheoremProof'
+theoremproof = etree.Element('div')
+theoremproof.attrib['class'] = environment
+theoremproof.text = self.text
+return etree.tostring(theoremproof)
     </conversion-callback>
   </entry>
 
@@ -1167,6 +1218,13 @@ return etree.tostring(title)
 environment = 'Note' + self.attrib['type'].capitalize()
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+environment = 'Note' + self.attrib['type'].capitalize()
+note = etree.Element('div')
+note.attrib['class'] = environment
+note.text = self.text
+return etree.tostring(note)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1178,6 +1236,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
 environment = 'Mathidentity'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+environment = 'Mathidentity'
+mathidentity = etree.Element('div')
+mathidentity.attrib['class'] = environment
+mathidentity.text = self.text
+return etree.tostring(mathidentity)
     </conversion-callback>
     <conversion-callback name="latex correct"/>
   </entry>
@@ -1193,6 +1258,16 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'Mathextension'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+environment = 'Mathextension'
+mathextension = etree.Element('div')
+mathextension.attrib['class'] = environment
+title = etree.Element('h1')
+title.text = self.attrib['title']
+title.tail = self.text
+mathextension.append(title)
+return etree.tostring(mathextension)
+    </conversion-callback>
     <conversion-callback name="latex correct"/>
   </entry>
 
@@ -1201,7 +1276,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -1212,7 +1287,7 @@ return ''
     <children>
       <reference>block-element-no-subsections</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -1535,6 +1610,18 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'Workedexample'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'Workedexample'
+workedexample = etree.Element('div')
+workedexample.attrib['class'] = environment
+title = etree.Element('h1')
+title.attrib['class'] = '%sTitle'%environment
+title.tail = self.text
+title.text = self.attrib['title']
+workedexample.append(title)
+
+return etree.tostring(workedexample)
+    </conversion-callback>
     <conversion-callback name="latex correct"/>
   </entry>
 
@@ -1543,11 +1630,11 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
-    <conversion-callback name="latex correct"/>
+    <conversion-callback name="html latex correct"/>
   </entry>
 
   <entry>
@@ -1563,6 +1650,16 @@ if self.text is None:
     raise ValueError, "Worked example question should not be empty."
 environment = 'WorkedexampleQuestion'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+if self.text is None:
+    raise ValueError, "Worked example question should not be empty."
+environment = 'WorkedexampleQuestion'
+workedexampleq = etree.Element('div')
+workedexampleq.attrib['class'] = environment
+workedexampleq.text = self.text
+
+return etree.tostring(workedexampleq)
     </conversion-callback>
     <conversion-callback name="latex correct"/>
   </entry>
@@ -1584,7 +1681,17 @@ if self.text is None:
 environment = 'WorkedexampleAnswer'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
-    <conversion-callback name="latex correct"/>
+    <conversion-callback name="html learner teacher">
+if self.text is None:
+    raise ValueError, "Worked example answer should not be empty."
+environment = 'WorkedexampleAnswer'
+workedexamplea = etree.Element('div')
+workedexamplea.attrib['class'] = environment
+workedexamplea.text = self.text
+
+return etree.tostring(workedexamplea)
+    </conversion-callback>
+    <conversion-callback name="latex html correct"/>
   </entry>
 
   <entry>
@@ -1598,7 +1705,18 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'WorkedexampleAnswerWorkstep'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
-    <conversion-callback name="latex correct"/>
+    <conversion-callback name="html learner teacher">
+environment = 'WorkedexampleAnswerWorkstep'
+workstep = etree.Element('div')
+workstep.attrib['class'] = environment
+title = etree.Element('h2')
+title.attrib['class'] = '%sTitle'%environment
+title.text = self.attrib['title']
+title.tail = '\n'+self.text
+workstep.append(title)
+return etree.tostring(workstep)
+    </conversion-callback>
+    <conversion-callback name="latex html correct"/>
   </entry>
 
   <entry>
@@ -1606,7 +1724,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     <children>
       <reference>inline-element</reference>
     </children>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -2149,7 +2267,7 @@ return self.text
 	</one-of>
       </any-number>
     </children>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 # First check that there aren't any funny functions
 unslashedFunctions = latex_math_function_check(self.text)
 if len(unslashedFunctions) > 0:

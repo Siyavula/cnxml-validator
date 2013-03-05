@@ -142,6 +142,9 @@ for filename in commandlineArguments.filename:
 <html>
   <head>
     <title>Hello HTML</title>
+    <script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
   </head>
   <body>
     %s
