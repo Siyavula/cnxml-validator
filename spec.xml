@@ -142,7 +142,7 @@ newElement.attrib['class'] = 'section'
 newElement.text = result
 return etree.tostring(newElement)
     </conversion-callback>
-    <conversion-callback name="latex correct">
+    <conversion-callback name="latex html correct">
 return self.text.strip()
     </conversion-callback>
   </entry>
@@ -1303,6 +1303,15 @@ return self.text
     <conversion-callback name="latex learner teacher">
 return r'\paragraph{Key Mathematics Concepts} \begin{itemize}' + '\n' + self.text.strip() + '\n' + r'\end{itemize}' + '\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+linkedconcept = etree.Element('div')
+linkedconcept.attrib['class'] = 'LinkedConcept'
+linkedconcept.text = "Key Mathematics Concepts"
+mylist = etree.Element('ul')
+mylist.text=self.text
+linkedconcept.append(mylist)
+return etree.tostring(mylist)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1318,11 +1327,16 @@ return r'\paragraph{Key Mathematics Concepts} \begin{itemize}' + '\n' + self.tex
     <conversion-callback name="latex learner teacher">
 return r'\item ' + self.text + '\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+li = etree.Element('li')
+li.text = self.text
+return etree.tostring(li)
+    </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//linked-concepts/concept/text</xpath>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -1330,7 +1344,7 @@ return self.text
   <entry>
     <xpath>/document/content//linked-concepts/concept/subject</xpath>
     <validation-callback>is_subject</validation-callback>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 subject = self.text.strip().lower()
 return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subject]
     </conversion-callback>
@@ -1339,14 +1353,14 @@ return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subje
   <entry>
     <xpath>/document/content//linked-concepts/concept/grade</xpath>
     <validation-callback>is_integer</validation-callback>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 return ', Grade %i'%(int(self.text))
     </conversion-callback>
   </entry>
 
   <entry>
     <xpath>/document/content//linked-concepts/concept/chapter</xpath>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 return ', ' + self.text.capitalize()
     </conversion-callback>
   </entry>
@@ -1354,7 +1368,7 @@ return ', ' + self.text.capitalize()
   <entry>
     <xpath>/document/content//linked-concepts/concept/shortcode</xpath>
     <validation-callback>is_section_shortcode</validation-callback>
-    <conversion-callback name="latex learner teacher">
+    <conversion-callback name="latex html learner teacher">
 return ''
     </conversion-callback>
   </entry>
@@ -1917,6 +1931,16 @@ if id is not None:
 result += r'\end{' + environment + '}\n'
 return result
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher"><!-- type already creates start of environment -->
+environment = 'Figure' + self.attrib['type'].capitalize()
+id = self.attrib.get('id')
+figure = etree.Element('div')
+figure.attrib['class'] = environment
+figure.attrib['id'] = id
+figure.text = self.text
+
+return etree.tostring(figure)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2171,6 +2195,17 @@ if self.attrib.has_key('attribution'):
     result += r'\ImageAttribution{' + self.attrib['attribution'] + '}\n'
 return head + result + tail
     </conversion-callback>
+<!-- <img src="pulpit.jpg" alt="Pulpit rock" width="304" height="228"> -->
+    <conversion-callback name="html learner teacher">
+width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
+img = etree.Element('img')
+img['src'] = self.attrib['src']
+img['width'] = width
+img['alt'] = self.attrib['attribution']
+
+return etree.tostring(img)
+</conversion-callback>
+
     <conversion-callback name="latex correct">
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
@@ -2188,7 +2223,7 @@ return head + result + tail
 
   <entry>
     <xpath>/document/content//image/src</xpath>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 self.getparent().attrib['src'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -2202,7 +2237,7 @@ return ''
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 self.getparent().attrib['attribution'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -2211,7 +2246,7 @@ return ''
   <entry>
     <xpath>/document/content//figure/type</xpath>
     <validation-callback>is_figure_type</validation-callback>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 self.getparent().attrib['type'] = self.text.strip()
 return ''
     </conversion-callback>
@@ -2236,7 +2271,7 @@ return r'  \Caption{' + self.text + '}\n'
       <element>m:math</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -2336,7 +2371,7 @@ else:
       <reference>math-stuff</reference>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 tex = mathml_transform(self)
 tex = unicode(tex).replace('$', '')
 if tex.count(r'\left') != tex.count(r'\right'):
@@ -2361,28 +2396,28 @@ return r'\(' + tex + r'\)'
     </conversion-callback>
   </entry>
 
-  <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>/document/content//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
 
   <entry id="math-stuff">
     <children>
@@ -2533,7 +2568,7 @@ return r'\(' + tex + r'\)'
       <element>unit</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -2542,7 +2577,7 @@ return self.text
   <entry>
     <xpath>/document/content//currency/number</xpath>
     <validation-callback>is_float</validation-callback>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -2555,7 +2590,7 @@ return self.text
       </subset-of>
     </children>
     <validation-callback>is_number</validation-callback>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 if len(self) == 0:
     if 'e' in self.text:
         # Number in exponential notation: convert to coeff and exp
@@ -2608,17 +2643,17 @@ return result
 
   <entry>
     <xpath>/document/content//number/coeff</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
     <xpath>/document/content//number/base</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
     <xpath>/document/content//number/exp</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -2629,7 +2664,7 @@ return result
       </any-number>
     </children>
     <validation-callback>is_unit</validation-callback>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 unitsWithoutSpace = [u'°']
 inUnitNumber = (self.getparent().tag == 'unit_number')
 result = r'\text{' + self.text + '}'
@@ -2653,6 +2688,11 @@ return result
     <conversion-callback name="latex learner correct teacher">
 return '$^{' + self.text + '}$'
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+sup = etree.Element('sup')
+sup.text = self.text
+return etree.tostring(sup)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2660,6 +2700,9 @@ return '$^{' + self.text + '}$'
     <validation-callback>is_float</validation-callback>
     <conversion-callback name="latex learner correct teacher">
 return convert_using(self, '/document/content//number') + r'\%'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return convert_using(self, '/document/content//number') + r'%'
     </conversion-callback>
   </entry>
 
@@ -2718,6 +2761,40 @@ if not latexMode:
 
 return result
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+numberText = self.find('number').text.strip()
+try:
+    int(numberText.strip())
+    defaultPrecision = 0
+except ValueError:
+    defaultPrecision = 2
+currencyPrecision = int(self.attrib.get('precision', defaultPrecision))
+numberText = ("%%.%if"%currencyPrecision)%float(numberText)
+numberText = utils.format_number(numberText, thousandsSeparator=r' ')
+
+symbolNode = self.find('symbol')
+if symbolNode is None:
+    symbol = 'R'
+    symbolLocation = 'front'
+else:
+    symbol = symbolNode.text.strip()
+    symbolLocation = symbolNode.attrib.get('location', 'front')
+
+
+
+if symbolLocation == 'front':
+    result = symbol + r' ' + numberText
+else:
+    result = numberText + r' ' + symbol
+result = r'\text{' + result + '}'
+
+# Check whether already in math mode
+latexMode = ('latex' in utils.get_full_dom_path(self))
+if not latexMode:
+    result = r'\(' + result + r'\)'
+
+return result
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2738,7 +2815,7 @@ return result
 
   <entry>
     <xpath>/document/content//chem_compound</xpath>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 text = self.text.strip()
 pos = 0
 while pos &lt; len(text):
@@ -2760,7 +2837,7 @@ return text
 
   <entry>
     <xpath>/document/content//spec_note</xpath>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return convert_using(self, '/document/content//chem_compound')
     </conversion-callback>
   </entry>
@@ -2776,7 +2853,7 @@ return convert_using(self, '/document/content//chem_compound')
     </children>
     <notext/>
     <validation-callback>is_nuclear_notation</validation-callback>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
@@ -2835,6 +2912,16 @@ pattern = {
 }[self.attrib['effect']]
 return pattern%self.text
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+pattern = {
+    'bold': r'\textbf{%s}',
+    'italics': r'\textit{%s}',
+    'underline': r'\underline{%s}',
+    'smallcaps': r'\textsc{%s}',
+    'normal': '%s',
+}[self.attrib['effect']]
+return pattern%self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2845,7 +2932,7 @@ return pattern%self.text
 	<reference>inline-element</reference>
       </one-of>
     </children>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -3041,33 +3128,6 @@ else:
         suffix = 'th'
     return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
     </conversion-callback>
-    <conversion-callback name="html learner correct teacher">
-try:
-    value = int(self.text)
-    isInt = True
-except ValueError:
-    value = self.text.strip()
-    isInt = False
-
-format = self.attrib['format']
-if (format == 'word') and isInt and (value &lt; 12):
-    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value-1]
-else:
-    # format == 'superscript'
-    if isInt:
-        if (value % 10 == 1) and (value//10 % 10 != 1):
-            suffix = 'st'
-        elif (value % 10 == 2) and (value//10 % 10 != 1):
-            suffix = 'nd'
-        elif (value % 10 == 3) and (value//10 % 10 != 1):
-            suffix = 'rd'
-        else:
-            suffix = 'th'
-        value = str(value)
-    else:
-        suffix = 'th'
-    return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
-    </conversion-callback>
   </entry>
 
   <entry>
@@ -3158,7 +3218,7 @@ return ''
       </entry>
     </attributes>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return ''
     </conversion-callback>
   </entry>
