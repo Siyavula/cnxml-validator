@@ -140,6 +140,8 @@ result = self.text.strip()
 newElement = etree.Element('div')
 newElement.attrib['class'] = 'section'
 newElement.text = result
+if self.attrib.get('shortcode') is not None:
+    newElement.attrib['id'] = 'sc%s'%self.attrib.get('shortcode')
 return etree.tostring(newElement)
     </conversion-callback>
     <conversion-callback name="latex html correct">
@@ -1936,7 +1938,8 @@ environment = 'Figure' + self.attrib['type'].capitalize()
 id = self.attrib.get('id')
 figure = etree.Element('div')
 figure.attrib['class'] = environment
-figure.attrib['id'] = id
+if id is not None:
+    figure.attrib['id'] = id
 figure.text = self.text
 
 return etree.tostring(figure)
@@ -2195,17 +2198,19 @@ if self.attrib.has_key('attribution'):
     result += r'\ImageAttribution{' + self.attrib['attribution'] + '}\n'
 return head + result + tail
     </conversion-callback>
-<!-- <img src="pulpit.jpg" alt="Pulpit rock" width="304" height="228"> -->
     <conversion-callback name="html learner teacher">
 width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
 img = etree.Element('img')
-img['src'] = self.attrib['src']
-img['width'] = width
-img['alt'] = self.attrib['attribution']
+img.attrib['src'] = self.attrib['src']
+if width is not None:
+    img.attrib['width'] = str(int(float(width)*780))
+else:
+    img.attrib['width'] = ''
+
+img.attrib['alt'] = self.attrib.get('attribution')
 
 return etree.tostring(img)
 </conversion-callback>
-
     <conversion-callback name="latex correct">
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
@@ -2262,6 +2267,13 @@ return ''
     </children>
     <conversion-callback name="latex learner correct teacher">
 return r'  \Caption{' + self.text + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+caption = etree.Element('span')
+caption.attrib['class'] = 'caption'
+caption.text = self.text
+
+return etree.tostring(caption)
     </conversion-callback>
   </entry>
 
@@ -2914,10 +2926,10 @@ return pattern%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 pattern = {
-    'bold': r'\textbf{%s}',
-    'italics': r'\textit{%s}',
-    'underline': r'\underline{%s}',
-    'smallcaps': r'\textsc{%s}',
+    'bold': r'\(\textbf{%s}\)',
+    'italics': r'\(\textit{%s}\)',
+    'underline': r'\(\underline{%s}\)',
+    'smallcaps': r'\(\textsc{%s}\)',
     'normal': '%s',
 }[self.attrib['effect']]
 return pattern%self.text

@@ -99,7 +99,7 @@ def convert_image(iSourceFilename, iDestinationFilename):
 
 def traverse(iNode, iValidator):
     global conversionFunctions
-
+    
     children = iNode.getchildren()
     for child in children:
         traverse(child, iValidator)
@@ -108,7 +108,6 @@ def traverse(iNode, iValidator):
     specEntry = iValidator.documentSpecEntries.get(iNode)
     if specEntry is None:
         utils.error_message('Unhandled element at ' + utils.get_full_dom_path(iNode, iValidator.spec))
-
     conversionFunction = cache_conversion_function(specEntry)
     parent = iNode.getparent()
     converted = conversionFunction(iNode)
@@ -145,6 +144,11 @@ for filename in commandlineArguments.filename:
     <script type="text/javascript"
         src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
     </script>
+    <style>
+p {
+font-family:Arial,Helvetica,sans-serif;
+}
+    </style>
   </head>
   <body>
     %s
