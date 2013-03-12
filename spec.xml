@@ -1402,6 +1402,14 @@ return ''
 environment = 'Keyconcepts'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'Keyconcepts'
+kc = etree.Element('div')
+kc.attrib['class'] = environment
+kc.text = self.text
+
+return etree.tostring(kc)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1416,6 +1424,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'Newwords'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'Newwords'
+nw = etree.Element('ul')
+nw.attrib['class'] = environment
+nw.text = self.text
+return etree.tostring(nw)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -1427,6 +1442,13 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'NewwordsWord'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'NewwordsWord'
+word = etree.Element('li')
+word.attrib['class'] = environment
+word.text = self.text
+return etree.tostring(word)
+</conversion-callback>
   </entry>
 
 <!-- Start of Monassis template spec -->
@@ -1948,19 +1970,19 @@ return ''
 
   <entry>
     <xpath>/document/content//video/url</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
     <xpath>/document/content//video/width</xpath>
     <validation-callback>is_integer</validation-callback>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
     <xpath>/document/content//video/height</xpath>
     <validation-callback>is_integer</validation-callback>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -2937,17 +2959,17 @@ return latex
 
   <entry>
     <xpath>/document/content//nuclear_notation/symbol</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
     <xpath>/document/content//nuclear_notation/mass_number</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
     <xpath>/document/content//nuclear_notation/atomic_number</xpath>
-    <conversion-callback name="latex learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -3239,6 +3261,26 @@ if url is not None:
         return r'\href{' + escape_latex(url) + '}{' + escape_latex(self.text) + '}'
     else:
         return r'\url{' + escape_latex(url) + '}'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+target = self.attrib.get('target-id')
+link = etree.Element('a')
+if target is not None:
+    link.attrib['href'] = '#'+target
+    link.text = target
+    link.attrib['class'] = 'InternalLink'
+    return etree.tostring(link)
+url = self.attrib.get('url')
+if url is not None:
+    link.attrib['class'] = 'ExternalLink'
+    if self.text != '':
+        link.text = self.text
+        link.attrib['href'] = url
+        return etree.tostring(link)
+    else:
+        link.text = self.text
+        link.attrib['href'] = url
+        return etree.tostring(link)
     </conversion-callback>
   </entry>
 
