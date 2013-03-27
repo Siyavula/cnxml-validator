@@ -144,7 +144,7 @@ for filename in commandlineArguments.filename:
     <script type="text/javascript"
         src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
     </script>
-    <style>
+    <style type="text/css" >
 p {
 font-family:Arial,Helvetica,sans-serif;
 }

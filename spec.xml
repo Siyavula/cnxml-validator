@@ -368,6 +368,11 @@ tabularNewline = r'\tabularnewline'
 columnAlignment = eval(self.attrib['latexColumnAlignment'])
 return r'\par'+'\n'+r'\begin{Table}{|' + '|'.join(columnAlignment) + '|}\n' + self.text + tabularNewline + '\n' + r'\hline' + '\n' + r'\end{Table}' + '\n'
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+table = etree.Element('table')
+table.text = self.text
+return etree.tostring(table)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -391,7 +396,7 @@ return r'\par'+'\n'+r'\begin{Table}{|' + '|'.join(columnAlignment) + '|}\n' + se
       <element>tbody</element>
     </children>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 cols = self.attrib.get('cols')
 if cols is not None:
     if self.attrib.get('columnCount') is not None:
@@ -434,7 +439,7 @@ return self.text
       </entry>
     </attributes>
     <notext/>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 parentAttrib = self.getparent().attrib
 parentAttrib['columnCount'] = str(int(parentAttrib.get('columnCount', '0')) + 1)
 columnSpec = eval(parentAttrib.get('columnSpec', '{}'))
@@ -475,6 +480,9 @@ text = self.text.strip()
 assert text[-len(tabularNewline):] == tabularNewline, "Weird latex table error in /document/content//table/tgroup/tbody conversion."
 return text[:-len(tabularNewline)] + '\n'
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+    return self.text
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -490,6 +498,11 @@ tabularNewline = r'\tabularnewline'
 text = self.text.strip()
 assert text[-1] == '&amp;', "Weird latex table error in /document/content//table/tgroup/tbody/row conversion."
 return '\\hline\n' + text[:-1] + tabularNewline + '\n'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+row = etree.Element('tr')
+row.text = self.text
+return etree.tostring(row)
     </conversion-callback>
   </entry>
 
@@ -551,6 +564,36 @@ else:
         return r'\multirow{' + str(moreRows+1) + '}{*}{' + text + r'} &amp;'
     else:
         return self.text.strip() + ' &amp;'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+td = etree.Element('td')
+multiColumnStart = self.attrib.get('namest')
+multiColumnEnd = self.attrib.get('nameend')
+moreRows = int(self.attrib['morerows'])
+if (multiColumnStart is not None) and (multiColumnEnd is not None):
+    if moreRows &gt; 0:
+        error_message('Cannot handle table entries that span multiple rows and columns')
+    columnSpec = eval(self.getparent().getparent().getparent().attrib.get('columnSpec'))
+    columnCount = columnSpec[multiColumnEnd] - columnSpec[multiColumnStart] + 1
+else:
+    columnCount = 1
+if columnCount &gt; 1:
+    td.text = self.text.strip()
+    td.attrib['colspan'] = str(columnCount)
+    return etree.tostring(td)
+else:
+    if moreRows &gt; 0:
+        text = self.text.strip()
+        while text[:4] == r'\par':
+            text = text[4:].lstrip()
+        while text[-4:] == r'\par':
+            text = text[:-4].rstrip()
+        td.text = text
+        td.attrib['rowspan'] = str(moreRows+1)
+        return etree.tostring(td)
+    else:
+        td.text = self.text.strip()
+        return etree.tostring(td)
     </conversion-callback>
   </entry>
 
