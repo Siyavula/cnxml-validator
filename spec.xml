@@ -3054,14 +3054,34 @@ pattern = {
 return pattern%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-pattern = {
-    'bold': r'\(\textbf{%s}\)',
-    'italics': r'\(\textit{%s}\)',
-    'underline': r'\(\underline{%s}\)',
-    'smallcaps': r'\(\textsc{%s}\)',
-    'normal': '%s',
-}[self.attrib['effect']]
-return pattern%self.text
+#pattern = {
+#    'bold': r'\(\textbf{%s}\)',
+#    'italics': r'\(\textit{%s}\)',
+#    'underline': r'\(\underline{%s}\)',
+#    'smallcaps': r'\(\textsc{%s}\)',
+#    'normal': '%s',
+#}[self.attrib['effect']]
+
+if self.attrib['effect'] == 'bold':
+    emph = etree.Element('b')
+
+elif self.attrib['effect'] == 'italics':
+    emph = etree.Element('i')
+
+elif self.attrib['effect'] == 'underline':
+    emph = etree.Element('span')
+    emph.attrib['class'] = 'underline'
+
+elif self.attrib['effect'] == 'smallcaps':
+    emph = etree.Element('span')
+    emph.attrib['class'] = 'smallcaps'
+
+elif self.attrib['effect'] == 'normal':
+    emph = etree.Element('span')
+    emph.attrib['class'] = 'normal'
+
+emph.text = self.text
+return etree.tostring(emph)
     </conversion-callback>
   </entry>
 

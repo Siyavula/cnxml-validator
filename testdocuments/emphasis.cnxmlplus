@@ -29,36 +29,14 @@
     <pspicture-generator-version>1.1</pspicture-generator-version>
   </metadata>
   <content>
-            <table>
-              <tgroup cols="5">
-                <colspec colname="c1" colnum="1"/>
-                <colspec colname="c2" colnum="2"/>
-                <colspec colname="c3" colnum="3"/>
-                <colspec colname="c4" colnum="4"/>
-				<colspec colname="c5" colnum="5"/>
-                <tbody>
-                  <row>
-                    <entry><emphasis effect='underline'><emphasis effect="bold">Element</emphasis></emphasis></entry>
-                    <entry><emphasis effect="bold">Group number</emphasis></entry>
-                    <entry><emphasis effect="bold">Valence electrons</emphasis></entry>
-					<entry><emphasis effect="bold">Spectroscopic notation</emphasis></entry>
-                    <entry><emphasis effect="bold">Lewis diagram</emphasis></entry>
-                  </row>
-                  <row>
-                    <entry>Lithium</entry>
-					<entry><number>1</number></entry>
-                    <entry><number>1</number></entry>
-					<entry namest='c4' nameend='c5'><spec_note>[He]2s^{1}</spec_note></entry>
-                  </row>
-                  <row>
-                    <entry>Lithium</entry>
-					<entry><number>1</number></entry>
-                    <entry><number>1</number></entry>
-					<entry><spec_note>[He]2s^{1}</spec_note></entry>
-					<entry><spec_note>[He]2s^{1}</spec_note></entry>
-                  </row>
-      </tbody>
-      </tgroup>
-      </table>
+    <para>
+Bold: <emphasis effect='bold'>At vero eos</emphasis></para>
+<para>
+Italics: <emphasis effect='italics'>At vero eos</emphasis></para>
+<para>
+Underline: <emphasis effect='underline'>At vero eos</emphasis></para>
+<para>
+Small Caps: <emphasis effect='smallcaps'>At vero eos</emphasis>
+</para>
 </content>
 </document>

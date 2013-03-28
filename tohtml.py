@@ -148,6 +148,10 @@ for filename in commandlineArguments.filename:
 p {
 font-family:Arial,Helvetica,sans-serif;
 }
+
+span.smallcaps {font-variant: small-caps;}
+span.normal {font-variant: normal;}
+span.underline {text-decoration:underline;} 
     </style>
   </head>
   <body>
