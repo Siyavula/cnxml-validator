@@ -36,6 +36,22 @@
 				  <attribution>Photo by Heather Williams</attribution>
                 </image>
               </figure>
+      <figure id="fig:atom:fluorine">
+            <type>figure</type>
+             <pspicture>
+              <code>
+                (-1.5,-1.5)(1.5,1.5)
+                \pscircle(0,0){1.25}
+                \pscircle(0,0){0.75}
+                \pscircle[fillcolor=lightgray,fillstyle=solid](0,0){0.25}
+                \multido{\n=90+180}{2}{\pscircle[fillcolor=black,fillstyle=solid]({0.75;\n}){0.1}}
+                \multido{\n=0+45}{7}{\pscircle[fillcolor=white,fillstyle=solid]({1.25;\n}){0.1}}
+              </code>
+            </pspicture>
+            <caption>
+              Electron arrangement of a fluorine atom. The black electrons (small circles on the inner ring) are the core electrons and the white electrons (small circles on the outer ring) are the valence electrons.
+            </caption>
+          </figure>
 
 </content>
 </document>

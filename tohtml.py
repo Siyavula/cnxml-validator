@@ -6,6 +6,7 @@ from xml.sax.saxutils import unescape
 from XmlValidator import XmlValidator
 import utils
 
+
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
 # Parse command line arguments
@@ -71,6 +72,7 @@ def cache_conversion_function(iSpec):
 
         from lxml import etree
         import utils
+        from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
         localVars = {
             'etree': etree,
             'utils': utils,
@@ -81,6 +83,8 @@ def cache_conversion_function(iSpec):
             'escape_latex': utils.escape_latex,
             'latex_math_function_check': utils.latex_math_function_check,
             'convert_image': convert_image,
+            'pspicture2png': pspicture2png,
+            'tikzpicture2png': tikzpicture2png,
         }
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']
@@ -142,7 +146,7 @@ for filename in commandlineArguments.filename:
   <head>
     <title>Hello HTML</title>
     <script type="text/javascript"
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+        src="mathjax/MathJax.js?config=TeX-AMS_HTML">
     </script>
     <style type="text/css" >
 p {

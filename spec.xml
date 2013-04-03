@@ -370,6 +370,10 @@ return r'\par'+'\n'+r'\begin{Table}{|' + '|'.join(columnAlignment) + '|}\n' + se
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 table = etree.Element('table')
+# if the next tag is caption, add it as table summary text.
+if self.getnext() is not None:
+    if self.getnext().tag == 'caption':
+        table.attrib['summary'] = self.getnext().text
 table.text = self.text
 return etree.tostring(table)
     </conversion-callback>
@@ -2168,7 +2172,18 @@ tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
 return head + self.text + tail
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-return r"&lt;!-- PSPICTURE HERE --&gt;"
+png = pspicture2png(self)
+
+img = etree.Element('img')
+img.attrib['src'] = png
+#if width is not None:
+#    img.attrib['width'] = str(int(float(width)*780))
+#else:
+#    img.attrib['width'] = '780'
+#
+#img.attrib['alt'] = self.attrib.get('attribution')
+
+return etree.tostring(img)
     </conversion-callback>
   </entry>
 
@@ -2202,7 +2217,7 @@ return ''
 return self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return r"&lt;!--" + self.text + r"--&gt;"
+return 
     </conversion-callback>
   </entry>
 
@@ -2395,11 +2410,11 @@ return ''
 return r'  \Caption{' + self.text + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-caption = etree.Element('span')
+caption = etree.Element('p')
 caption.attrib['class'] = 'caption'
 caption.text = self.text
 
-return etree.tostring(caption)
+return '\n'+etree.tostring(caption)
     </conversion-callback>
   </entry>
 
