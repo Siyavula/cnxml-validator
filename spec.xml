@@ -2575,7 +2575,7 @@ return pattern%self.text
       </one-of>
     </children>
     <conversion-callback name="latex learner correct teacher">
-return self.text
+return "Correct: " + self.text
     </conversion-callback>
   </entry>
 
