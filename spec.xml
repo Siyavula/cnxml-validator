@@ -2173,6 +2173,8 @@ return head + self.text + tail
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 png = pspicture2png(self)
+code = self.find('.//code').text
+
 
 img = etree.Element('img')
 img.attrib['src'] = png
