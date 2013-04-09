@@ -1006,7 +1006,7 @@ return ''
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("note","tip","aside","warning","important")</type>
+	<type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow")</type>
       </entry>
     </attributes>
     <children>
@@ -1861,14 +1861,34 @@ return self.text
     <xpath>/document/content//image</xpath>
     <attributes>
       <entry>
-	<name>id</name>
-	<type>string</type>
-	<default/>
+        <name>id</name>
+        <type>string</type>
+        <default/>
       </entry>
       <entry>
-	<name>style:width</name>
-	<type>number</type>
-	<default/>
+        <name>style:width</name>
+        <type>number</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>src</name>
+        <type>string</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>width</name>
+        <type>number</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>height</name>
+        <type>number</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>mime-type</name>
+        <type>string</type>
+        <default/>
       </entry>
       <!--<entry>
 	<name>style:format</name>
@@ -2203,6 +2223,7 @@ return r'\(' + tex + r'\)'
       <any-number>
 	<one-of>
 	  <element>br</element>
+      <element>newline</element>
 	  <element>chem_compound</element>
 	  <element>correct</element>
 	  <element>currency</element>
@@ -2535,6 +2556,17 @@ return latex
     <conversion-callback name="latex learner correct teacher">
 return r'\\'
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return '\n'
+    </conversion-callback>
+  </entry>
+  
+  <entry>
+    <xpath>/document/content//newline</xpath>
+    <notext/>
+    <conversion-callback name="latex learner correct teacher">
+return convert_using(self, '/document/content//br')
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2790,6 +2822,11 @@ else:
       </entry>
       <entry>
 	<name>target-id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>window</name>
 	<type>string</type>
 	<default/>
       </entry>
