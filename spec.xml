@@ -211,6 +211,11 @@ return '\\par\n' + text + '\n'
 	<default>bulleted</default>
       </entry>
       <entry>
+	<name>bullet-style</name>
+	<type>enum("bullet", "open-circle", "pilcrow", "rpilcrow", "asterisk", "dash", "section", "none")</type>
+	<default>bullet</default>
+      </entry>
+      <entry>
 	<name>start-value</name>
 	<type>integer(1,)</type>
 	<default>1</default>
@@ -281,7 +286,7 @@ return r'\item ' + self.text
     </attributes>
     <children>
       <element>tgroup</element>
-    </children>t
+    </children>
     <notext/>
     <conversion-callback name="latex learner correct teacher">
 tabularNewline = r'\tabularnewline'
@@ -963,7 +968,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment","project")</type>
+	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment","project","questions","revision")</type>
       </entry>
     </attributes>
     <children>
@@ -1006,7 +1011,7 @@ return ''
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow")</type>
+	<type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts")</type>
       </entry>
     </attributes>
     <children>
@@ -2186,6 +2191,7 @@ return r'\(' + tex + r'\)'
   <entry id="block-element-no-subsections-entry">
     <children>
       <one-of>
+    <element>media</element>
 	<element>para</element>
 	<element>video</element>
 	<element>presentation</element>
@@ -2212,6 +2218,7 @@ return r'\(' + tex + r'\)'
 	<element>linked-concepts</element>
 	<element>teachers-guide</element>
 	<element>correct</element>
+    <element>link</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
