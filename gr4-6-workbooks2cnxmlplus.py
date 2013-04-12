@@ -127,8 +127,6 @@ if __name__ == "__main__":
             solutions = [child for child in exercise if child.tag == 'solution']
             assert(len(problems) == len(solutions))
             ps = etree.Element('problem-set')
-            header = etree.Element('header')
-            ps.append(header)
             for i,p in enumerate(problems):
                 entry = etree.Element('entry')
                 entry.append(problems[i])
@@ -136,7 +134,7 @@ if __name__ == "__main__":
                 ps.append(entry)
 
             exercise.clear()
-            exercise.append(header)
+            #exercise.append(header)
             exercise.append(ps)
 
 
@@ -176,14 +174,15 @@ if __name__ == "__main__":
             p.getparent().remove(p)
         
     # put activity/emphasis in activity/para/emphasis
-
     for emph in xml.findall('.//activity/emphasis'):
         p = etree.Element('para')
         p.append(emph.__copy__())
         emph.addprevious(p)
         emph.getparent().remove(emph)
 
+    # some doc attributes we don't need
     for att in xml.getroot().attrib:
         del xml.getroot().attrib[att]
+    
     print etree.tostring(xml, encoding="utf-8", xml_declaration=True)
 

@@ -1,4 +1,3 @@
-from lxml import etree
 import sys, os
 import argparse
 
@@ -110,7 +109,13 @@ def traverse(iNode, iValidator):
 
     conversionFunction = cache_conversion_function(specEntry)
     parent = iNode.getparent()
-    converted = conversionFunction(iNode)
+    try:
+        converted = conversionFunction(iNode)
+    except TypeError:
+        from lxml import etree
+        print "Problem converting node %s on line %s "%(iNode, iNode.sourceline)
+        sys.exit(1)
+
     if isinstance(converted, basestring):
         if parent is None:
             return converted
