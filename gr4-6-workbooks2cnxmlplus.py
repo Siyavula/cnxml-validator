@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # //figure/media/image + //figure/caption
     for figure in xml.findall('.//figure'):
-        if figure.find('media').tag == 'media':
+        if figure.find('media') is not None:
             media = figure.find('media')
         else:
             media = None
