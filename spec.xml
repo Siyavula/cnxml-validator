@@ -2017,7 +2017,9 @@ return ''
 
   <entry>
     <xpath>/document/content//video/url</xpath>
-    <conversion-callback name="latex html learner correct teacher"/>
+    <conversion-callback name="latex html learner correct teacher">
+self.getparent().attrib['url'] = self.text
+</conversion-callback>
   </entry>
 
   <entry>

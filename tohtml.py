@@ -114,7 +114,11 @@ def traverse(iNode, iValidator):
         utils.error_message('Unhandled element at ' + utils.get_full_dom_path(iNode, iValidator.spec))
     conversionFunction = cache_conversion_function(specEntry)
     parent = iNode.getparent()
-    converted = conversionFunction(iNode)
+    try:
+        converted = conversionFunction(iNode)
+    except TypeError as TE:
+        print TE, iNode.tag, parent.tag, iNode.sourceline
+
     if isinstance(converted, basestring):
         if parent is None:
             return unescape(converted)
