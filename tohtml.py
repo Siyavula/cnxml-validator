@@ -118,8 +118,9 @@ def traverse(iNode, iValidator):
     parent = iNode.getparent()
     try:
         converted = conversionFunction(iNode)
-    except TypeError as TE:
-        print TE, iNode.tag, parent.tag, iNode.sourceline
+    except Exception as Error:
+        print 'Error: %s %s\nNode: %s\n Parent: %s\n line: %s'%(Error, type(Error), iNode.tag, parent.tag, iNode.sourceline)
+        sys.exit(1)
 
     if isinstance(converted, basestring):
         if parent is None:

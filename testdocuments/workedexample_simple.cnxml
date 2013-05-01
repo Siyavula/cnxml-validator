@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<document xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml/0.4" xmlns:style="http://siyavula.com/cnxml/style/0.1">
+  <metadata>
+    <cnxml-version>0.1</cnxml-version>
+    <pspicture-generator-version>1.1</pspicture-generator-version>
+  </metadata>
+  <content>
+    <worked_example>
+          <title>Mountees and Roadees are awesome</title>
+          <question>
+            <para>Investigate the following situation and use your knowledge of mathematics to solve the problem:</para>
+          </question>
+          <answer>
+            <workstep>
+              <title>Assign variables</title>
+              <para>In this situation there are two variables that we need to consider: let the number of Mountees produced be <latex>M</latex> and let the number of Roadees produced be <latex>R</latex>.</para>
+            </workstep>
+            <workstep>
+              <title>Organise the information given</title>
+              <para>Write down a summary of the information given in the problem so that we consider all the different components in the situation. </para>
+            </workstep>
+          </answer>
+      </worked_example>
+
+</content>
+</document>

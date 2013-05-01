@@ -29,7 +29,28 @@
     <pspicture-generator-version>1.1</pspicture-generator-version>
   </metadata>
   <content>
-    <para>
-At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. </para>
+<pspicture>
+		<usepackage>pst-node</usepackage>
+		<code>
+(0,-0.2)(9.5,3)
+\psmatrix[colsep=0.3cm,rowsep=0.3cm]
+				 											&amp; $n=1$ &amp;      &amp; $n=2$ &amp;      	&amp; $n=3$ 	&amp;      &amp; $n=4$ &amp;\\
+ 	$T_n$ 											&amp; $16$	 	&amp;      &amp; $27$ &amp;      	&amp; $42$ 		&amp;      &amp; $61$ &amp;\\
+ 	<nth format="superscript">1</nth> difference	&amp;				&amp; $11$ &amp;         &amp; $15$ 	&amp;         &amp; $19$ &amp;\\
+	<nth format="superscript">2</nth> difference	&amp;				&amp;      &amp;    $4$   &amp;      &amp;    $4$   &amp;
+\endpsmatrix
+\psset{nodesep=3pt,arrows=-}
+\ncline{2,2}{3,3}
+\ncline{3,3}{2,4}
+\ncline{2,4}{3,5}
+\ncline{3,5}{2,6}
+\ncline{2,6}{3,7}
+\ncline{3,7}{2,8}
+\ncline{3,3}{4,4}
+\ncline{4,4}{3,5}
+\ncline{4,6}{3,7}
+\ncline{3,5}{4,6}
+          </code>
+        </pspicture>
 </content>
 </document>

@@ -82,9 +82,7 @@ environment = 'ActivitySection'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'ActivitySection'
 activitysection = etree.Element('div')
-activitysection.attrib['data-class'] = 'section'
 activitysection.attrib['class'] = 'section'
 activitysection.text = self.text
 activitysection.tail = '\n'
@@ -103,7 +101,7 @@ return ''
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 title = etree.Element('h1')
-title.attrib['data-class'] = 'ActivitySectionTitle'
+title.attrib['class'] = 'title'
 title.text = self.text.strip()
 self.getparent().attrib['title'] = self.text.strip()
 return etree.tostring(title)
@@ -140,6 +138,7 @@ return result
 result = self.text.strip()
 newElement = etree.Element('div')
 newElement.attrib['data-class'] = 'section'
+newElement.attrib['class'] = 'section'
 newElement.text = result
 if self.attrib.get('shortcode') is not None:
     newElement.attrib['id'] = 'sc%s'%self.attrib.get('shortcode')
@@ -222,6 +221,7 @@ else:
 
 newElement = etree.Element(headlevel)
 newElement.attrib['data-class'] = 'title'
+newElement.attrib['class'] = 'title'
 newElement.text = self.text
 
 return etree.tostring(newElement)
@@ -252,7 +252,6 @@ return '\\par\n' + text + '\n'
     <conversion-callback name="html learner correct teacher">
 text = ' '.join(self.text.strip().split())
 newElement = etree.Element('p')
-newElement.attrib['data-class'] = 'para'
 newElement.text = self.text.strip()
 return '\n' + etree.tostring(newElement) + '\n'
     </conversion-callback>
@@ -673,7 +672,7 @@ return ''
     <conversion-callback name="html learner correct teacher">
 title = etree.Element('h1')
 title.text = self.text.strip()
-title.attrib['data-class'] = 'ExercisesTitle'
+title.attrib['class'] = 'title'
 
 return etree.tostring(title)
     </conversion-callback>
@@ -751,9 +750,8 @@ else:
     return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-problemsetEnvironment = 'ExercisesProblemset'
 problemset = etree.Element('div')
-problemset.attrib['data-class'] = problemsetEnvironment
+problemset.attrib['class'] = 'problemset'
 problemset.text = self.text
 
 return etree.tostring(problemset)
@@ -806,7 +804,7 @@ environment = 'ExercisesProblemsetHeader'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'ExercisesProblemsetHeader'
+environment = 'header'
 header = etree.Element('div')
 header.attrib['data-class'] = environment
 header.text = self.text
@@ -825,7 +823,7 @@ environment = 'ExercisesProblemsetFooter'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'ExercisesProblemsetHeader'
+environment = 'header'
 footer = etree.Element('div')
 footer.attrib['data-class'] = environment
 return etree.tostring(footer)
@@ -875,7 +873,7 @@ if (self.getnext() is None) or (self.getnext().tag == 'footer'):
 return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-problemsetEnvironment = 'ExercisesProblemsetEntry'
+problemsetEnvironment = 'entry'
 problemset = etree.Element('div')
 problemset.attrib['data-class'] = problemsetEnvironment
 problemset.text = self.text
@@ -935,7 +933,7 @@ environment = 'ExercisesProblemsetEntryProblem'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'ExercisesProblemsetEntryProblem'
+environment = 'problem'
 problem = etree.Element('div')
 problem.attrib['data-class'] = environment
 problem.text = self.text
@@ -985,9 +983,10 @@ if self.text.strip() == '':
 renderSolutions = True # Put full solutions in textbook?
 
 if renderSolutions:
-    environment = 'ExercisesProblemsetEntrySolution'
+    environment = 'solution'
     solution = etree.Element('div')
     solution.attrib['data-class'] = environment
+    solution.attrib['class'] = environment
     solution.text = self.text
     return etree.tostring(solution)
 else:
@@ -1024,9 +1023,9 @@ environment = 'Definition'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
-environment = 'Definition'
+environment = 'definition'
 definition = etree.Element('dl')
-definition.attrib['data-class'] = environment
+definition.attrib['class'] = environment
 term = etree.Element('dt')
 meaning = etree.Element('dd')
 term.text = self.attrib['title']
@@ -1080,9 +1079,9 @@ return r'''
 \end{''' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'Theorem'
+environment = 'theorem'
 theorem = etree.Element('div')
-theorem.attrib['data-class'] = environment
+theorem.attrib['class'] = environment
 title = etree.Element('h1')
 title.text = self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','')
 title.tail=self.text
@@ -1127,9 +1126,9 @@ environment = 'TheoremStatement'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'TheoremStatement'
+environment = 'statement'
 theoremstatement = etree.Element('div')
-theoremstatement.attrib['data-class'] = environment
+theoremstatement.attrib['class'] = environment
 theoremstatement.text = self.text
 return etree.tostring(theoremstatement)
     </conversion-callback>
@@ -1148,9 +1147,9 @@ environment = 'TheoremGiven'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'TheoremGiven'
+environment = 'given'
 theoremgiven = etree.Element('div')
-theoremgiven.attrib['data-class'] = environment
+theoremgiven.attrib['class'] = environment
 theoremgiven.text = self.text
 return etree.tostring(theoremgiven)
     </conversion-callback>
@@ -1169,9 +1168,9 @@ environment = 'TheoremRequired'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'TheoremRequired'
+environment = 'required'
 theoremrequired = etree.Element('div')
-theoremrequired.attrib['data-class'] = environment
+theoremrequired.attrib['class'] = environment
 theoremrequired.text = self.text
 return etree.tostring(theoremrequired)
     </conversion-callback>
@@ -1190,9 +1189,9 @@ environment = 'TheoremProof'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'TheoremProof'
+environment = 'proof'
 theoremproof = etree.Element('div')
-theoremproof.attrib['data-class'] = environment
+theoremproof.attrib['class'] = environment
 theoremproof.text = self.text
 return etree.tostring(theoremproof)
     </conversion-callback>
@@ -1231,16 +1230,17 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
 activityType = self.attrib['type']
 if activityType == 'f_experiment':
-    environment = 'ActivityFormalexperiment'
+    environment = 'formalexperiment'
 elif activityType == 'g_experiment':
-    environment = 'ActivityGeneralexperiment'
+    environment = 'generalexperiment'
 elif activityType == 'i_experiment':
-    environment = 'ActivityInformalexperiment'
+    environment = 'informalexperiment'
 else:
-    environment = 'Activity' + activityType.capitalize()
+    environment = activityType.capitalize()
 
 activity = etree.Element('div')
-activity.attrib['data-class'] = environment
+activity.attrib['class'] = 'activity'
+activity.attrib['data-type'] = environment
 activity.text = self.text
 activity.tail = '\n'
 return etree.tostring(activity)
@@ -1258,7 +1258,7 @@ return ''
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 title = etree.Element('h1')
-title.attrib['class']= 'ActivityTitle'
+title.attrib['class']= 'title'
 title.text = self.text
 return etree.tostring(title)
     </conversion-callback>
@@ -1288,7 +1288,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
 environment = 'note'
 note = etree.Element('div')
-note.attrib['data-class'] = environment
+note.attrib['class'] = environment
 note.attrib['data-type'] = self.attrib['type']
 note.text = self.text
 return etree.tostring(note)
@@ -1306,9 +1306,9 @@ environment = 'Mathidentity'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
-environment = 'Mathidentity'
+environment = 'mathidentity'
 mathidentity = etree.Element('div')
-mathidentity.attrib['data-class'] = environment
+mathidentity.attrib['class'] = environment
 mathidentity.text = self.text
 return etree.tostring(mathidentity)
     </conversion-callback>
@@ -1327,10 +1327,10 @@ environment = 'Mathextension'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
-environment = 'Mathextension'
+environment = 'mathextension'
 mathextension = etree.Element('div')
-mathextension.attrib['data-class'] = environment
-title = etree.Element('h1')
+mathextension.attrib['class'] = environment
+title = etree.Element('div')
 title.text = self.attrib['title']
 title.tail = self.text
 mathextension.append(title)
@@ -1373,7 +1373,7 @@ return r'\paragraph{Key Mathematics Concepts} \begin{itemize}' + '\n' + self.tex
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 linkedconcept = etree.Element('div')
-linkedconcept.attrib['data-class'] = 'LinkedConcept'
+linkedconcept.attrib['class'] = 'linkedconcept'
 linkedconcept.text = "Key Mathematics Concepts"
 mylist = etree.Element('ul')
 mylist.text=self.text
@@ -1452,9 +1452,10 @@ environment = 'Keyconcepts'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'Keyconcepts'
+environment = 'keyconcepts'
 kc = etree.Element('div')
-kc.attrib['data-class'] = environment
+kc.attrib['class'] = note
+kc.attrib['data-type'] = environment
 kc.text = self.text
 
 return etree.tostring(kc)
@@ -1715,11 +1716,11 @@ environment = 'Workedexample'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'Workedexample'
+environment = 'worked_example'
 workedexample = etree.Element('div')
-workedexample.attrib['data-class'] = environment
+workedexample.attrib['class'] = environment
 title = etree.Element('h1')
-title.attrib['data-class'] = '%sTitle'%environment
+title.attrib['class'] = 'title'
 title.tail = self.text
 title.text = self.attrib['title']
 workedexample.append(title)
@@ -1758,9 +1759,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="html learner teacher">
 if self.text is None:
     raise ValueError, "Worked example question should not be empty."
-environment = 'WorkedexampleQuestion'
 workedexampleq = etree.Element('div')
-workedexampleq.attrib['data-class'] = environment
+workedexampleq.attrib['class'] = 'question'
 workedexampleq.text = self.text
 
 return etree.tostring(workedexampleq)
@@ -1786,14 +1786,7 @@ environment = 'WorkedexampleAnswer'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-if self.text is None:
-    raise ValueError, "Worked example answer should not be empty."
-environment = 'WorkedexampleAnswer'
-workedexamplea = etree.Element('div')
-workedexamplea.attrib['data-class'] = environment
-workedexamplea.text = self.text
-
-return etree.tostring(workedexamplea)
+return self.text
     </conversion-callback>
     <conversion-callback name="latex html correct"/>
   </entry>
@@ -1810,11 +1803,10 @@ environment = 'WorkedexampleAnswerWorkstep'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'WorkedexampleAnswerWorkstep'
 workstep = etree.Element('div')
-workstep.attrib['data-class'] = environment
+workstep.attrib['class'] = 'workstep'
 title = etree.Element('h2')
-title.attrib['data-class'] = '%sTitle'%environment
+title.attrib['class'] = 'title'
 title.text = self.attrib['title']
 title.tail = '\n'+self.text
 workstep.append(title)
