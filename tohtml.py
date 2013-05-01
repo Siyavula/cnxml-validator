@@ -72,6 +72,7 @@ def cache_conversion_function(iSpec):
 
         from lxml import etree
         import utils
+        import hashlib
         from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
         localVars = {
             'etree': etree,
@@ -85,6 +86,7 @@ def cache_conversion_function(iSpec):
             'convert_image': convert_image,
             'pspicture2png': pspicture2png,
             'tikzpicture2png': tikzpicture2png,
+            'hashlib': hashlib,
         }
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']

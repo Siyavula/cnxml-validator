@@ -2174,12 +2174,15 @@ tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
 return head + self.text + tail
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-png = pspicture2png(self)
+#png = pspicture2png(self)
 code = self.find('.//code').text
 
+# bad hack, strip out all non-ascii characters from code element to calculate hash
+code = ''.join([c  for c in code if ord(c) &lt; 128])
+codeHash = hashlib.md5(''.join(code.encode('utf-8').split())).hexdigest()
 
 img = etree.Element('img')
-img.attrib['src'] = png
+img.attrib['src'] = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
 #if width is not None:
 #    img.attrib['width'] = str(int(float(width)*780))
 #else:
@@ -2846,9 +2849,13 @@ return result
 return '$^{' + self.text + '}$'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-sup = etree.Element('sup')
-sup.text = self.text
-return etree.tostring(sup)
+parents = [a.tag for a in self.iterancestors()]
+if 'latex' in parents:
+    return '^{%s}'%self.text
+else:
+    sup = etree.Element('sup')
+    sup.text = self.text
+    return etree.tostring(sup)
     </conversion-callback>
   </entry>
 
