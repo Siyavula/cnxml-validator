@@ -2,10 +2,22 @@ from lxml import etree
 import sys, os
 import argparse
 
-from xml.sax.saxutils import unescape
+from xml.sax.saxutils import unescape, escape
 from XmlValidator import XmlValidator
 import utils
 
+
+def escape_code(document):
+    '''Given document as string, return with code elements replaced by their escaped string'''
+    xml = etree.HTML(document)
+    
+    for pre in xml.findall('.//pre'):
+        pre.text = ''
+        for child in pre:
+            pre.text += etree.tostring(child)
+            pre.remove(child)
+
+    return etree.tostring(xml)
 
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -75,6 +87,7 @@ def cache_conversion_function(iSpec):
         import hashlib
         from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
         localVars = {
+            'unescape': unescape,
             'etree': etree,
             'utils': utils,
             'convert_using': convert_using,
@@ -87,6 +100,7 @@ def cache_conversion_function(iSpec):
             'pspicture2png': pspicture2png,
             'tikzpicture2png': tikzpicture2png,
             'hashlib': hashlib,
+            'unescape': unescape,
         }
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']
@@ -124,7 +138,7 @@ def traverse(iNode, iValidator):
 
     if isinstance(converted, basestring):
         if parent is None:
-            return unescape(converted)
+            return (converted)
         else:
             from lxml import etree
             dummyNode = etree.Element('dummy')
@@ -148,7 +162,8 @@ for filename in commandlineArguments.filename:
     document = validator.dom
 
     #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
-    print '''<!DOCTYPE html>
+    outputdoc = traverse(document, validator).encode('utf-8')
+    outputdoc = '''<!DOCTYPE html>
 <html>
   <head>
     <title>Hello HTML</title>
@@ -168,5 +183,7 @@ span.underline {text-decoration:underline;}
   <body>
     %s
   </body>
-</html>'''% traverse(document, validator).encode('utf-8')
+</html>'''% outputdoc
+    outputdoc = escape_code(outputdoc)
+    print outputdoc
     outputFile.flush()

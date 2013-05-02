@@ -2176,9 +2176,18 @@ return head + self.text + tail
 #png = pspicture2png(self)
 code = self.find('.//code').text
 
+#TODO fix this, image names don't match the actual names.
 # bad hack, strip out all non-ascii characters from code element to calculate hash
-code = ''.join([c  for c in code if ord(c) &lt; 128])
-codeHash = hashlib.md5(''.join(code.encode('utf-8').split())).hexdigest()
+codetext = ''.join([c  for c in code if ord(c) &lt; 128])
+codeHash = hashlib.md5(''.join(codetext.encode('utf-8').split())).hexdigest()
+
+pre = etree.Element('pre')
+pre.attrib['class'] = 'pspicture'
+code_element = self.find('.//code')
+pre.append(code_element)
+
+pspicture = etree.Element('div')
+pspicture.attrib['class'] = 'alternates'
 
 img = etree.Element('img')
 img.attrib['src'] = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
@@ -2189,7 +2198,15 @@ img.attrib['src'] = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
 #
 #img.attrib['alt'] = self.attrib.get('attribution')
 
-return etree.tostring(img)
+# add usepackages to pre element
+
+
+for up in self.findall('.//usepackage'):
+    pre.append(up)
+
+pspicture.append(img)
+pspicture.append(pre)
+return etree.tostring(pspicture)
     </conversion-callback>
   </entry>
 
@@ -2199,6 +2216,9 @@ return etree.tostring(img)
 if self.text.strip() not in ['pst-solides3d', 'pst-3dplot', 'pst-node']:
     warning_message('REQUIRED PSTRICKS PACKAGE: ' + self.text)
 return ''
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return 
     </conversion-callback>
   </entry>
 
@@ -2277,6 +2297,11 @@ return head + r'\par\scalebox{0.5}{\begin{tikzpicture}' + self.text + r'\end{tik
     <conversion-callback name="latex learner correct teacher">
 warning_message('REQUIRED TIKZ PACKAGE: ' + self.text)
 return ''
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+usepackage = etree.Element('usepackage')
+usepackage.text = self.text
+return etree.tostring(usepackage)
     </conversion-callback>
   </entry>
 
@@ -3291,7 +3316,7 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/solu
 	<default>word</default>
       </entry>
     </attributes>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 try:
     value = int(self.text)
     isInt = True
