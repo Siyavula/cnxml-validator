@@ -2490,7 +2490,7 @@ return self.text
 	</one-of>
       </any-number>
     </children>
-    <conversion-callback name="latex html learner correct teacher">
+    <conversion-callback name="latex learner correct teacher">
 # First check that there aren't any funny functions
 unslashedFunctions = latex_math_function_check(self.text)
 if len(unslashedFunctions) > 0:
@@ -2550,6 +2550,82 @@ else:
                 if (lineIndex == len(lines)-1) and (line == endSubstr):
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
         return text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+def make_new_mathelement(TeX):
+    mathmlelement = etree.Element('math')
+    semantics = etree.Element('semantics')
+    junk = etree.Element('mtext')
+    junk.text = 'CLICKME'
+    semantics.append(junk)
+    annotation = etree.Element('annotation')
+    annotation.attrib['encoding'] = 'TeX'
+    annotation.text = TeX
+
+    semantics.append(annotation)
+    mathmlelement.append(semantics)
+    return etree.tostring(mathmlelement)
+
+# First check that there aren't any funny functions
+unslashedFunctions = latex_math_function_check(self.text)
+if len(unslashedFunctions) > 0:
+    warning_message('Found the following functions: (%s) without a backslash in a latex element:\n%s'%(', '.join(unslashedFunctions), self.text))
+
+insideTable = ('table' in utils.get_full_dom_path(self))
+
+numberEquations = False
+if self.attrib['display'] == 'inline':
+    return make_new_mathelement(self.text.strip())
+else:
+    foundMathEnvironment = False
+    text = self.text.strip()
+    beginPattern = r'\begin{%s}'
+    endPattern = r'\end{%s}'
+    for environmentName in ['align', 'align*', 'aligned', 'aligned*', 'equation', 'equation*', 'eqnarray', 'eqnarray*']:
+        beginSubstr = beginPattern%environmentName
+        if text[:len(beginSubstr)] == beginSubstr:
+            endSubstr = endPattern%environmentName
+            if text[-len(endSubstr):] != endSubstr:
+                error_message('You are either missing a \\end{%s} in a LaTeX environment or there is a mismatch between the \\begin and \\end.'%environmentName)
+            if environmentName in ['eqnarray', 'eqnarray*']:
+                warning_message('You should really be using align rather eqnarray in your &lt;latex&gt; elements')
+
+            # Normalise align
+            if environmentName in ['align', 'align*', 'aligned', 'aligned*']:
+                if insideTable:
+                    replacement = 'aligned'
+                else:
+                    replacement = 'align'
+                newBeginSubstr = beginPattern%replacement
+                newEndSubstr = endPattern%replacement
+                text = newBeginSubstr + text[len(beginSubstr):-len(endSubstr)] + newEndSubstr
+                environmentName = replacement
+                beginSubstr = newBeginSubstr
+                endSubstr = newEndSubstr
+
+            foundMathEnvironment = True
+            if not numberEquations:
+                if environmentName[-1] != '*':
+                    text = beginSubstr[:-1] + '*}' + text[len(beginSubstr):-len(endSubstr)] + endSubstr[:-1] + '*}'
+                    beginSubstr = beginSubstr[:-1] + '*}'
+                    endSubstr = endSubstr[:-1] + '*}'
+            break
+    if not foundMathEnvironment:
+        return make_new_mathelement(text + '\n')
+    else:
+        environmentsWithAmpersands = {'align': 1, 'align*': 1, 'eqnarray': 2, 'eqnarray*': 2}
+        if environmentName in environmentsWithAmpersands:
+            # Check number of ampersands per line
+            ampersands = environmentsWithAmpersands[environmentName]
+            lines = text.split('\\\\')
+            for lineIndex in range(len(lines)):
+                line = lines[lineIndex].strip()
+                if line.count('&amp;') &gt; ampersands:
+                    error_message('Extra ampersands (expected %i) in aligned equation: %s'%(ampersands, line))
+                if (lineIndex == len(lines)-1) and (line == endSubstr):
+                    error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
+        return make_new_mathelement(text)
+
     </conversion-callback>
   </entry>
 
