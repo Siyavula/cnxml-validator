@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <script src="dom_utils.js"></script>
+    <script src="validator_utils.js"></script>
+    <script src="XmlValidator.js"></script>
+    <script>
+var validator = new XmlValidator(load_xml_document("spec.xml"));
+var doc = load_xml_document("test.cnxmlplus");
+validator.validate(doc);
+try {
+    validator.validate(doc);
+    alert("Validated!");
+} catch(error) {
+    alert(error);
+}
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
