@@ -167,7 +167,10 @@ tg.text = self.text
 return etree.tostring(tg)
     </conversion-callback>
     <conversion-callback name="html latex learner correct">
-return ''
+tg = etree.Element('div')
+tg.attrib['class'] = 'teachers-guide'
+tg.text = self.text
+return etree.tostring(tg)
     </conversion-callback>
   </entry>
 
@@ -1454,8 +1457,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="html learner teacher">
 environment = 'keyconcepts'
 kc = etree.Element('div')
-kc.attrib['class'] = note
-kc.attrib['data-type'] = environment
+kc.attrib['class'] = 'key-concepts'
 kc.text = self.text
 
 return etree.tostring(kc)
