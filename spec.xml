@@ -938,7 +938,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="html learner teacher">
 environment = 'problem'
 problem = etree.Element('div')
-problem.attrib['data-class'] = environment
+problem.attrib['class'] = environment
 problem.text = self.text
 return etree.tostring(problem)
     </conversion-callback>
@@ -988,7 +988,6 @@ renderSolutions = True # Put full solutions in textbook?
 if renderSolutions:
     environment = 'solution'
     solution = etree.Element('div')
-    solution.attrib['data-class'] = environment
     solution.attrib['class'] = environment
     solution.text = self.text
     return etree.tostring(solution)
