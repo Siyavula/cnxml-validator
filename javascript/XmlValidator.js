@@ -1,22 +1,3 @@
-// ffs: IE <= 9 doesn't support string trim
-if(!String.prototype.trim) {
-    String.prototype.trim = function() {
-	return this.replace(/^\s+|\s+$/g, '');
-    };
-}
-
-// IE <= 8 support
-if(!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function(needle) {
-        for(var i = 0; i < this.length; i++) {
-            if(this[i] === needle) {
-                return i;
-            }
-        }
-        return -1;
-    };
-}
-
 function XmlValidator(iSpec) {
     var specDom;
     if(typeof iSpec == "string") {
@@ -223,7 +204,6 @@ XmlValidator.prototype.__validate_traverse = function(iNode) {
 	    throw etree_node_find(iNode.specEntry, "xpath").etreeText + " element must not have any text. Found the following text " + location + ': "' + text + '"';
     }
 
-    /*
     // Do validation callback
     var callbackNode = etree_node_find(specEntry, "validation-callback");
     if(callbackNode != null) {
@@ -232,7 +212,6 @@ XmlValidator.prototype.__validate_traverse = function(iNode) {
         if(!callbackFunction(iNode))
 	    throw 'Validation callback "' + callbackFunctionName + '" failed on the element with path ' + this.__get_full_dom_path(iNode);
     }
-    */
     return true;
 }
 
