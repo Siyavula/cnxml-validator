@@ -1,4 +1,4 @@
-function get_full_dom_path(iNode, iSpec=null) {
+function get_full_dom_path(iNode, iSpec) {
     path = "";
     var node = iNode;
     while(node != iNode.ownerDocument) {
