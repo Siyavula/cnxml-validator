@@ -3194,14 +3194,13 @@ return pattern%self.text
 #}[self.attrib['effect']]
 
 if self.attrib['effect'] == 'bold':
-    emph = etree.Element('b')
+    emph = etree.Element('strong')
 
 elif self.attrib['effect'] == 'italics':
-    emph = etree.Element('i')
+    emph = etree.Element('em')
 
 elif self.attrib['effect'] == 'underline':
-    emph = etree.Element('span')
-    emph.attrib['data-class'] = 'underline'
+    emph = etree.Element('u')
 
 elif self.attrib['effect'] == 'smallcaps':
     emph = etree.Element('span')
