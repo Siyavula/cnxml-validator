@@ -1,3 +1,24 @@
+// ffs: IE <= 9 doesn't support string trim
+if(!String.prototype.trim) {
+    String.prototype.trim = function() {
+	return this.replace(/^\s+|\s+$/g, '');
+    };
+}
+
+// IE <= 8 support
+if(!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(needle) {
+        for(var i = 0; i < this.length; i++) {
+            if(this[i] === needle) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
+// ------------------------------------------------
+
 function load_xml_document(iUrl) {
     var xhttp;
     if(window.XMLHttpRequest) {
