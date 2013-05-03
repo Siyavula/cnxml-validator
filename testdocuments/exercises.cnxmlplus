@@ -42,6 +42,26 @@
     <para> Solution here </para>
     </solution>
 </entry>
+<multi-part>
+<shortcode>AABBCC</shortcode>
+<header><para>Multi-part: This is the header</para></header>
+<entry>
+    <problem>
+    <para> Problem statement</para>
+    </problem>
+    <solution>
+    <para> Solution here </para>
+    </solution>
+</entry>
+<entry>
+    <problem>
+    <para> Problem statement</para>
+    </problem>
+    <solution>
+    <para> Solution here </para>
+    </solution>
+</entry>
+</multi-part>
 </problem-set>
 </exercises>
 </content>
