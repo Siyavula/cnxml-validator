@@ -137,7 +137,7 @@ return result
     <conversion-callback name="html learner teacher">
 result = self.text.strip()
 newElement = etree.Element('div')
-newElement.attrib['data-class'] = 'section'
+newElement.attrib['class'] = 'section'
 newElement.attrib['class'] = 'section'
 newElement.text = result
 if self.attrib.get('shortcode') is not None:
@@ -162,7 +162,7 @@ return '\n\\begin{' + environment + '}\n' + self.text.strip() + r'\end{' + envir
     <conversion-callback name="html teacher">
 environment = "TeachersGuide"
 tg = etree.Element('div')
-tg.attrib['data-class'] = 'teachersguide'
+tg.attrib['class'] = 'teachersguide'
 tg.text = self.text
 return etree.tostring(tg)
     </conversion-callback>
@@ -223,7 +223,7 @@ else:
     headlevel = headinglevels[level]
 
 newElement = etree.Element(headlevel)
-newElement.attrib['data-class'] = 'title'
+newElement.attrib['class'] = 'title'
 newElement.attrib['class'] = 'title'
 newElement.text = self.text
 
@@ -650,7 +650,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 environment = etree.Element('div')
-environment.attrib['data-class'] = 'Exercises'
+environment.attrib['class'] = 'exercises'
 environment.text = self.text
 environment.tail = '\n'
 
@@ -809,7 +809,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="html learner teacher">
 environment = 'header'
 header = etree.Element('div')
-header.attrib['data-class'] = environment
+header.attrib['class'] = environment
 header.text = self.text
 return etree.tostring(header)
     </conversion-callback>
@@ -828,7 +828,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
     <conversion-callback name="html learner teacher">
 environment = 'header'
 footer = etree.Element('div')
-footer.attrib['data-class'] = environment
+footer.attrib['class'] = environment
 return etree.tostring(footer)
     </conversion-callback>
   </entry>
@@ -878,7 +878,7 @@ return result
     <conversion-callback name="html learner teacher">
 problemsetEnvironment = 'entry'
 problemset = etree.Element('div')
-problemset.attrib['data-class'] = problemsetEnvironment
+problemset.attrib['class'] = problemsetEnvironment
 problemset.text = self.text
 
 return etree.tostring(problemset)
@@ -1242,7 +1242,7 @@ else:
 
 activity = etree.Element('div')
 activity.attrib['class'] = 'activity'
-activity.attrib['data-type'] = environment
+activity.attrib['type'] = environment
 activity.text = self.text
 activity.tail = '\n'
 return etree.tostring(activity)
@@ -2378,9 +2378,10 @@ img.attrib['src'] = self.attrib['src']
 if width is not None:
     img.attrib['width'] = str(int(float(width)*780))
 else:
-    img.attrib['width'] = '780'
+    img.attrib['width'] = '300'
 
-img.attrib['alt'] = self.attrib.get('attribution')
+if self.attrib.get('attribution') is not None:
+    img.attrib['alt'] = self.attrib.get('attribution')
 
 return etree.tostring(img)
 </conversion-callback>
@@ -2447,7 +2448,7 @@ if self.getparent().attrib['type'] == 'figure':
 else:
     caption = etree.Element('div')
 
-caption.attrib['data-class'] = 'caption'
+caption.attrib['class'] = 'caption'
 caption.text = self.text
 
 return '\n'+etree.tostring(caption)
@@ -2576,7 +2577,7 @@ insideTable = ('table' in utils.get_full_dom_path(self))
 
 numberEquations = False
 if self.attrib['display'] == 'inline':
-    return make_new_mathelement(self.text.strip())
+    return r'\(' + self.text.strip() + r'\)'
 else:
     foundMathEnvironment = False
     text = self.text.strip()
@@ -2612,7 +2613,7 @@ else:
                     endSubstr = endSubstr[:-1] + '*}'
             break
     if not foundMathEnvironment:
-        return make_new_mathelement(text + '\n')
+        return r'\[' + text + r'\]'
     else:
         environmentsWithAmpersands = {'align': 1, 'align*': 1, 'eqnarray': 2, 'eqnarray*': 2}
         if environmentName in environmentsWithAmpersands:
@@ -2625,7 +2626,7 @@ else:
                     error_message('Extra ampersands (expected %i) in aligned equation: %s'%(ampersands, line))
                 if (lineIndex == len(lines)-1) and (line == endSubstr):
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
-        return make_new_mathelement(text)
+        return text
 
     </conversion-callback>
   </entry>
