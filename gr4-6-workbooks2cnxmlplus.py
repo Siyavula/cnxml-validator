@@ -50,9 +50,8 @@ if __name__ == "__main__":
                 src = etree.Element('src')
                 src.text = image.attrib['src']
                 image.append(src)
+                newfigure.append(image)
 
-        if image is not None:
-            newfigure.append(image)
         if caption is not None:
             newfigure.append(caption)
 
@@ -62,6 +61,9 @@ if __name__ == "__main__":
             para = figure.getparent()
             if (para.text is None) or (para.text.strip() == ''):
                 para.getparent().replace(para, newfigure)
+            else:
+                para.addnext(newfigure)
+                para.remove(figure)
         else:
             figure.getparent().replace(figure, newfigure)
 
