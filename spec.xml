@@ -193,6 +193,10 @@ text = ' '.join(self.text.strip().split())
 pos = text.find('"')
 if pos != -1:
     warning_message('Straight double quote in text, consider replacing with left/right quotes: %s'%repr(text[pos-20:pos+20]))
+
+# check if para doesn't only contain a \\
+if text.strip() == r'\\':
+    text = text.replace(r'\\', r'')
 return '\\par\n' + text + '\n'
     </conversion-callback>
   </entry>
@@ -1920,6 +1924,12 @@ result = r'\includegraphics'
 width = self.attrib.get('{http://siyavula.com/cnxml/style/0.1}width')
 if width is not None:
     result += r'[width=%s\textwidth]'%width
+else:
+    width = self.attrib.get('width')
+    if width is not None:
+        result += r'[width=%s\textwidth]'%(float(width)/800.0)
+
+
 result += '{' + self.attrib['src'] + '}\n'
 if self.attrib.has_key('attribution'):
     result += r'\ImageAttribution{' + self.attrib['attribution'] + '}\n'
@@ -2860,6 +2870,16 @@ if url is not None:
     <children>
       <reference>inline-element</reference>
     </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//sup</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+    <conversion-callback name="latex learner correct teacher">
+return r'$^{\text{%s}}$'%self.text
+    </conversion-callback>
   </entry>
 
   <entry>
