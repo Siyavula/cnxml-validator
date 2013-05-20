@@ -1276,7 +1276,7 @@ return etree.tostring(title)
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("note","tip","aside","warning","important")</type>
+	<type>enum("note","tip","aside","warning","important","keyquestions","keyconcepts","newwords","didyouknow")</type>
       </entry>
     </attributes>
     <children>
@@ -2346,7 +2346,7 @@ return self.text
 	<type>string</type>
 	<default/>
       </entry>-->
-    </attributes>
+     </attributes>
     <children>
       <subset-of>
         <element>src</element>
@@ -2775,6 +2775,7 @@ return r'\(' + tex + r'\)'
       <any-number>
 	<one-of>
 	  <element>br</element>
+      <element>newline</element>
 	  <element>chem_compound</element>
 	  <element>correct</element>
 	  <element>currency</element>
