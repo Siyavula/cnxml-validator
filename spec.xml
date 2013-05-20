@@ -1209,7 +1209,7 @@ return etree.tostring(theoremproof)
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment","project")</type>
+	<type>enum("activity","groupdiscussion","casestudy","investigation","f_experiment","i_experiment","g_experiment","project","questions","revision")</type>
       </entry>
     </attributes>
     <children>
@@ -1276,7 +1276,7 @@ return etree.tostring(title)
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("note","tip","aside","warning","important","keyquestions","keyconcepts","newwords","didyouknow")</type>
+	<type>enum("note","tip","aside","warning","important","keyquestions","keyconcepts","newwords","didyouknow","visit")</type>
       </entry>
     </attributes>
     <children>
@@ -2341,6 +2341,27 @@ return self.text
 	<type>number</type>
 	<default/>
       </entry>
+      <entry>
+        <name>src</name>
+        <type>string</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>width</name>
+        <type>number</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>height</name>
+        <type>number</type>
+        <default/>
+      </entry>
+      <entry>
+        <name>mime-type</name>
+        <type>string</type>
+        <default/>
+      </entry>
+
       <!--<entry>
 	<name>style:format</name>
 	<type>string</type>
@@ -3158,6 +3179,17 @@ return r'\\'
 return etree.tostring(self)
     </conversion-callback>
   </entry>
+  
+  <entry>
+    <xpath>/document/content//newline</xpath>
+    <notext/>
+    <conversion-callback name="latex learner correct teacher">
+return r'\\'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return "\n"
+    </conversion-callback>
+  </entry>
 
   <entry>
     <xpath>/document/content//emphasis</xpath>
@@ -3441,6 +3473,11 @@ else:
 	<type>string</type>
 	<default/>
       </entry>
+      <entry>
+	<name>window</name>
+	<type>string</type>
+	<default/>
+      </entry>
     </attributes>
     <children>
       <reference>inline-element</reference>
@@ -3486,6 +3523,16 @@ if url is not None:
     </children>
   </entry>
 
+  <entry>
+    <xpath>/document/content//sup</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+    <conversion-callback name="html latex learner correct teacher">
+return etree.tostring(self)
+    </conversion-callback>
+  </entry>
+  
   <entry>
     <xpath>//its:rules</xpath>
     <attributes>
