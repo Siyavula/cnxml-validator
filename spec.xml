@@ -2624,10 +2624,7 @@ return pattern%self.text
       </one-of>
     </children>
     <conversion-callback name="latex learner correct teacher">
-if self.getparent().tag == 'latex':    
-    return r"\text{Correct: }\color{red}" + self.text+ r"\color{blue}"
-else:
-    return r"Correct: \color{red}" + self.text+ r"\color{blue}"
+    return self.text
     </conversion-callback>
   </entry>
 
