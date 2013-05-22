@@ -288,6 +288,11 @@ return '\n' + etree.tostring(newElement) + '\n'
 	<type>enum("arabic","upper-alpha","lower-alpha","upper-roman","lower-roman")</type>
 	<default>arabic</default>
       </entry>
+      <entry>
+	<name>bullet-style</name>
+	<type>enum("bullet","open-circle")</type>
+	<default>bullet</default>
+      </entry>
     </attributes>
     <children>
       <any-number from="1">
