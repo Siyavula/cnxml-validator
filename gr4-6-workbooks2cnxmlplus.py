@@ -182,6 +182,12 @@ if __name__ == "__main__":
         emph.addprevious(p)
         emph.getparent().remove(emph)
 
+    # change href attribute in link to url
+    for link in xml.findall('.//link'):
+        if 'href' in link.attrib.keys():
+            link.attrib['url'] = link.attrib['href']
+            link.attrib.pop('href')
+
     # some doc attributes we don't need
     for att in xml.getroot().attrib:
         del xml.getroot().attrib[att]
