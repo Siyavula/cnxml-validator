@@ -2241,6 +2241,7 @@ return r'\(' + tex + r'\)'
 	<one-of>
 	  <element>br</element>
       <element>newline</element>
+      <element>space</element>
 	  <element>chem_compound</element>
 	  <element>correct</element>
 	  <element>currency</element>
@@ -2271,6 +2272,8 @@ return r'\(' + tex + r'\)'
       <any-number>
 	<one-of>
 	  <element>br</element>
+      <element>newline</element>
+      <element>space</element>
 	  <element>chem_compound</element>
 	  <element>correct</element>
 	  <element>currency</element>
@@ -2579,10 +2582,53 @@ return '\n'
   </entry>
   
   <entry>
+    <xpath>/document/content//space</xpath>
+    <notext/>
+    <attributes>
+        <entry>
+            <name>count</name>
+            <type>string</type>
+        </entry>
+        <entry>
+            <name>effect</name>
+            <type>string</type>
+        </entry>
+    </attributes>
+    <conversion-callback name="latex learner correct teacher">
+if self.attrib['effect'] == 'underline':
+    return r'\underline{\hspace{%sem}}' % self.attrib['count']
+else:
+    return r'\hspace{%sem}' % self.attrib['count']
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+    return r'_'*int(self.attrib['count'])
+    </conversion-callback>
+  </entry>
+  
+  <entry>
     <xpath>/document/content//newline</xpath>
     <notext/>
+    <attributes>
+        <entry>
+            <name>count</name>
+            <type>string</type>
+            <default/>
+        </entry>
+        <entry>
+            <name>effect</name>
+            <type>string</type>
+            <default/>
+        </entry>
+    </attributes>
     <conversion-callback name="latex learner correct teacher">
-return convert_using(self, '/document/content//br')
+if 'effect' in self.attrib.keys():
+    if self.attrib['effect'] == 'underline':
+        return r'\answerline{%s}' % self.attrib['count']
+    elif self.attrib['effect'] == 'normal':
+        return r'\answerspace{%s}' % self.attrib['count']
+else:
+    return r''
+
     </conversion-callback>
   </entry>
 
