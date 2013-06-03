@@ -247,7 +247,13 @@ if listType == 'bulleted':
     environment = 'ListBulleted'
 elif listType == 'enumerated':
     environment = 'ListEnumerated'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+startval = self.attrib.get('start-value')
+if startval == '1':
+    startval = ''
+else:
+    startval = r'\setcounter{enumi}{%s}' % str(int(startval)-1)
+
+return '\n\\begin{' + environment + '}\n%s' % startval + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
   </entry>
 
