@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<document xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml/0.4" xmlns:style="http://siyavula.com/cnxml/style/0.1">
+<its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+    <its:translateRule translate="no" selector="//link"/>
+    <its:translateRule translate="no" selector="//url"/>
+    <its:translateRule translate="no" selector="//latex"/>
+    <its:translateRule translate="no" selector="//number"/>
+    <its:translateRule translate="no" selector="//unit"/>
+    <its:translateRule translate="no" selector="//unit_number"/>
+    <its:translateRule translate="no" selector="//percentage"/>
+    <its:translateRule translate="no" selector="//symbol"/>
+    <its:translateRule translate="no" selector="//currency"/>
+    <its:translateRule translate="no" selector="//chem_compound"/>
+    <its:translateRule translate="no" selector="//spec_note"/>
+    <its:translateRule translate="no" selector="//nuclear_notation"/>
+    <its:translateRule translate="no" selector="//mass_number"/>
+    <its:translateRule translate="no" selector="//atomic_number"/>
+    <its:translateRule translate="no" selector="//code"/>
+    <its:translateRule translate="no" selector="//m:math"/>
+    <its:translateRule translate="no" selector="//shortcode"/>
+    <its:translateRule translate="no" selector="//metadata"/>
+    <its:translateRule translate="no" selector="//image"/>
+    <its:translateRule translate="no" selector="//video"/>
+    <its:translateRule translate="no" selector="//figure/type"/>
+    <its:translateRule translate="no" selector="//simulation"/>
+</its:rules>
+  <metadata>
+    <cnxml-version>0.1</cnxml-version>
+    <pspicture-generator-version>1.1</pspicture-generator-version>
+  </metadata>
+  <content>
+    <para>
+Bold: <emphasis effect='bold'>At vero eos</emphasis></para>
+<para>
+Italics: <emphasis effect='italics'>At vero eos</emphasis></para>
+<para>
+Underline: <emphasis effect='underline'>At vero eos</emphasis></para>
+<para>
+Small Caps: <emphasis effect='smallcaps'>At vero eos</emphasis>
+</para>
+</content>
+</document>
