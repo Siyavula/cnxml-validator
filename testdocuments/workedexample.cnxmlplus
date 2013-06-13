@@ -1,0 +1,312 @@
+<?xml version='1.0' encoding='utf-8'?>
+<document xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml/0.4" xmlns:style="http://siyavula.com/cnxml/style/0.1">
+<its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+    <its:translateRule translate="no" selector="//link"/>
+    <its:translateRule translate="no" selector="//url"/>
+    <its:translateRule translate="no" selector="//latex"/>
+    <its:translateRule translate="no" selector="//number"/>
+    <its:translateRule translate="no" selector="//unit"/>
+    <its:translateRule translate="no" selector="//unit_number"/>
+    <its:translateRule translate="no" selector="//percentage"/>
+    <its:translateRule translate="no" selector="//symbol"/>
+    <its:translateRule translate="no" selector="//currency"/>
+    <its:translateRule translate="no" selector="//chem_compound"/>
+    <its:translateRule translate="no" selector="//spec_note"/>
+    <its:translateRule translate="no" selector="//nuclear_notation"/>
+    <its:translateRule translate="no" selector="//mass_number"/>
+    <its:translateRule translate="no" selector="//atomic_number"/>
+    <its:translateRule translate="no" selector="//code"/>
+    <its:translateRule translate="no" selector="//m:math"/>
+    <its:translateRule translate="no" selector="//shortcode"/>
+    <its:translateRule translate="no" selector="//metadata"/>
+    <its:translateRule translate="no" selector="//image"/>
+    <its:translateRule translate="no" selector="//video"/>
+    <its:translateRule translate="no" selector="//figure/type"/>
+    <its:translateRule translate="no" selector="//simulation"/>
+</its:rules>
+  <metadata>
+    <cnxml-version>0.1</cnxml-version>
+    <pspicture-generator-version>1.1</pspicture-generator-version>
+  </metadata>
+  <content>
+    <worked_example>
+          <title>Mountees and Roadees <percentage>100</percentage> awesome</title>
+          <question>
+            <para>Investigate the following situation and use your knowledge of mathematics to solve the problem:</para>
+            <para>Mr. Hunter manufactures bicycles. He produces two different models of bicycles; strong mountain bikes called Mountees and fast road bikes called Roadees. He cannot produce more than <number>5</number> Mountees on a day and he can manufacture a maximum of <number>3</number> Roadees a day. He needs <number>1</number> technician to assemble a Mountee and <number>2</number> technicians to assemble a Roadee. The company has <number>8</number> technicians in the assembly department. The profit on a Mountee is <currency><number>800</number></currency> and <currency><number>2400</number></currency> on a Roadee. The demand is such that he can sell all the bikes he manufactures.</para>
+            <para>Determine the number of each model of bicycle that must be manufactured in order to make the maximum profit.</para>
+          </question>
+          <answer>
+            <workstep>
+              <title>Assign variables</title>
+              <para>In this situation there are two variables that we need to consider: let the number of Mountees produced be <latex>M</latex> and let the number of Roadees produced be <latex>R</latex>.</para>
+            </workstep>
+            <workstep>
+              <title>Organise the information given</title>
+              <para>Write down a summary of the information given in the problem so that we consider all the different components in the situation. </para>
+	      <latex display="block">
+		\begin{array}{l@{\;}l}
+		  \text{maximum number for } M	&amp;=  5 \\
+		  \text{maximum number for } R	&amp;=  3 \\
+		  \text{number of technicians needed for } M	&amp;=  1 \\
+		  \text{number of technicians needed for } R	&amp;=  2 \\
+		  \text{total number of technicians } &amp;=  8 \\
+		  \text{profit per } M &amp;=  <number>800</number> \\
+		  \text{profit per } R &amp;=  <number>2400</number>
+		\end{array}
+	      </latex>
+            </workstep>
+            <workstep>
+              <title>Draw up a table</title>
+              <para>Use the summary to draw up a table of all the possible combinations of the number of Mountees and Roadees that can be manufactured per day:</para>
+							<table>
+											<tgroup cols="5">
+												<colspec colname="c1" colnum="1"/>
+												<colspec colname="c2" colnum="2"/>
+												<colspec colname="c3" colnum="3"/>
+												<colspec colname="c4" colnum="4"/>
+												<colspec colname="c5" colnum="5"/>
+												  <tbody>
+								<row>
+								<entry><latex>M</latex> </entry>
+								<entry nameend="c5" namest="c2"><latex>R</latex></entry>
+										</row>
+
+										<row>
+								<entry> </entry>
+								<entry><number>0</number></entry>
+								<entry><number>1</number></entry>
+								<entry><number>2</number></entry>
+								<entry><number>3</number></entry>
+										</row>
+
+										<row>
+								<entry><number>0</number></entry>
+								<entry><latex>(0;0)</latex></entry>
+								<entry><latex>(0;1)</latex></entry>
+								<entry><latex>(0;2)</latex></entry>
+								<entry><latex>(0;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>1</number></entry>
+								<entry><latex>(1;0)</latex></entry>
+								<entry><latex>(1;1)</latex></entry>
+								<entry><latex>(1;2)</latex></entry>
+								<entry><latex>(1;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>2</number></entry>
+								<entry><latex>(2;0)</latex></entry>
+								<entry><latex>(2;1)</latex></entry>
+								<entry><latex>(2;2)</latex></entry>
+								<entry><latex>(2;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>3</number></entry>
+								<entry><latex>(3;0)</latex></entry>
+								<entry><latex>(3;1)</latex></entry>
+								<entry><latex>(3;2)</latex></entry>
+								<entry><latex>(3;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>4</number></entry>
+								<entry><latex>(4;0)</latex></entry>
+								<entry><latex>(4;1)</latex></entry>
+								<entry><latex>(4;2)</latex></entry>
+								<entry><latex>(4;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>5</number></entry>
+								<entry><latex>(5;0)</latex></entry>
+								<entry><latex>(5;1)</latex></entry>
+								<entry><latex>(5;2)</latex></entry>
+								<entry><latex>(5;3)</latex></entry>
+										</row>
+				 
+									</tbody>
+								</tgroup>
+							</table>
+<para>Note that there are <number>24</number> possible combinations.</para>
+            </workstep>
+            <workstep>
+              <title>Consider the limitation of the number of technicians</title>
+              <para>It takes <number>1</number> technician to assemble a Mountee and <number>2</number> technicians to assemble a Roadee. There are a total of <number>8</number> technicians in the assembly department, therefore we can write that <latex>1(M) + 2(R) \leq 8</latex>.</para>
+              <para>With this limitation, we are able to eliminate some of the combinations in the table where <latex>M + 2R &gt; 8</latex>:</para>
+
+
+							<table>
+											<tgroup cols="5">
+												<colspec colname="c1" colnum="1"/>
+												<colspec colname="c2" colnum="2"/>
+												<colspec colname="c3" colnum="3"/>
+												<colspec colname="c4" colnum="4"/>
+												<colspec colname="c5" colnum="5"/>
+												  <tbody>
+								<row>
+								<entry><latex>M</latex> </entry>
+								<entry nameend="c5" namest="c2"><latex>R</latex></entry>
+										</row>
+
+										<row>
+								<entry> </entry>
+								<entry><number>0</number></entry>
+								<entry><number>1</number></entry>
+								<entry><number>2</number></entry>
+								<entry><number>3</number></entry>
+										</row>
+
+										<row>
+								<entry><number>0</number></entry>
+								<entry><latex>(0;0)</latex></entry>
+								<entry><latex>(0;1)</latex></entry>
+								<entry><latex>(0;2)</latex></entry>
+								<entry><latex>(0;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>1</number></entry>
+								<entry><latex>(1;0)</latex></entry>
+								<entry><latex>(1;1)</latex></entry>
+								<entry><latex>(1;2)</latex></entry>
+								<entry><latex>(1;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>2</number></entry>
+								<entry><latex>(2;0)</latex></entry>
+								<entry><latex>(2;1)</latex></entry>
+								<entry><latex>(2;2)</latex></entry>
+								<entry><latex>(2;3)</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>3</number></entry>
+								<entry><latex>(3;0)</latex></entry>
+								<entry><latex>(3;1)</latex></entry>
+								<entry><latex>(3;2)</latex></entry>
+								<entry><latex>\cancel{(3;3)}</latex></entry>
+											</row>
+
+										<row>
+								<entry><number>4</number></entry>
+								<entry><latex>(4;0)</latex></entry>
+								<entry><latex>(4;1)</latex></entry>
+								<entry><latex>(4;2)</latex></entry>
+								<entry><latex>\cancel{(4;3)}</latex></entry>
+										</row>
+
+										<row>
+								<entry><number>5</number></entry>
+								<entry><latex>(5;0)</latex></entry>
+								<entry><latex>(5;1)</latex></entry>
+								<entry><latex>\cancel{(5;2)}</latex></entry>
+								<entry><latex>\cancel{(5;3)}</latex></entry>
+										</row>
+				 
+									</tbody>
+								</tgroup>
+							</table>
+         	<para>These combinations have been excluded as possible answers. For example, <latex>(5;3)</latex> gives <latex>5 + 2(3) = 11</latex> technicians.</para>
+            </workstep>
+            <workstep>
+              <title>Consider the profit on the bicycles </title>
+         	<para>We can express the profit (<latex>P</latex>) per day as: <latex>P = 800(M) + <number>2400</number>(R)</latex>. Notice that a higher profit is made on a Roadee.</para>
+         	<para>By substituting the different combinations for <latex>M</latex> and <latex>R</latex>, we can find the values that give the maximum profit:</para>
+               <para>
+        	  <latex display="block">
+		  \begin{align}
+		  \text{For } (5;0) \quad P &amp;=  800(5) + <number>2400</number>(0) \\
+		  														&amp;= <currency><number>4000</number></currency> \\
+		  \text{For } (3;1) \quad P &amp;=  800(3) + <number>2400</number>(1) \\
+		  														&amp;= <currency><number>4800</number></currency> 
+		   \end{align}
+		   </latex>
+               </para>
+	       <table>
+		 <tgroup cols="5">
+		   <colspec colname="c1" colnum="1"/>
+		   <colspec colname="c2" colnum="2"/>
+		   <colspec colname="c3" colnum="3"/>
+		   <colspec colname="c4" colnum="4"/>
+		   <colspec colname="c5" colnum="5"/>
+		   <tbody>
+		     <row>
+		       <entry><latex>M</latex> </entry>
+		       <entry nameend="c5" namest="c2"><latex>R</latex></entry>
+		     </row>
+		     
+		     <row>
+		       <entry> </entry>
+		       <entry><number>0</number></entry>
+		       <entry><number>1</number></entry>
+		       <entry><number>2</number></entry>
+		       <entry><number>3</number></entry>
+		     </row>
+		     
+		     <row>
+		       <entry><number>0</number></entry>
+		       <entry><latex>(0;0) \Rightarrow <currency><number>0</number></currency></latex></entry>
+		       <entry><latex>(0;1) \Rightarrow <currency><number>2400</number></currency></latex></entry>
+		       <entry><latex>(0;2) \Rightarrow <currency><number>4800</number></currency></latex></entry>
+		       <entry><latex>(0;3) \Rightarrow <currency><number>7200</number></currency></latex></entry>
+		     </row>
+		     
+		     <row>
+		       <entry><number>1</number></entry>
+		       <entry><latex>(1;0) \Rightarrow <currency><number>800</number></currency></latex></entry>
+		       <entry><latex>(1;1) \Rightarrow <currency><number>3200</number></currency></latex></entry>
+		       <entry><latex>(1;2) \Rightarrow <currency><number>5600</number></currency></latex></entry>
+		       <entry><latex>(1;3) \Rightarrow <currency><number>8000</number></currency></latex></entry>
+		     </row>
+		     
+		     <row>
+		       <entry><number>2</number></entry>
+		       <entry><latex>(2;0) \Rightarrow <currency><number>1600</number></currency></latex></entry>
+		       <entry><latex>(2;1) \Rightarrow <currency><number>4000</number></currency></latex></entry>
+		       <entry><latex>(2;2) \Rightarrow <currency><number>6400</number></currency></latex></entry>
+		       <entry><latex>(2;3) \Rightarrow <currency><number>8800</number></currency></latex></entry>
+		     </row>
+		     
+		     <row>
+		       <entry><number>3</number></entry>
+		       <entry><latex>(3;0) \Rightarrow <currency><number>2400</number></currency></latex></entry>
+		       <entry><latex>(3;1) \Rightarrow <currency><number>4800</number></currency></latex></entry>
+		       <entry><latex>(3;2) \Rightarrow <currency><number>7200</number></currency></latex></entry>
+		       <entry><latex>\cancel{(3;3)}</latex></entry>
+		     </row>
+		     
+		     <row>
+		       <entry><number>4</number></entry>
+		       <entry><latex>(4;0) \Rightarrow <currency><number>3200</number></currency></latex></entry>
+		       <entry><latex>(4;1) \Rightarrow <currency><number>5600</number></currency></latex></entry>
+		       <entry><latex>(4;2) \Rightarrow <currency><number>8000</number></currency></latex></entry>
+		       <entry><latex>\cancel{(4;3)}</latex></entry>
+		     </row>
+		     
+		     <row>
+		       <entry><number>5</number></entry>
+		       <entry><latex>(5;0) \Rightarrow <currency><number>4000</number></currency> </latex></entry>
+		       <entry><latex>(5;1) \Rightarrow <currency><number>6400</number></currency> </latex></entry>
+		       <entry><latex>\cancel{(5;2)}</latex></entry>
+		       <entry><latex>\cancel{(5;3)}</latex></entry>
+		     </row>
+		     
+		   </tbody>
+		 </tgroup>
+	       </table>
+	       
+             </workstep>
+            <workstep>
+              <title>Write the final answer</title>
+              <para>Therefore the maximum profit of <currency><number>8800</number></currency> is obtained if <number>2</number> Mountees and <number>3</number> Roadees are manufactured per day.</para>
+            </workstep>
+          </answer>
+      </worked_example>
+
+</content>
+</document>

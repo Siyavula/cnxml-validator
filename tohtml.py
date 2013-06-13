@@ -1,8 +1,23 @@
+from lxml import etree
 import sys, os
 import argparse
 
+from xml.sax.saxutils import unescape, escape
 from XmlValidator import XmlValidator
 import utils
+
+
+def escape_code(document):
+    '''Given document as string, return with code elements replaced by their escaped string'''
+    xml = etree.HTML(document)
+    
+    for pre in xml.findall('.//pre'):
+        pre.text = ''
+        for child in pre:
+            pre.text += etree.tostring(child)
+            pre.remove(child)
+
+    return etree.tostring(xml)
 
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -54,7 +69,7 @@ def cache_conversion_function(iSpec):
 
     if conversionFunction is None:
         # Cache conversion function
-        conversionFunctionNodes = specEntry.xpath('.//conversion-callback[contains(@name, "latex") and contains(@name, "%s")]'%commandlineArguments.audience)
+        conversionFunctionNodes = specEntry.xpath('.//conversion-callback[contains(@name, "html") and contains(@name, "%s")]'%commandlineArguments.audience)
         if len(conversionFunctionNodes) == 0:
             utils.warning_message('No conversion entry for ' + specEntry.find('xpath').text)
             conversionFunctionSource = 'conversionFunction = lambda self: None'
@@ -69,7 +84,10 @@ def cache_conversion_function(iSpec):
 
         from lxml import etree
         import utils
+        import hashlib
+        from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
         localVars = {
+            'unescape': unescape,
             'etree': etree,
             'utils': utils,
             'convert_using': convert_using,
@@ -79,6 +97,10 @@ def cache_conversion_function(iSpec):
             'escape_latex': utils.escape_latex,
             'latex_math_function_check': utils.latex_math_function_check,
             'convert_image': convert_image,
+            'pspicture2png': pspicture2png,
+            'tikzpicture2png': tikzpicture2png,
+            'hashlib': hashlib,
+            'unescape': unescape,
         }
         exec(conversionFunctionSource, localVars)
         conversionFunction = localVars['conversionFunction']
@@ -97,7 +119,7 @@ def convert_image(iSourceFilename, iDestinationFilename):
 
 def traverse(iNode, iValidator):
     global conversionFunctions
-
+    
     children = iNode.getchildren()
     for child in children:
         traverse(child, iValidator)
@@ -106,27 +128,25 @@ def traverse(iNode, iValidator):
     specEntry = iValidator.documentSpecEntries.get(iNode)
     if specEntry is None:
         utils.error_message('Unhandled element at ' + utils.get_full_dom_path(iNode, iValidator.spec))
-
     conversionFunction = cache_conversion_function(specEntry)
     parent = iNode.getparent()
     try:
         converted = conversionFunction(iNode)
-    except TypeError:
-        from lxml import etree
-        print "Problem converting node %s on line %s "%(iNode, iNode.sourceline)
+    except Exception as Error:
+        print 'Error: %s %s\nNode: %s\n Parent: %s\n line: %s'%(Error, type(Error), iNode.tag, parent.tag, iNode.sourceline)
         sys.exit(1)
 
     if isinstance(converted, basestring):
         if parent is None:
-            return converted
+            return (converted)
         else:
             from lxml import etree
             dummyNode = etree.Element('dummy')
-            dummyNode.text = converted
+            dummyNode.text = unescape(converted)
             utils.etree_replace_with_node_list(parent, iNode, dummyNode)
     elif converted is not None:
         if parent is None:
-            return converted
+            return unescape(converted)
         else:
             utils.etree_replace_with_node_list(iNode.getparent(), iNode, converted)
 
@@ -142,5 +162,28 @@ for filename in commandlineArguments.filename:
     document = validator.dom
 
     #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
-    print traverse(document, validator).encode('utf-8')
+    outputdoc = traverse(document, validator).encode('utf-8')
+    outputdoc = '''<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello HTML</title>
+    <script type="text/javascript"
+        src="mathjax/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <style type="text/css" >
+p {
+font-family:Arial,Helvetica,sans-serif;
+}
+
+span.smallcaps {font-variant: small-caps;}
+span.normal {font-variant: normal;}
+span.underline {text-decoration:underline;} 
+    </style>
+  </head>
+  <body>
+    %s
+  </body>
+</html>'''% outputdoc
+    outputdoc = escape_code(outputdoc)
+    print outputdoc
     outputFile.flush()

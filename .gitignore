@@ -1,4 +1,5 @@
 *~
 *.pyc
+*.swp
 latex-preamble/main.pdf
 latex-preamble/chapter.tex
