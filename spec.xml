@@ -1309,7 +1309,26 @@ return etree.tostring(note)
     </conversion-callback>
   </entry>
 
-  <entry>
+<entry>
+    <xpath>/document/content//quote</xpath>
+      <children>
+          <reference>block-element-no-subsections</reference>
+      </children>
+    <attributes>
+        <entry>
+            <name>url</name>
+            <type>string</type>
+            <default/>
+        </entry>
+    </attributes>
+    <conversion-callback name="latex learner teacher">
+environment = 'Quote'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+</entry>
+
+
+<entry>
     <xpath>/document/content//math_identity</xpath>
     <children>
       <reference>block-element-no-subsections</reference>
@@ -2821,6 +2840,7 @@ return r'\(' + tex + r'\)'
 	<element>teachers-guide</element>
 	<element>correct</element>
     <element>link</element>
+    <element>quote</element>
 
 	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
