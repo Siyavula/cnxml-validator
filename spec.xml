@@ -3310,6 +3310,15 @@ if 'effect' in self.attrib.keys():
 else:
     return r''
     </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+if 'effect' in self.attrib.keys():
+    if self.attrib['effect'] == 'underline':
+        return r'&lt;hr/&gt;'*int(self.attrib['count'])
+    elif self.attrib['effect'] == 'normal':
+        return r'&lt;br/&gt;'*int(self.attrib['count'])
+else:
+    return r''
+    </conversion-callback>
   </entry>
 
 
@@ -3652,6 +3661,9 @@ if url is not None:
     </children>
     <conversion-callback name="latex learner correct teacher">
 return r'$^{\text{%s}}$'%self.text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return self
     </conversion-callback>
   </entry>
 
