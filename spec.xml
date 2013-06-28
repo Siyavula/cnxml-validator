@@ -3617,13 +3617,13 @@ else:
     <conversion-callback name="latex learner correct teacher">
 target = self.attrib.get('target-id')
 if target is not None:
-    return r'\ref{' + target + '}'
+    return r'\REF{' + target + '}'
 url = self.attrib.get('url')
 if url is not None:
     if self.text != '':
-        return r'\href{' + escape_latex(url) + '}{' + escape_latex(self.text) + '}'
+        return r'\HREF{' + escape_latex(url) + '}{' + escape_latex(self.text) + '}'
     else:
-        return r'\url{' + escape_latex(url) + '}'
+        return r'\URL{' + escape_latex(url) + '}'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 target = self.attrib.get('target-id')
