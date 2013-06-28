@@ -2514,6 +2514,8 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex learner correct teacher">
+if self.text.strip().startswith(r'\par'):
+    self.text = self.text.strip()[4:]
 return r'  \Caption{' + self.text + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
