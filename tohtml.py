@@ -1,6 +1,7 @@
 from lxml import etree
 import sys, os
 import argparse
+import copy
 
 from xml.sax.saxutils import unescape, escape
 from XmlValidator import XmlValidator
@@ -87,6 +88,8 @@ def cache_conversion_function(iSpec):
         import hashlib
         from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
         localVars = {
+            'copy':copy,
+            'os':os,
             'unescape': unescape,
             'etree': etree,
             'utils': utils,
