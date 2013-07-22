@@ -691,6 +691,7 @@ return ''
     <conversion-callback name="html learner correct teacher">
 title = etree.Element('h1')
 title.text = self.text.strip()
+if title.text == '': title.text = ' '
 title.attrib['class'] = 'title'
 
 return etree.tostring(title)
@@ -2208,9 +2209,7 @@ tail = r'\end{' + pspictureEnvironment + '}}\n' + tail
 return head + self.text + tail
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-#png = pspicture2png(self)
 code = self.find('.//code').text
-
 #TODO fix this, image names don't match the actual names.
 # bad hack, strip out all non-ascii characters from code element to calculate hash
 codetext = ''.join([c  for c in code if ord(c) &lt; 128])
@@ -2219,13 +2218,26 @@ codeHash = hashlib.md5(''.join(codetext.encode('utf-8').split())).hexdigest()
 pre = etree.Element('pre')
 pre.attrib['class'] = 'pspicture'
 code_element = self.find('.//code')
-pre.append(code_element)
+pre.append(copy.deepcopy(code_element))
 
 pspicture = etree.Element('div')
 pspicture.attrib['class'] = 'alternates'
 
 img = etree.Element('img')
-img.attrib['src'] = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
+img_path = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
+# check if the file has been created already
+try:
+    with open(img_path): pass
+# if not, create the file
+except IOError:
+    try:
+        png = pspicture2png(self)
+        os.system('cp %s %s' % (png, img_path))
+    except Exception as E:
+        warning_message("Problem compiling pstricks\n\nException:\n%s\n\n" % E + etree.tostring(self))
+        png = ''
+
+img.attrib['src'] = img_path
 #if width is not None:
 #    img.attrib['width'] = str(int(float(width)*780))
 #else:
@@ -2657,7 +2669,7 @@ insideTable = ('table' in utils.get_full_dom_path(self))
 
 numberEquations = False
 if self.attrib['display'] == 'inline':
-    return r'\(' + self.text.strip() + r'\)'
+    return make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
 else:
     foundMathEnvironment = False
     text = self.text.strip()
@@ -2693,7 +2705,7 @@ else:
                     endSubstr = endSubstr[:-1] + '*}'
             break
     if not foundMathEnvironment:
-        return r'\[' + text + r'\]'
+        return make_new_mathelement(text) #r'\[' + text + r'\]'
     else:
         environmentsWithAmpersands = {'align': 1, 'align*': 1, 'eqnarray': 2, 'eqnarray*': 2}
         if environmentName in environmentsWithAmpersands:
@@ -2706,7 +2718,7 @@ else:
                     error_message('Extra ampersands (expected %i) in aligned equation: %s'%(ampersands, line))
                 if (lineIndex == len(lines)-1) and (line == endSubstr):
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
-        return text
+        return make_new_mathelement(text) #text
 
     </conversion-callback>
   </entry>
