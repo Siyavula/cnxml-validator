@@ -472,7 +472,11 @@ if self.attrib.get(latexAlignmentKey) is None:
     colwidth = self.attrib.get('colwidth')
     if colwidth is not None:
         # Set LaTeX column width based on colwidth attribute
-        assert colwidth[-2:] == 'pt'
+        try:
+            assert colwidth[-2:] == 'pt'
+        except AssertionError:
+            # hack in a default value
+            colwidth = '150pt'
         colwidth = float(colwidth[:-2])
         relativeWidth = colwidth / 480
         self.attrib[latexAlignmentKey] = r'&gt;{\centering}p{%.6f\textwidth}'%(0.85*relativeWidth)
@@ -1288,7 +1292,7 @@ return etree.tostring(title)
       </entry>
       <entry>
 	<name>type</name>
-	<type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts")</type>
+	<type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote")</type>
       </entry>
     </attributes>
     <children>
@@ -2516,7 +2520,7 @@ return ''
     <conversion-callback name="latex learner correct teacher">
 if self.text.strip().startswith(r'\par'):
     self.text = self.text.strip()[4:]
-return r'  \Caption{' + self.text + '}\n'
+return r'  \Caption{' + self.text.strip() + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 if self.getparent().attrib['type'] == 'figure':
