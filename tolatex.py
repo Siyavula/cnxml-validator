@@ -115,6 +115,11 @@ def traverse(iNode, iValidator):
         from lxml import etree
         print "Problem converting node %s on line %s "%(iNode, iNode.sourceline)
         sys.exit(1)
+    
+    except AssertionError:
+        from lxml import etree
+        print "Problem converting node %s on line %s "%(iNode, iNode.sourceline)
+        sys.exit(1)
 
     if isinstance(converted, basestring):
         if parent is None:
