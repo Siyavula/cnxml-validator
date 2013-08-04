@@ -2653,19 +2653,6 @@ else:
         return text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-def make_new_mathelement(TeX):
-    mathmlelement = etree.Element('math')
-    semantics = etree.Element('semantics')
-    junk = etree.Element('mtext')
-    junk.text = 'CLICKME'
-    semantics.append(junk)
-    annotation = etree.Element('annotation')
-    annotation.attrib['encoding'] = 'TeX'
-    annotation.text = TeX
-
-    semantics.append(annotation)
-    mathmlelement.append(semantics)
-    return etree.tostring(mathmlelement)
 
 # First check that there aren't any funny functions
 unslashedFunctions = latex_math_function_check(self.text)
@@ -2676,7 +2663,7 @@ insideTable = ('table' in utils.get_full_dom_path(self))
 
 numberEquations = False
 if self.attrib['display'] == 'inline':
-    return make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
+    return utils.make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
 else:
     foundMathEnvironment = False
     text = self.text.strip()
@@ -2712,7 +2699,7 @@ else:
                     endSubstr = endSubstr[:-1] + '*}'
             break
     if not foundMathEnvironment:
-        return make_new_mathelement(text) #r'\[' + text + r'\]'
+        return utils.make_new_mathelement(text) #r'\[' + text + r'\]'
     else:
         environmentsWithAmpersands = {'align': 1, 'align*': 1, 'eqnarray': 2, 'eqnarray*': 2}
         if environmentName in environmentsWithAmpersands:
@@ -2725,7 +2712,7 @@ else:
                     error_message('Extra ampersands (expected %i) in aligned equation: %s'%(ampersands, line))
                 if (lineIndex == len(lines)-1) and (line == endSubstr):
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
-        return make_new_mathelement(text) #text
+        return utils.make_new_mathelement(text) #text
 
     </conversion-callback>
   </entry>
@@ -2757,7 +2744,7 @@ unslashedFunctions = latex_math_function_check(tex)
 if len(unslashedFunctions) > 0:
     warning_message('Found the following functions: (%s) without a backslash in a m:math element (converted to LaTeX):\n%s'%(', '.join(unslashedFunctions), tex))
 
-return r'\(' + tex + r'\)'
+return utils.make_new_mathelement(tex)
     </conversion-callback>
   </entry>
 
@@ -3007,7 +2994,7 @@ if nodes['exp'] is not None:
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = utils.make_new_mathelement(result)
 
 return result
     </conversion-callback>
@@ -3043,7 +3030,7 @@ result = r'\text{' + self.text + '}'
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = utils.make_new_mathelement(result)
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         result = '~' + result
 else:
@@ -3062,7 +3049,7 @@ return '$^{' + self.text + '}$'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 parents = [a.tag for a in self.iterancestors()]
-if 'latex' in parents:
+if any([tag in parents for tag in ['latex','unit']]):
     return '^{%s}'%self.text
 else:
     sup = etree.Element('sup')
@@ -3688,20 +3675,15 @@ if url is not None:
 return r'$^{\text{%s}}$'%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return self
+ancestors = [a.tag for a in self.iterancestors()]
+print ancestors
+if 'latex' in ancestors:
+    return r'^{\text{%s}}'%self.text
+else:
+    return self
     </conversion-callback>
   </entry>
 
-  <entry>
-    <xpath>/document/content//sup</xpath>
-    <children>
-      <reference>inline-element</reference>
-    </children>
-    <conversion-callback name="html latex learner correct teacher">
-return etree.tostring(self)
-    </conversion-callback>
-  </entry>
-  
   <entry>
     <xpath>//its:rules</xpath>
     <attributes>
