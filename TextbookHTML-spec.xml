@@ -100,7 +100,7 @@ self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-title = etree.Element('h1')
+title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.text = self.text.strip()
 self.getparent().attrib['title'] = self.text.strip()
@@ -135,13 +135,22 @@ if self.attrib.get('shortcode') is not None:
 return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
+# TextbookHTML must not have sections, instead it must have only h classes
+# replace section with children
 result = self.text.strip()
 newElement = etree.Element('div')
 newElement.attrib['class'] = 'section'
 newElement.text = result
 if self.attrib.get('shortcode') is not None:
     newElement.attrib['id'] = 'sc%s'%self.attrib.get('shortcode')
-return etree.tostring(newElement)
+
+if self.getparent().tag in ['section', 'content']:
+    for child in self:
+        self.addnext(copy.deepcopy(child))
+    return self.text
+else:
+    return result
+
     </conversion-callback>
     <conversion-callback name="latex html correct">
 return self.text.strip()
@@ -215,9 +224,8 @@ else:
     headlevel = headinglevels[level]
 
 newElement = etree.Element(headlevel)
-newElement.attrib['class'] = 'title'
-newElement.attrib['class'] = 'title'
 newElement.text = self.text
+newElement.tail = '\n'
 
 return etree.tostring(newElement)
     </conversion-callback>
@@ -688,7 +696,7 @@ self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-title = etree.Element('h1')
+title = etree.Element('div')
 title.text = self.text.strip()
 if title.text == '': title.text = ' '
 title.attrib['class'] = 'title'
@@ -1100,7 +1108,7 @@ return r'''
 environment = 'theorem'
 theorem = etree.Element('div')
 theorem.attrib['class'] = environment
-title = etree.Element('h1')
+title = etree.Element('div')
 title.text = self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','')
 title.tail=self.text
 theorem.append(title)
@@ -1275,7 +1283,7 @@ self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-title = etree.Element('h1')
+title = etree.Element('div')
 title.attrib['class']= 'title'
 title.text = self.text
 return etree.tostring(title)
@@ -1755,7 +1763,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
 environment = 'worked_example'
 workedexample = etree.Element('div')
 workedexample.attrib['class'] = environment
-title = etree.Element('h1')
+title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.tail = self.text
 title.text = self.attrib['title']
@@ -1841,7 +1849,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     <conversion-callback name="html learner teacher">
 workstep = etree.Element('div')
 workstep.attrib['class'] = 'workstep'
-title = etree.Element('h2')
+title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.text = self.attrib['title']
 title.tail = '\n'+self.text
