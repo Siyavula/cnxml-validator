@@ -2104,13 +2104,16 @@ return result
 if self.attrib['type'] == 'figure':
     figure = etree.Element('figure')
     figure.text = self.text
+    id = self.attrib.get('id')
+    if id is not None:
+        figure.attrib['id'] = id.replace(':', '-')
 else:
     environment = 'Figure' + self.attrib['type'].capitalize()
     id = self.attrib.get('id')
     figure = etree.Element('div')
     figure.attrib['data-class'] = environment
     if id is not None:
-        figure.attrib['id'] = id
+        figure.attrib['id'] = id.replace(':', '-')
     figure.text = self.text
 
 return etree.tostring(figure)
@@ -2227,6 +2230,7 @@ pre.attrib['class'] = 'pspicture'
 code_element = self.find('.//code')
 pre.append(copy.deepcopy(code_element))
 
+nestedfig = etree.Element('figure')
 pspicture = etree.Element('div')
 pspicture.attrib['class'] = 'alternates'
 
@@ -2258,9 +2262,10 @@ img.attrib['src'] = img_path
 for up in self.findall('.//usepackage'):
     pre.append(up)
 
+nestedfig.append(pspicture)
 pspicture.append(img)
 pspicture.append(pre)
-return etree.tostring(pspicture)
+return etree.tostring(nestedfig)
     </conversion-callback>
   </entry>
 
@@ -2479,6 +2484,19 @@ else:
 
 if self.attrib.get('attribution') is not None:
     img.attrib['alt'] = self.attrib.get('attribution')
+
+#TODO Check if parent has another img or div.alternates in it
+
+siblings = [s.tag for s in self.itersiblings(preceding=True)]
+
+if ('div' in siblings):
+    nestedfig = etree.Element('figure')
+    nestedfig.append(copy.deepcopy(img))
+    img = nestedfig
+
+#print "\n\n FIx this here"
+#sys.exit()
+
 
 return etree.tostring(img)
 </conversion-callback>
@@ -3639,6 +3657,8 @@ if url is not None:
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 target = self.attrib.get('target-id')
+if target is not None:
+    target = target.replace(':', '-')
 link = etree.Element('a')
 if target is not None:
     link.attrib['href'] = '#'+target
