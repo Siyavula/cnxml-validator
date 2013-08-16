@@ -3677,7 +3677,6 @@ return r'$_{\text{%s}}$'%self.text
 return self
     </conversion-callback>
   </entry>
-  </entry>
 
   <entry>
     <xpath>/document/content//sup</xpath>
