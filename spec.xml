@@ -3365,7 +3365,7 @@ pattern = {
     'smallcaps': r'\textsc{%s}',
     'normal': '%s',
 }[self.attrib['effect']]
-return pattern%self.text
+return pattern%self.text 
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 #pattern = {
