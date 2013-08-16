@@ -2565,8 +2565,11 @@ if self.getparent().attrib['type'] == 'figure':
 else:
     caption = etree.Element('div')
 
+para = etree.Element('p')
+para.text = self.text
+
 caption.attrib['class'] = 'caption'
-caption.text = self.text
+caption.insert(0, para)
 
 return '\n'+etree.tostring(caption)
     </conversion-callback>
@@ -2671,7 +2674,11 @@ else:
         return text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-
+#if self.getparent().tag != 'p':
+#    p = etree.Element('p', attrib={'class':'keep-validator-quiet'})
+#    self.addprevious(p)
+#    p.append(copy.deepcopy(self))
+#    self = p[0]
 # First check that there aren't any funny functions
 unslashedFunctions = latex_math_function_check(self.text)
 if len(unslashedFunctions) > 0:
@@ -2681,7 +2688,11 @@ insideTable = ('table' in utils.get_full_dom_path(self))
 
 numberEquations = False
 if self.attrib['display'] == 'inline':
-    return utils.make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
+    if self.getparent().tag != 'code':
+        return utils.make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
+    else:
+        return self.text.strip()
+
 else:
     foundMathEnvironment = False
     text = self.text.strip()
@@ -2717,7 +2728,10 @@ else:
                     endSubstr = endSubstr[:-1] + '*}'
             break
     if not foundMathEnvironment:
-        return utils.make_new_mathelement(text) #r'\[' + text + r'\]'
+        if self.getparent().tag != 'code':
+            return utils.make_new_mathelement(text) #r'\[' + text + r'\]'
+        else:
+            return text
     else:
         environmentsWithAmpersands = {'align': 1, 'align*': 1, 'eqnarray': 2, 'eqnarray*': 2}
         if environmentName in environmentsWithAmpersands:
@@ -2730,7 +2744,11 @@ else:
                     error_message('Extra ampersands (expected %i) in aligned equation: %s'%(ampersands, line))
                 if (lineIndex == len(lines)-1) and (line == endSubstr):
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
-        return utils.make_new_mathelement(text) #text
+        
+        if self.getparent().tag != 'code':
+            return utils.make_new_mathelement(text) #text
+        else:
+            return text.strip()
 
     </conversion-callback>
   </entry>
@@ -3011,8 +3029,10 @@ if nodes['exp'] is not None:
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
+picMode = ('pspicture' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = utils.make_new_mathelement(result)
+    if not picMode:
+        result = utils.make_new_mathelement(result)
 
 return result
     </conversion-callback>
@@ -3044,11 +3064,15 @@ return result
     <conversion-callback name="latex html learner correct teacher">
 unitsWithoutSpace = [u'°']
 inUnitNumber = (self.getparent().tag == 'unit_number')
-result = r'\text{' + self.text + '}'
+result = r'\text{' + self.text.strip() + '}'
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
+picMode = ('pspicture' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = utils.make_new_mathelement(result)
+    if picMode:
+        result = '$%s$'%result
+    else:
+        result = utils.make_new_mathelement(result)
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         result = '~' + result
 else:
@@ -3068,7 +3092,7 @@ return '$^{' + self.text + '}$'
     <conversion-callback name="html learner correct teacher">
 parents = [a.tag for a in self.iterancestors()]
 if any([tag in parents for tag in ['latex','unit']]):
-    return '^{%s}'%self.text
+    return '^{%s}'%self.text.strip()
 else:
     sup = etree.Element('sup')
     sup.text = self.text
