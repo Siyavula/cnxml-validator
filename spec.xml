@@ -3670,6 +3670,13 @@ if url is not None:
     <children>
       <reference>inline-element</reference>
     </children>
+    <conversion-callback name="latex learner correct teacher">
+return r'$_{\text{%s}}$'%self.text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return self
+    </conversion-callback>
+  </entry>
   </entry>
 
   <entry>
