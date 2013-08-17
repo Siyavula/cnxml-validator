@@ -136,21 +136,7 @@ return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 # TextbookHTML must not have sections, instead it must have only h classes
-# replace section with children
-result = self.text.strip()
-newElement = etree.Element('div')
-newElement.attrib['class'] = 'section'
-newElement.text = result
-if self.attrib.get('shortcode') is not None:
-    newElement.attrib['id'] = 'sc%s'%self.attrib.get('shortcode')
-
-if self.getparent().tag in ['section', 'content']:
-    for child in self:
-        self.addnext(copy.deepcopy(child))
-    return self.text
-else:
-    return result
-
+return self.text
     </conversion-callback>
     <conversion-callback name="latex html correct">
 return self.text.strip()
@@ -672,12 +658,7 @@ if len(shortcodeArray) > 0:
 return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + shortcodeLatex + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = etree.Element('div')
-environment.attrib['class'] = 'exercises'
-environment.text = self.text
-environment.tail = '\n'
-
-return etree.tostring(environment)
+return self.text
     </conversion-callback>
     <conversion-callback name="latex correct">
 environment = 'Exercises'
@@ -696,11 +677,11 @@ self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-title = etree.Element('div')
-title.text = self.text.strip()
-if title.text == '': title.text = ' '
+title = etree.Element('h1')
+title.text = 'Exercises'
 title.attrib['class'] = 'title'
-
+title.attrib['data-class'] = 'complex-section'
+title.tail = '\n'
 return etree.tostring(title)
     </conversion-callback>
   </entry>
@@ -777,11 +758,10 @@ else:
     return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-problemset = etree.Element('div')
-problemset.attrib['class'] = 'problemset'
-problemset.text = self.text
-
-return etree.tostring(problemset)
+ps = etree.Element('div')
+ps.attrib['class'] = 'problemset'
+ps.text = '\n'+self.text
+return etree.tostring(ps)
     </conversion-callback>
     <conversion-callback name="latex correct">
 entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
@@ -834,7 +814,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'header'
 header = etree.Element('div')
 header.attrib['class'] = environment
-header.text = self.text
+header.text = '\n' + self.text
 return etree.tostring(header)
     </conversion-callback>
   </entry>
@@ -850,9 +830,10 @@ environment = 'ExercisesProblemsetFooter'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'header'
+environment = 'footer'
 footer = etree.Element('div')
 footer.attrib['class'] = environment
+footer.text = '\n' + self.text
 return etree.tostring(footer)
     </conversion-callback>
   </entry>
@@ -903,8 +884,7 @@ return result
 problemset = etree.Element('div')
 problemset.attrib['class'] = 'exercise'
 problemset.attrib['data-class'] = 'entry'
-problemset.text = self.text
-
+problemset.text =  '\n' + self.text
 return etree.tostring(problemset)
     </conversion-callback>
     <conversion-callback name="latex correct">
@@ -3546,11 +3526,14 @@ return self.text
       <optional>footer</optional>
     </children>
     <notext/>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set')
+    <conversion-callback name="html learner teacher correct">
+mp = etree.Element('div')
+mp.attrib['class'] = 'multipart'
+mp.text = '\n' + self.text
+return etree.tostring(mp)
     </conversion-callback>
-    <conversion-callback name="latex correct">
-return convert_using(self, '/document/content//exercises//problem-set')
+    <conversion-callback name="latex learner teacher correct">
+return ''#convert_using(self, '/document/content//exercises//problem-set')
     </conversion-callback>
   </entry>
 
