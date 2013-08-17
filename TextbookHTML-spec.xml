@@ -1265,8 +1265,9 @@ else:
     environment = activityType.capitalize()
 
 activity = etree.Element('div')
-activity.attrib['class'] = 'activity'
-activity.attrib['type'] = environment
+activity.attrib['class'] = 'example'
+activity.attrib['data-class'] = 'activity'
+activity.attrib['data-type'] = environment
 activity.text = self.text
 activity.tail = '\n'
 return etree.tostring(activity)
@@ -2108,21 +2109,23 @@ result += r'\end{' + environment + '}\n'
 return result
     </conversion-callback>
     <conversion-callback name="html learner correct teacher"><!-- type already creates start of environment -->
+
 # if the figure contains an image
-if self.attrib['type'] == 'figure':
-    figure = etree.Element('figure')
-    figure.text = self.text
-    id = self.attrib.get('id')
-    if id is not None:
-        figure.attrib['id'] = id.replace(':', '-')
-else:
-    environment = 'Figure' + self.attrib['type'].capitalize()
-    id = self.attrib.get('id')
-    figure = etree.Element('div')
-    figure.attrib['data-class'] = environment
-    if id is not None:
-        figure.attrib['id'] = id.replace(':', '-')
-    figure.text = self.text
+#if self.attrib['type'] == 'figure':
+figure = etree.Element('figure')
+figure.text = self.text
+figure.attrib['class'] = 'figure'
+id = self.attrib.get('id')
+if id is not None:
+    figure.attrib['id'] = id.replace(':', '-')
+#else:
+#    environment = 'Figure' + self.attrib['type'].capitalize()
+#    id = self.attrib.get('id')
+#    figure = etree.Element('div')
+#    figure.attrib['data-class'] = environment
+#    if id is not None:
+#        figure.attrib['id'] = id.replace(':', '-')
+#    figure.text = self.text
 
 return etree.tostring(figure)
     </conversion-callback>
@@ -2238,12 +2241,13 @@ pre.attrib['class'] = 'pspicture'
 code_element = self.find('.//code')
 pre.append(copy.deepcopy(code_element))
 
-nestedfig = etree.Element('figure')
+#nestedfig = etree.Element('figure')
 pspicture = etree.Element('div')
 pspicture.attrib['class'] = 'alternates'
 
 img = etree.Element('img')
 img_path = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
+img.tail = '\n'
 # check if the file has been created already
 try:
     with open(img_path): pass
@@ -2270,10 +2274,18 @@ img.attrib['src'] = img_path
 for up in self.findall('.//usepackage'):
     pre.append(up)
 
-nestedfig.append(pspicture)
+siblings = [c for c in self.getparent()]
+fig = etree.Element('figure')
+fig.attrib['class'] = 'figure'
+if len(siblings) > 2:
+    fig.append(pspicture)
 pspicture.append(img)
 pspicture.append(pre)
-return etree.tostring(nestedfig)
+
+if len(fig) > 0:
+    return etree.tostring(fig)
+else:
+    return etree.tostring(pspicture)
     </conversion-callback>
   </entry>
 
@@ -2374,6 +2386,7 @@ tikzpicture = etree.Element('div')
 tikzpicture.attrib['class'] = 'alternates'
 
 img = etree.Element('img')
+img.tail = '\n'
 img_path = '_plone_ignore_/cache/tikzpictures/%s.png'%codeHash
 # check if the file has been created already
 try:
@@ -2384,7 +2397,7 @@ except IOError:
         png = tikzpicture2png(self)
         os.system('cp %s %s' % (png, img_path))
     except Exception as E:
-        warning_message("Problem compiling pstricks\n\nException:\n%s\n\n" % E + etree.tostring(self))
+        warning_message("Problem compiling tikz\n\nException:\n%s\n\n" % E + etree.tostring(self))
         png = ''
 
 img.attrib['src'] = img_path
@@ -2401,10 +2414,10 @@ img.attrib['src'] = img_path
 for up in self.findall('.//usepackage'):
     pre.append(up)
 
-nestedfig.append(tikzpicture)
+#nestedfig.append(tikzpicture)
 tikzpicture.append(img)
 tikzpicture.append(pre)
-return etree.tostring(nestedfig)
+return etree.tostring(tikzpicture)
     </conversion-callback>
   </entry>
 
@@ -2545,15 +2558,19 @@ else:
 if self.attrib.get('attribution') is not None:
     img.attrib['alt'] = self.attrib.get('attribution')
 
-#TODO Check if parent has another img or div.alternates in it
+if self.getparent().tag != 'figure':
+    figure = etree.Element('figure')
+    figure.attrib['class'] = 'figure'
+    figure.append(img)
+    return etree.tostring(figure)
+else:
+    siblings = [c for c in self.getparent()]
+    fig = etree.Element('figure')
+    fig.attrib['class'] = 'figure'
 
-siblings = [s.tag for s in self.itersiblings(preceding=True)]
-for s in siblings: print s
-if ('div' in siblings):
-    nestedfig = etree.Element('figure')
-    nestedfig.append(copy.deepcopy(img))
-    img = nestedfig
-
+    if len(siblings) > 2:
+        fig.append(img)
+        return etree.tostring(fig)
 
 return etree.tostring(img)
 </conversion-callback>
