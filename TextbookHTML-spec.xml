@@ -900,9 +900,9 @@ if (self.getnext() is None) or (self.getnext().tag == 'footer'):
 return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-problemsetEnvironment = 'entry'
 problemset = etree.Element('div')
-problemset.attrib['class'] = problemsetEnvironment
+problemset.attrib['class'] = 'exercise'
+problemset.attrib['data-class'] = 'entry'
 problemset.text = self.text
 
 return etree.tostring(problemset)
@@ -1769,9 +1769,10 @@ environment = 'Workedexample'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'worked_example'
 workedexample = etree.Element('div')
-workedexample.attrib['class'] = environment
+workedexample.attrib['class'] = 'exercise'
+workedexample.attrib['data-class'] = 'worked_example'
+workedexample.attrib['data-type'] = 'Worked Example'
 title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.tail = self.text
@@ -1813,7 +1814,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 if self.text is None:
     raise ValueError, "Worked example question should not be empty."
 workedexampleq = etree.Element('div')
-workedexampleq.attrib['class'] = 'question'
+workedexampleq.attrib['class'] = 'problem'
+workedexampleq.attrib['data-class'] = 'question'
 workedexampleq.text = self.text
 
 return etree.tostring(workedexampleq)
@@ -1857,7 +1859,8 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 workstep = etree.Element('div')
-workstep.attrib['class'] = 'workstep'
+workstep.attrib['class'] = 'solution'
+workstep.attrib['data-class'] = 'workstep'
 title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.text = self.attrib['title']
