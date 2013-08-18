@@ -1452,7 +1452,7 @@ return self.text
     <validation-callback>is_subject</validation-callback>
     <conversion-callback name="latex html learner teacher">
 subject = self.text.strip().lower()
-return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subject]
+return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences', 'wetenskap': 'Fisiese Wetenskappe', 'wiskunde':'Wiskunde'}[subject]
     </conversion-callback>
   </entry>
 

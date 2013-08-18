@@ -147,7 +147,7 @@ def check_link_element(element):
     return True
 
 def is_subject(element):
-    valid = ['maths', 'science']
+    valid = ['maths', 'science', 'wetenskap', 'wiskunde']
     subject = element.text.strip().lower()
     if subject not in valid:
         raise_error("linked-concepts/concept/subject must be one of %s, found '%s' instead"%(repr(valid), element.text))
