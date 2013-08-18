@@ -1841,6 +1841,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
 workstep = etree.Element('div')
 workstep.attrib['class'] = 'solution'
 workstep.attrib['data-class'] = 'workstep'
+workstep.attrib['data-type'] = 'Step'
 title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.text = self.attrib['title']
