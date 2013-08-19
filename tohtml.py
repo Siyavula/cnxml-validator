@@ -164,30 +164,21 @@ if __name__ == "__main__":
             fp.read(),
             iCleanUp=True)
         document = validator.dom
+        
+        Title = filename.replace('.cnxmlplus', '').replace('-', ' ')
+# capitalise first letter
 
         #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
         outputdoc = traverse(document, validator).encode('utf-8')
-        outputdoc = '''<!DOCTYPE html>
+        htmloutputdoc = '''<!DOCTYPE html>
     <html>
       <head>
-        <title>Hello HTML</title>
-        <script type="text/javascript"
-            src="mathjax/MathJax.js?config=TeX-AMS_HTML">
-        </script>
-        <style type="text/css" >
-    p {
-    font-family:Arial,Helvetica,sans-serif;
-    }
-
-    span.smallcaps {font-variant: small-caps;}
-    span.normal {font-variant: normal;}
-    span.underline {text-decoration:underline;} 
-        </style>
+        <title>{Title}</title>
       </head>
       <body>
-        %s
+        {Content}
       </body>
-    </html>'''% outputdoc
-        outputdoc = escape_code(outputdoc)
-        print outputdoc
+    </html>'''.format(Content=outputdoc, Title=Title)
+        htmloutputdoc = escape_code(htmloutputdoc)
+        print htmloutputdoc
         outputFile.flush()

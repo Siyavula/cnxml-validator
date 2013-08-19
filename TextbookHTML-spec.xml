@@ -3278,7 +3278,7 @@ return result
 
   <entry>
     <xpath>/document/content//chem_compound</xpath>
-    <conversion-callback name="latex html learner correct teacher">
+    <conversion-callback name="latex learner correct teacher">
 text = self.text.strip()
 pos = 0
 while pos &lt; len(text):
@@ -3295,6 +3295,22 @@ latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
     text = r'\(' + text + r'\)'
 return text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+text = self.text.strip()
+pos = 0
+while pos &lt; len(text):
+    if text[pos].isalpha():
+        start = pos
+        pos += 1
+        while (pos &lt; len(text)) and text[pos].isalpha():
+            pos += 1
+        text = text[:start] + r'\text{' + text[start:pos] + '}' + text[pos:]
+        pos += 7
+    else:
+        pos += 1
+latexMode = ('latex' in utils.get_full_dom_path(self))
+return utils.make_new_mathelement(text)
     </conversion-callback>
   </entry>
 
