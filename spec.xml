@@ -3118,7 +3118,7 @@ else:
 if symbolLocation == 'front':
     result = r'\text{' + symbol + r'}\ ' + numberText
 else:
-    result = numberText + r'\ r'\text{' + symbol + '}'
+    result = numberText + r'\ \text{' + symbol + '}'
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
