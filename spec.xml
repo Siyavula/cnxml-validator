@@ -3596,7 +3596,7 @@ else:
             suffix = 'e'
         value = str(value)
     else:
-        suffix = 'e'
+        suffix = 'de'
     return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
     </conversion-callback>
   </entry>
