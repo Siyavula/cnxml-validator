@@ -3582,21 +3582,21 @@ except ValueError:
 
 format = self.attrib['format']
 if (format == 'word') and isInt and (value &lt; 12):
-    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value-1]
+    return ['eerste', 'tweede', 'derde', 'vierde', 'vyfde', 'sesde', 'sewende', 'agste', 'negende', 'tiende', 'elfde'][value-1]
 else:
     # format == 'superscript'
     if isInt:
         if (value % 10 == 1) and (value//10 % 10 != 1):
-            suffix = 'st'
+            suffix = 'ste'
         elif (value % 10 == 2) and (value//10 % 10 != 1):
-            suffix = 'nd'
-        elif (value % 10 == 3) and (value//10 % 10 != 1):
-            suffix = 'rd'
+            suffix = 'e'
+        elif (value % 10 == 8) and (value//10 % 10 != 1):
+            suffix = 'ste'
         else:
-            suffix = 'th'
+            suffix = 'e'
         value = str(value)
     else:
-        suffix = 'th'
+        suffix = 'e'
     return r'\(' + value + r'^{\text{' + suffix + r'}}\)'
     </conversion-callback>
   </entry>
