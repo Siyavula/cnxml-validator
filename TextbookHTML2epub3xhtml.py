@@ -8,19 +8,32 @@ from lxml import etree
 
 from subprocess import Popen, PIPE
 
+def replace_math_inside_text(text):
+    r''' Find and replace math commands inside \text{} environments'''
+    operators = [r'\^{.*?}', r'_{.*?}']
+    for op in operators:
+        mathtext = re.findall(op, text)
+        for m in mathtext:
+            index = text.find(m)
+            if index > 0:
+                if text[index-1] != '$':
+                    text = text.replace(m, '$%s$' % m )
 
+    return text
 
 def find_and_replace_inline_math(text):
-
-
+    
     equations = re.findall(r'\\\(.*?\\\)', text)
     for e in equations:
         tex = e[2:-2]
         tex = tex.replace(r'<sup>' , r'$^{').replace(r'</sup>', r'}$')
-        tex = tex.replace(r"&#183;", r"$&#183;$")
+        tex = tex.replace("&#183;", "$&#183;$")
         math = r'<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext>CLICKME</mtext><annotation encoding="TeX">{tex}</annotation></semantics></math>'.format(tex=tex)
         text = text.replace(e, math)
-    
+        text = text.replace(r'~<math', r' <math') 
+
+        # fix ^{blah} inside \text{ } 
+
         
 
     return text
@@ -60,6 +73,8 @@ def clean(element):
         # find this, write it to a temp file and run tralics on it to get mathml.
         # replace math tag with mathml.
         annotation = element.find('.//annotation')
+        annotation.text = replace_math_inside_text(annotation.text)
+
 
         if 'begin' in annotation.text:
             TeX = r'''\documentclass{{article}}
