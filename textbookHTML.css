@@ -1,0 +1,128 @@
+
+
+
+
+
+/*  
+ * Activity
+ */
+
+div.activity[data-type="formalexperiment"] {
+    background-color: yellow;
+}
+
+
+/* Notes */
+
+div.note {
+    border-style : solid;
+    border-color : gray;
+    width: 60%;
+    margin: 10px auto;
+}
+
+div.note[data-type="tip"]:before {
+    content : "Tip";
+}
+
+
+div.note[data-type="note"]:before {
+    content : "Note";
+}
+
+div.note[data-type="important"]:before {
+    content : "Important!";
+}
+/* Figures */
+
+div.alternates > pre {
+    display : none;
+}
+
+
+div.alternates, figure {
+    width : 100%;
+    display: table;
+    max-width: 80%; /* demo; set some amount (px or %) if you can */
+    margin: 10px auto; /* not needed unless you want centered */
+    padding-top: 20px;
+}
+
+div.alternates > img {
+    margin: auto 10px;
+}
+
+figure > figcaption {
+    font-style : italic;
+    font-size : 90%;
+    width : 80%;
+}
+
+
+/* Worked examples */
+
+div.worked_example > h1.title:before {
+    content: "Worked Example: ";
+}
+
+div.worked_example {
+    background-color: #B3D1F0;
+    margin: 10px auto;
+    width: 90%;
+}
+
+div.worked_example  p {
+    margin: auto 5%;
+}
+
+div.worked_example > h1.title {
+    background-color: #6AABE1;
+    font-size: x-large;
+}
+
+div.question:before {
+    content: "Question: ";
+    font-size: large;
+    font-weight: bold;
+}
+
+div.workstep > h2.title{
+    font-size: medium;
+}
+div.workstep > h2.title:before {
+    content: "Step: ";
+    font-size: medium;
+}
+/* images */
+img {
+    margin: 10px auto;
+}
+
+
+/* Exercises */
+
+div.exercises {
+    background-color: #FEE294;
+    margin: 10px auto;
+    width: 90%;
+}
+
+div.exercises > h1.title {
+    background-color: #FCC834;
+    font-size: x-large;
+}
+
+div.exercises > div.problemset > div.entry > div.problem{
+    margin-top:10%;
+}
+div.exercises > div.problemset > div.entry > div.problem:before {
+    content: "Problem: ";
+    font-weight: bold;
+}
+
+div.exercises > div.problemset > div.entry > div.solution:before{
+    content: "Solution: ";
+    font-weight: bold;
+  
+}
+
