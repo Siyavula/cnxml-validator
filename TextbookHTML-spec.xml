@@ -2359,6 +2359,8 @@ code = self.find('.//code').text
 # bad hack, strip out all non-ascii characters from code element to calculate hash
 codetext = ''.join([c  for c in code if ord(c) &lt; 128])
 codeHash = hashlib.md5(''.join(codetext.encode('utf-8').split())).hexdigest()
+warning_message(codeHash)
+warning_message(codetext)
 
 pre = etree.Element('pre')
 pre.attrib['class'] = 'tikzpicture'

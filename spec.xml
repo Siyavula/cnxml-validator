@@ -2099,13 +2099,13 @@ if self.attrib['type'] == 'figure':
     figure.text = self.text
 else:
     environment = 'Figure' + self.attrib['type'].capitalize()
-    id = self.attrib.get('id')
     figure = etree.Element('div')
     figure.attrib['data-class'] = environment
-    if id is not None:
-        figure.attrib['id'] = id
     figure.text = self.text
 
+id = self.attrib.get('id')
+if id is not None:
+    figure.attrib['id'] = id
 return etree.tostring(figure)
     </conversion-callback>
   </entry>
@@ -2137,7 +2137,7 @@ return etree.tostring(figure)
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
-redBoundingBox = True # Put red frame at bounding box of every pspicture?
+redBoundingBox = False # Put red frame at bounding box of every pspicture?
 
 if self.attrib['crop'] == 'true':
     pspictureEnvironment = 'pspicture*'

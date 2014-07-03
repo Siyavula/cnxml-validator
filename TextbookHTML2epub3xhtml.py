@@ -3,7 +3,7 @@ import sys
 import os
 import re 
 
-
+import logging
 from lxml import etree
 
 from subprocess import Popen, PIPE
@@ -74,45 +74,14 @@ def clean(element):
         # replace math tag with mathml.
         annotation = element.find('.//annotation')
         annotation.text = replace_math_inside_text(annotation.text)
-
-
-        if 'begin' in annotation.text:
-            TeX = r'''\documentclass{{article}}
-\usepackage{{amsmath, amsthm, amsfonts, amssymb}}
-\begin{{document}}
-$${formula}$$
-\end{{document}}'''.format(formula=annotation.text.replace(r'align*', 'aligned').encode('utf-8'))
+        if element.tail is None:
+            element.tail = ''
+        if "begin{align" in annotation.text:
+            element.tail = "\[{tex}\]".format(tex=annotation.text) + element.tail
         else:
-            TeX = r'''\documentclass{{article}}
-\usepackage{{amsmath, amsthm, amsfonts, amssymb}}
-\begin{{document}}
-${formula}$
-\end{{document}}'''.format(formula=annotation.text.encode('utf-8'))
+            element.tail = "\({tex}\)".format(tex=annotation.text) + element.tail
 
-        # replace some pesky chars
-        TeX = TeX.replace('&#183;', r'\cdot')
-        TeX = TeX.replace('&#160;', ' ')
-        tempfile = open('tmp.tex', 'w')
-        tempfile.write(TeX)
-        tempfile.close()
-        process = Popen(['tralics', '-noentnames', 'tmp.tex'], stdout=PIPE)
-        stdout, stderr = process.communicate()
-        xmlfile = etree.parse('tmp.xml')
-#       print etree.tostring(xmlfile)
-        math = xmlfile.find('.//formula')[0]
-        math = etree.tostring(math, pretty_print=True)
-        math = math.replace('&#194;', ' ')
-        math = etree.XML(math)
-
-        semantics = element.find('.//semantics')
-        semantics.clear()
-        for m in math:
-            semantics.append(m)
-
-
-
-
-
+        
     return 
  
 
@@ -122,14 +91,15 @@ if __name__ == "__main__":
     html = etree.HTML(content)
     
     # Find inline \(blah\) tex equations and transform into mathml.
-    htmltext = etree.tostring(html, pretty_print=True, method='xml')
-    htmltext = find_and_replace_inline_math(htmltext)
-    html = etree.HTML(htmltext)
+    #htmltext = etree.tostring(html, pretty_print=True, method='xml')
+    #htmltext = find_and_replace_inline_math(htmltext)
+    #html = etree.HTML(htmltext)
     
     # replace all the Textbook hacked math elements with ones that will work in an epub.
     for element in html.iter():
         clean(element)
 
+    etree.strip_elements(html, 'math', with_tail=False)
 
     print etree.tostring(html, pretty_print=True, method='xml')
 
