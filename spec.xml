@@ -2845,6 +2845,7 @@ return r'\(' + tex + r'\)'
 	<element>pspicture</element>
 	<element>tikzpicture</element>
 	<element>table</element>
+	<element>html5table</element>
 	<element>definition</element>
 	<element>theorem</element>
 	<element>activity</element>
@@ -3750,5 +3751,116 @@ return ''
 return ''
     </conversion-callback>
   </entry>
+
+    <entry>
+        <xpath>/document/content//html5table</xpath>
+        <attributes>
+            <entry>
+                <name>id</name>
+                <type>string</type>
+                <default/>
+            </entry>
+        </attributes>
+        <children>
+           <optional>thead</optional>
+           <optional>tbody</optional>
+           <optional>tfoot</optional>
+           <optional>caption</optional>
+            <any-number>
+                <optional>tr</optional>
+            </any-number>
+        </children>
+        <conversion-callback name="latex learner correct teacher">
+            return "%HTML5 Table TODO
+        </conversion-callback>
+        <conversion-callback name="html learner correct teacher">
+self.tag = 'table'
+return etree.tostring(self, pretty_print=True)
+        </conversion-callback>
+
+    </entry>
+
+    <entry>
+        <xpath>/document/content//html5table/caption</xpath>
+        <conversion-callback name="html learner correct teacher">
+return 
+        </conversion-callback>
+    </entry>
+    
+    <entry>
+        <xpath>/document/content//html5table/thead</xpath>
+        <children>
+            <optional>tr</optional>
+            <optional>th</optional>
+        </children>
+    </entry>
+    
+    <entry>
+        <xpath>//tr</xpath>
+        <children>
+            <any-number>
+                <optional>th</optional>
+                <optional>td</optional>
+            </any-number>
+        </children>
+    </entry>
+    
+    <entry>
+        <xpath>//tr/th</xpath>
+    </entry>
+
+    <entry>
+        <xpath>//tr/td</xpath>
+    </entry>
+    
+    <entry>
+        <xpath>/document/content//html5table/tbody</xpath>
+        <children>
+            <any-number>
+                <optional>tr</optional>
+                <optional>th</optional>
+            </any-number>
+        </children>
+    </entry>
+    
+    <entry>
+        <xpath>/document/content//html5table/tfoot</xpath>
+        <children>
+            <any-number>
+                <optional>tr</optional>
+                <optional>th</optional>
+            </any-number>
+        </children>
+    </entry>
+    
+    <entry>
+        <xpath>/document/content//html5table/tr/th</xpath>
+    </entry>
+    
+    <entry>
+        <xpath>/document/content//html5table/tr/td</xpath>
+    </entry>
+
+    <entry>
+        <xpath>/document/content//html5table/tr</xpath>
+        <children>
+            <one-of>
+                <optional>thead</optional>
+                <optional>tbody</optional>
+                <optional>tfoot</optional>
+            </one-of>
+            <any-number>
+                <optional>th</optional>
+                <optional>td</optional>
+            </any-number>
+        </children>
+        <conversion-callback name="html learner correct teacher">
+return 
+        </conversion-callback>
+    </entry>
+    
+    <entry>
+        <xpath>/document/content//html5table/th</xpath>
+    </entry>
 
 </spec>
