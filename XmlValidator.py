@@ -21,6 +21,19 @@ class XmlValidator(object):
         else:
             raise TypeError, "XML spec needs to be either an XML string or a DOM"
 
+        # Resolve imports
+        import os
+        myPath = os.path.realpath(os.path.dirname(__file__))
+        for element in specDom.xpath('/spec/import'):
+            path = os.path.join(myPath, element.text.strip())
+            with open(path, 'rt') as fp:
+                subSpec = XmlValidator(fp.read())
+            parent = element.getparent()
+            index = parent.index(element)
+            parent.remove(element)
+            for entry in subSpec.spec:
+                parent.insert(index, entry)
+
         # Normalize text and tail of nodes
         for node in specDom.xpath('//*'):
             if node.text is None:

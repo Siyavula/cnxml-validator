@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1">
+
+<!-- Start of Monassis template spec -->
+
+  <entry>
+    <xpath>/document/content//monassis-template</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>rendered-as</name>
+	<type>enum("example","exercise")</type>
+	<default>exercise</default>
+      </entry>
+    </attributes>
+    <children>
+      <element>title</element>
+      <element>content</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>repeat-problem</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>header</optional>
+      <element>problem</element>
+      <optional>response</optional>
+      <element>solution</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/header</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/problem</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response</xpath>
+    <children>
+      <element>type</element>
+      <element>marks</element>
+      <element>correct</element>
+      <element>query</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/type</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/type/value</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/marks</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/marks/value</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/correct</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/correct/value</xpath>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/query</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections-with-input</reference>
+	<reference>inline-element-with-input</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/response/query//input</xpath>
+    <notext/>
+  </entry>
+
+  <entry id="block-element-no-subsections-with-input">
+    <children>
+      <any-number>
+	<one-of>
+	  <reference>block-element-no-subsections</reference>
+	  <element>input</element>
+	</one-of>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry id="inline-element-with-input">
+    <children>
+      <any-number>
+	<one-of>
+	  <reference>inline-element</reference>
+	  <element>input</element>
+	</one-of>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/solution</xpath>
+    <children>
+      <one-of>
+	<any-number>
+	  <element>step</element>
+	</any-number>
+	<reference>block-element-no-subsections</reference>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/solution/step</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>marks</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>title</optional>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/document/content//monassis-template/content/solution/step/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+<!-- End of Monassis template spec -->
+
+</spec>
