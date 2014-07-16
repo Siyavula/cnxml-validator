@@ -67,11 +67,7 @@ def is_figure_type(element):
 def is_number(element):
     if len(element) == 0:
         # No children, means it's just a plain number: either int or float
-        text = element.text if element.text is not None else ''
-        try:
-            float(text)
-        except ValueError:
-            raise_error("<number> text not interpretable as float", element)
+        return is_numeric_value(element)
     else:
         # Scientific or exponential notation: parse out coefficient, base and exponent
         allowedChildren = ['base', 'coeff', 'exp']
@@ -84,6 +80,8 @@ def is_number(element):
                 raise_error("<number> cannot have more than one <%s> child"%(child.tag), element)
             children[child.tag] = child
             text = child.text if child.text is not None else ''
+            if text[-3:] == '...':
+                text = text[:-3]
             try:
                 float(text)
             except ValueError:
@@ -102,6 +100,16 @@ def is_number(element):
         if (children['coeff'] is not None) and (children['exp'] is None) and (children['base'] is not None):
             raise_error("<number> with <coeff> and <base> must have an <exp>", element)
 
+    return True
+
+def is_numeric_value(element):
+    text = element.text if element.text is not None else ''
+    if text[-3:] == '...':
+        text = text[:-3]
+    try:
+        float(text)
+    except ValueError:
+        raise_error("<number> text not interpretable as float", element)
     return True
 
 def is_unit(element):
