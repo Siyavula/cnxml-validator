@@ -1698,29 +1698,6 @@ else:
     return r'_'*int(self.attrib['count'])
     </conversion-callback>
   </entry>
-<entry>
-    <xpath>//space</xpath>
-    <notext/>
-    <attributes>
-        <entry>
-            <name>count</name>
-            <type>string</type>
-        </entry>
-        <entry>
-            <name>effect</name>
-            <type>string</type>
-        </entry>
-    </attributes>
-    <conversion-callback name="latex learner correct teacher">
-if self.attrib['effect'] == 'underline':
-    return r'\underline{\hspace{%sem}}' % self.attrib['count']
-else:
-    return r'\hspace{%sem}' % self.attrib['count']
-    </conversion-callback>
-    <conversion-callback name="html learner correct teacher">
-    return r'_'*int(self.attrib['count'])
-    </conversion-callback>
-  </entry>
 
   <entry>
     <xpath>//newline</xpath>
