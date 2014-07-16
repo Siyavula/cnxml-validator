@@ -62,7 +62,10 @@ class XmlValidator(object):
             tag = iPatternNode.text.strip()
             assert tag != ''
             if iPatternNode.tag == 'reference':
-                referenceEntry = [child for child in self.spec if child.attrib.get('id') == tag][0]
+                try:
+                    referenceEntry = [child for child in self.spec if child.attrib.get('id') == tag][0]
+                except IndexError:
+                    raise ValueError, "Could not find referenced entry %s in specification" % (repr(tag))
                 return self.__validate_traverse_children_xml(referenceEntry.find('children'))
             if iPatternNode.tag == 'optional':
                 return '(' + tag + ',)?'
