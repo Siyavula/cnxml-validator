@@ -3763,8 +3763,8 @@ return ''
         </attributes>
         <children>
            <optional>thead</optional>
-           <optional>tbody</optional>
            <optional>tfoot</optional>
+           <optional>tbody</optional>
            <optional>caption</optional>
             <any-number>
                 <optional>tr</optional>
