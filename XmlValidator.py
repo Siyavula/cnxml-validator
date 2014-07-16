@@ -242,6 +242,7 @@ class XmlValidator(object):
 
 
     def monassis_to_cnxml(self):
+        assert len(self.dom.xpath('//monassis-template')) == 0, "monassis-template elements are deprecated"
         for templateNode in self.dom.xpath('//monassis-template'):
             renderer = templateNode.attrib.get('rendered-as', 'exercise')
             if renderer == "example":
