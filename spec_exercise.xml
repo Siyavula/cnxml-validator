@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1" xmlns:its="http://www.w3.org/2005/11/its">
+
+  <import>spec_common.xml</import>
+
+  <entry>
+    <xpath>/exercise</xpath>
+    <children>
+      <element>meta</element>
+      <one-of>
+	<element>multi-part</element>
+	<reference>exercise-body</reference>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta</xpath>
+    <children>
+      <unordered>
+	<element>id</element>
+	<element>version</element>
+	<optional>random_seed</optional>
+	<optional>derived_from</optional>
+	<element>title</element>
+	<optional>authors</optional>
+	<optional>last_updated</optional>
+	<element>difficulty</element>
+	<element>language</element>
+	<any-number>
+	  <element>link</element>
+	</any-number>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/id</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/version</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/random_seed</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_integer</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/derived_from</xpath>
+    <children>
+      <unordered>
+	<element>id</element>
+	<element>version</element>
+	<optional>random_seed</optional>
+	<element>relationship</element>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/derived_from/id</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/derived_from/version</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/derived_from/random_seed</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_integer</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/derived_from/relationship</xpath>
+    <!-- translation, correction, rework  -->
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/authors</xpath>
+    <children>
+      <any-number>
+	<element>author</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/authors/author</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/difficulty</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/last_updated</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_iso8601</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/language</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_language_code</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise/meta/link</xpath>
+    <attributes>
+      <entry>
+	<name>rel</name>
+	<type>enum('textbook', 'conceptmap', 'shortcode')</type>
+	<!-- textbook => this template should appear in the chapter or section associated with the given textbook path -->
+	<!-- conceptmap => this template depends on the given concept map node -->
+	<!-- shortcode => this is the static exercise associated with the given shortcode -->
+      </entry>
+      <entry>
+	<name>href</name>
+	<type>url</type>
+      </entry>
+    </attributes>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part</xpath>
+    <children>
+      <optional>header</optional>
+      <any-number>
+	<one-of>
+	  <element>multi-part</element>
+	  <element>entry</element>
+	</one-of>
+      </any-number>
+      <optional>footer</optional>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part/header</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part/footer</xpath>
+    <children>
+      <reference>block-element-no-subsections</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part/entry</xpath>
+    <children>
+      <reference>exercise-body</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//problem</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//solution</xpath>
+    <children>
+      <one-of>
+	<any-number>
+	  <one-of>
+	    <element>step</element>
+	    <element>hint</element>
+	  </one-of>
+	</any-number>
+	<reference>block-element-no-subsections</reference>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//solution/step</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>marks</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>title</optional>
+      <optional>marks</optional>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//solution/step/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//solution/step/marks</xpath>
+    <validation-callback>is_float</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//solution/hint</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>marks</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>title</optional>
+      <optional>marks</optional>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//solution/hint/title</xpath>
+    <children>
+      <reference>inline-element</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//solution/hint/marks</xpath>
+    <validation-callback>is_float</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//response</xpath>
+    <children>
+      <unordered>
+	<element>type</element>
+	<element>marks</element>
+	<element>correct</element>
+	<element>query</element>
+      </unordered>
+    </children>
+    <validation-callback>response_entries_count_matches</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//response/type</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//response/type/value</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//response/marks</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//response/marks/value</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_float</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//response/correct</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//response/correct/value</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//response/query</xpath>
+    <children>
+      <one-of>
+	<reference>block-element-no-subsections</reference>
+	<reference>inline-container-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//response/query//input</xpath>
+    <attributes>
+      <entry>
+	<name>group</name>
+	<type>string</type>
+	<default/>
+      </entry>
+    </attributes>
+    <notext/>
+  </entry>
+
+  <entry id="exercise-body">
+    <children>
+      <element>problem</element>
+      <optional>response</optional>
+      <element>solution</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <!-- TODO: This clashes with the figure definition in spec_common.xml -->
+  <entry>
+    <xpath>//figure</xpath>
+    <children>
+      <element>media</element>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media</xpath>
+    <children>
+      <unordered>
+	<element>type</element>
+	<element>src</element>
+	<any-number>
+	  <element>usepackage</element>
+	</any-number>
+	<any-number>
+	  <element>include</element>
+	</any-number>
+	<optional>width</optional>
+	<optional>height</optional>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media/type</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media/src</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media/usepackage</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media/include</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media/width</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//figure/media/height</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+</spec>

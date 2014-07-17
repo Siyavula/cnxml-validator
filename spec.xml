@@ -64,7 +64,7 @@ return ''
 	<any-number>
 	  <element>section</element>
 	</any-number>
-	<reference>block-element</reference>
+	<reference>block-or-major-environment-elements</reference>
       </one-of>
     </children>
     <notext/>
@@ -77,7 +77,7 @@ return self.text.strip()
     <xpath>/document/content//activity/section</xpath>
     <children>
       <element>title</element>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -96,7 +96,7 @@ return etree.tostring(activitysection)
   <entry>
     <xpath>/document/content//activity/section/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -128,7 +128,7 @@ return etree.tostring(title)
     <children>
       <element>title</element>
       <optional>shortcode</optional><!--TODO: this should be required-->
-      <reference>block-element</reference>
+      <reference>block-with-section-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -155,7 +155,7 @@ return self.text.strip()
   <entry>
     <xpath>/document/content//teachers-guide</xpath>
     <children>
-      <reference>block-element</reference>
+      <reference>block-with-section-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher correct">
@@ -173,7 +173,7 @@ return etree.tostring(tg)
   <entry>
     <xpath>/document/content//section/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner teacher">
 level = -1
@@ -298,7 +298,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
   <entry>
     <xpath>/document/content//exercises/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner correct teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -432,7 +432,7 @@ else:
   <entry>
     <xpath>/document/content//exercises//problem-set/header</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -451,7 +451,7 @@ return etree.tostring(header)
   <entry>
     <xpath>/document/content//exercises//problem-set/footer</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -560,8 +560,8 @@ return ''
     <xpath>/document/content//exercises//problem-set/entry/problem</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -596,8 +596,8 @@ return ''
     </attributes>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -636,8 +636,8 @@ return ''
     <xpath>/document/content//exercises//problem-set/entry/correct</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="html latex correct">
@@ -650,8 +650,8 @@ return '\n' + self.text.strip() + '\n'
     <xpath>/document/content//exercises//problem-set/entry/solution//correct</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html learner correct teacher">
@@ -692,7 +692,7 @@ return convert_using(self, '/document/content//exercises//problem-set')
   <entry>
     <xpath>/document/content//exercises//multi-part/header</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex html learner teacher">
@@ -703,7 +703,7 @@ return convert_using(self, '/document/content//exercises//problem-set/header')
   <entry>
     <xpath>/document/content//exercises//multi-part/footer</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex html learner teacher">
@@ -747,8 +747,8 @@ return ''
     <xpath>/document/content//exercises//multi-part/entry/problem</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html learner teacher">
@@ -775,8 +775,8 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/prob
     </attributes>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html teacher">
@@ -791,8 +791,8 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/solu
     <xpath>/document/content//exercises//multi-part/entry/correct</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html correct">
@@ -805,8 +805,8 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/corr
     <xpath>/document/content//exercises//multi-part/entry/solution//correct</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html learner correct teacher">
@@ -842,7 +842,7 @@ return etree.tostring(definition)
   <entry>
     <xpath>/document/content//definition/term</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -854,8 +854,8 @@ return ''
     <xpath>/document/content//definition/meaning</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html learner teacher">
@@ -897,7 +897,7 @@ return etree.tostring(theorem)
   <entry>
     <xpath>/document/content//theorem/label</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['theoremLabel'] = self.text.strip()
@@ -908,7 +908,7 @@ return ''
   <entry>
     <xpath>/document/content//theorem/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['theoremTitle'] = self.text.strip()
@@ -920,8 +920,8 @@ return ''
     <xpath>/document/content//theorem/statement</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -941,8 +941,8 @@ return etree.tostring(theoremstatement)
     <xpath>/document/content//theorem/given</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -962,8 +962,8 @@ return etree.tostring(theoremgiven)
     <xpath>/document/content//theorem/required</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -983,8 +983,8 @@ return etree.tostring(theoremrequired)
     <xpath>/document/content//theorem/proof</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -1015,7 +1015,7 @@ return etree.tostring(theoremproof)
     </attributes>
     <children>
       <optional>title</optional>
-      <reference>block-element</reference>
+      <reference>block-with-section-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
@@ -1053,7 +1053,7 @@ return etree.tostring(activity)
   <entry>
     <xpath>/document/content//activity/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -1081,7 +1081,7 @@ return etree.tostring(title)
       </entry>
     </attributes>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-with-para-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
@@ -1101,7 +1101,7 @@ return etree.tostring(note)
   <entry>
     <xpath>/document/content//quote</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-with-para-elements</reference>
     </children>
     <attributes>
       <entry>
@@ -1119,7 +1119,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   <entry>
     <xpath>/document/content//math_identity</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-with-para-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
@@ -1163,7 +1163,7 @@ return etree.tostring(mathextension)
   <entry>
     <xpath>/document/content//math_extension/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -1174,7 +1174,7 @@ return ''
   <entry>
     <xpath>/document/content//math_extension/body</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-with-para-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 return self.text
@@ -1265,7 +1265,7 @@ return ''
   <entry>
     <xpath>/document/content//key-concepts</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-with-para-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -1306,7 +1306,7 @@ return etree.tostring(nw)
   <entry>
     <xpath>/document/content//new-words/word</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner teacher">
 environment = 'NewwordsWord'
@@ -1351,7 +1351,7 @@ return etree.tostring(workedexample)
   <entry>
     <xpath>/document/content//worked_example/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -1364,8 +1364,8 @@ return ''
     <xpath>/document/content//worked_example/question</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner teacher">
@@ -1393,7 +1393,7 @@ return etree.tostring(workedexampleq)
 	<any-number from="1">
 	  <element>workstep</element>
 	</any-number>
-	<reference>block-element-no-subsections</reference>
+	<reference>block-or-minor-environment-elements</reference>
       </one-of>
     </children>
     <notext/>
@@ -1413,7 +1413,7 @@ return self.text
     <xpath>/document/content//worked_example/answer/workstep</xpath>
     <children>
       <element>title</element>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -1436,7 +1436,7 @@ return etree.tostring(workstep)
   <entry>
     <xpath>/document/content//worked_example/answer/workstep/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text.strip()
@@ -1541,13 +1541,19 @@ return r'\(' + tex + r'\)'
     </children>
   </entry>
 
-  <entry id="block-element">
+  <entry id="block-with-section-element">
+    <children>
+      <one-of>
+	<element>section</element>
+	<reference>block-or-major-environment-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="block-with-section-elements">
     <children>
       <any-number>
-	<one-of>
-	  <element>section</element>
-	  <reference>block-element-no-subsections-entry</reference>
-	</one-of>
+	<reference>block-with-section-element</reference>
       </any-number>
     </children>
   </entry>

@@ -4,7 +4,12 @@
   <entry>
     <xpath>//para</xpath>
     <children>
-      <reference>inline-container-element</reference>
+      <any-number>
+	<one-of>
+	  <reference>block-no-para-element</reference>
+	  <reference>inline-element</reference>
+	</one-of>
+      </any-number>
     </children>
     <conversion-callback name="latex learner correct teacher">
 text = ' '.join(self.text.strip().split())
@@ -103,8 +108,8 @@ return etree.tostring(newlist)
     <xpath>//list/item</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner correct teacher">
@@ -328,8 +333,8 @@ return etree.tostring(row)
     </attributes>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner correct teacher">
@@ -418,7 +423,7 @@ return etree.tostring(presentation)
   <entry>
     <xpath>//presentation/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text
@@ -477,7 +482,7 @@ return etree.tostring(simulation)
   <entry>
     <xpath>//simulation/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text
@@ -552,7 +557,7 @@ return etree.tostring(video)
   <entry>
     <xpath>//video/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex html learner teacher">
 self.getparent().attrib['title'] = self.text
@@ -998,7 +1003,7 @@ if self.attrib.get('attribution') is not None:
     img.attrib['alt'] = self.attrib.get('attribution')
 
 return etree.tostring(img)
-</conversion-callback>
+    </conversion-callback>
     <conversion-callback name="latex correct">
 tableMode = ('table' in utils.get_full_dom_path(self))
 if tableMode:
@@ -1026,8 +1031,8 @@ return ''
     <xpath>//image/attribution</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex html learner correct teacher">
@@ -1049,8 +1054,8 @@ return ''
     <xpath>//figure/caption</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <conversion-callback name="latex learner correct teacher">
@@ -1236,110 +1241,130 @@ else:
     </conversion-callback>
   </entry>
 
-  <entry id="block-element-no-subsections">
-    <children>
-      <any-number>
-	<reference>block-element-no-subsections-entry</reference>
-      </any-number>
-    </children>
-  </entry>
-
-  <entry id="block-element-no-subsections-entry">
+  <entry id="block-or-major-environment-element">
     <children>
       <one-of>
-	<element>media</element>
-	<element>para</element>
-	<element>video</element>
-	<element>presentation</element>
-	<element>simulation</element>
-	<element>list</element>
-	<element>equation</element>
-	<element>latex</element>
+	<reference>block-or-minor-environment-element</reference>
 	<element>worked_example</element>
-	<!--<element>monassis-template</element>-->
-	<element>figure</element>
-	<element>image</element>
-	<element>pspicture</element>
-	<element>tikzpicture</element>
-	<element>table</element>
-	<element>html5table</element>
-	<element>definition</element>
-	<element>theorem</element>
 	<element>activity</element>
 	<element>exercises</element>
-	<element>note</element>
-	<element>math_extension</element>
-	<element>math_identity</element>
 	<element>key-concepts</element>
 	<element>new-words</element>
 	<element>linked-concepts</element>
 	<element>teachers-guide</element>
-	<element>correct</element>
-    <element>link</element>
-    <element>quote</element>
-
-	<element>todo</element><!-- This needs to go away before publising the print textbooks -->
       </one-of>
     </children>
   </entry>
 
-  <entry id="inline-container-element">
+  <entry id="block-or-major-environment-elements">
     <children>
       <any-number>
-	<one-of>
-	  <element>br</element>
-      <element>space</element>
-      <element>newline</element>
-	  <element>chem_compound</element>
-	  <element>correct</element>
-	  <element>currency</element>
-	  <element>emphasis</element>
-	  <element>image</element>
-	  <element>latex</element>
-	  <element>link</element>
-	  <element>list</element>
-	  <element>m:math</element>
-	  <element>nth</element>
-	  <element>nuclear_notation</element>
-	  <element>number</element>
-	  <element>percentage</element>
-	  <element>spec_note</element>
-	  <element>sub</element>
-	  <element>sup</element>
-	  <element>unit_number</element>
-	  <element>unit</element>
+	<reference>block-or-major-environment-element</reference>
+      </any-number>
+    </children>
+  </entry>
 
-	  <element>todo</element><!-- This needs to go away before publising the print textbooks -->
-	</one-of>
+  <entry id="block-or-minor-environment-element">
+    <children>
+      <one-of>
+	<reference>block-with-para-element</reference>
+	<element>definition</element>
+	<element>theorem</element>
+	<element>quote</element>
+	<element>note</element>
+	<element>math_extension</element>
+	<element>math_identity</element>
+	<element>teachers-guide</element>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="block-or-minor-environment-elements">
+    <children>
+      <any-number>
+	<reference>block-or-minor-environment-element</reference>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry id="block-no-para-element">
+    <children>
+      <one-of>
+	<element>list</element>
+	<element>presentation</element>
+	<element>simulation</element>
+	<element>video</element>
+	<element>pspicture</element>
+	<element>tikzpicture</element>
+	<element>image</element>
+	<element>table</element>
+	<element>html5table</element>
+	<element>figure</element>
+	<!--<element>media</element>-->
+	<element>equation</element>
+	<element>latex</element>
+	<element>correct</element>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="block-no-para-elements">
+    <children>
+      <any-number>
+	<reference>block-no-para-element</reference>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry id="block-with-para-element">
+    <children>
+      <one-of>
+	<element>para</element>
+	<reference>block-no-para-element</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="block-with-para-elements">
+    <children>
+      <any-number>
+	<reference>block-with-para-element</reference>
       </any-number>
     </children>
   </entry>
 
   <entry id="inline-element">
     <children>
+      <one-of>
+	<element>br</element>
+	<element>space</element>
+	<element>newline</element>
+	<element>chem_compound</element>
+	<element>correct</element>
+	<element>currency</element>
+	<element>emphasis</element>
+	<!--<element>image</element>-->
+	<element>latex</element>
+	<element>link</element>
+	<!--<element>list</element>-->
+	<element>m:math</element>
+	<element>nth</element>
+	<element>nuclear_notation</element>
+	<element>number</element>
+	<element>percentage</element>
+	<element>spec_note</element>
+	<element>sub</element>
+	<element>sup</element>
+	<element>unit_number</element>
+	<element>unit</element>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="inline-elements">
+    <children>
       <any-number>
-	<one-of>
-	  <element>br</element>
-      <element>newline</element>
-      <element>space</element>
-	  <element>chem_compound</element>
-	  <element>correct</element>
-	  <element>currency</element>
-	  <element>emphasis</element>
-	  <element>image</element>
-	  <element>latex</element>
-	  <element>link</element>
-	  <element>m:math</element>
-	  <element>nth</element>
-	  <element>nuclear_notation</element>
-	  <element>number</element>
-	  <element>percentage</element>
-	  <element>spec_note</element>
-	  <element>sub</element>
-	  <element>sup</element>
-	  <element>unit_number</element>
-	  <element>unit</element>
-	</one-of>
+	<reference>inline-element</reference>
       </any-number>
     </children>
   </entry>
@@ -1750,7 +1775,7 @@ else:
       </entry>
     </attributes>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner correct teacher">
 pattern = {
@@ -1856,7 +1881,7 @@ else:
       </entry>
     </attributes>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <validation-callback>check_link_element</validation-callback>
     <conversion-callback name="latex learner correct teacher">
@@ -1895,7 +1920,7 @@ if url is not None:
   <entry>
     <xpath>//sub</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner correct teacher">
 return r'$_{\text{%s}}$'%self.text
@@ -1908,7 +1933,7 @@ return self
   <entry>
     <xpath>//sup</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex learner correct teacher">
 return r'$^{\text{%s}}$'%self.text
@@ -1921,7 +1946,7 @@ return self
   <entry>
     <xpath>//sup</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
     <conversion-callback name="html latex learner correct teacher">
 return etree.tostring(self)
