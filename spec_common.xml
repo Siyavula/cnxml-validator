@@ -1135,6 +1135,7 @@ return '\n'+etree.tostring(caption)
 	  <element>unit_number</element>
 	  <element>percentage</element>
 	  <element>currency</element>
+	  <element>chem_compound</element>
 	  <element>correct</element>
 	</one-of>
       </any-number>
