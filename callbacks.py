@@ -177,3 +177,19 @@ def problemset_entry_contains_correct_and_shortcode(iEntryNode):
         raise_error("Found problem entry with multiple (%i) shortcodes, namely %s."%(count, repr(shortcodes)), iEntryNode, exception=None)
     '''
     return True
+
+def response_entries_count_matches(iResponseNode):
+    # TODO
+    return True
+
+def is_language_code(iNode):
+    return iNode.text.strip() in ['en', 'en-ZA', 'af', 'af-ZA']
+
+def is_iso8601(iNode):
+    from dateutil.parser import parse
+    string = (iNode.text or '').strip()
+    try:
+        parse(string)
+        return True
+    except ValueError:
+        raise_error("The ISO8601 timestamp %s is not valid" % repr(string), iNode)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1" xmlns:its="http://www.w3.org/2005/11/its">
 
+  <import>spec_exercise_temporary_hacks.xml</import>
   <import>spec_common.xml</import>
 
   <entry>
@@ -104,7 +105,7 @@
   <entry>
     <xpath>/exercise/meta/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
   </entry>
 
@@ -184,7 +185,7 @@
   <entry>
     <xpath>//multi-part/header</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
   </entry>
@@ -192,7 +193,7 @@
   <entry>
     <xpath>//multi-part/footer</xpath>
     <children>
-      <reference>block-element-no-subsections</reference>
+      <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
   </entry>
@@ -209,8 +210,8 @@
     <xpath>//problem</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
@@ -225,7 +226,8 @@
 	    <element>hint</element>
 	  </one-of>
 	</any-number>
-	<reference>block-element-no-subsections</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
     <notext/>
@@ -249,8 +251,8 @@
       <optional>title</optional>
       <optional>marks</optional>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
@@ -258,7 +260,7 @@
   <entry>
     <xpath>//solution/step/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
   </entry>
 
@@ -285,8 +287,8 @@
       <optional>title</optional>
       <optional>marks</optional>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
@@ -294,7 +296,7 @@
   <entry>
     <xpath>//solution/hint/title</xpath>
     <children>
-      <reference>inline-element</reference>
+      <reference>inline-elements</reference>
     </children>
   </entry>
 
@@ -372,8 +374,8 @@
     <xpath>//response/query</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections</reference>
-	<reference>inline-container-element</reference>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
