@@ -361,16 +361,23 @@ class XmlValidator(object):
         # Attach relevant spec entries to nodes in the DOM
         self.documentSpecEntries = {}
         for entry in self.spec:
-            if entry.find('xpath') is None:
+            xpath = entry.find('xpath')
+            if xpath is None:
                 continue
-            for node in dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
+            xpath = xpath.text
+            for node in dom.xpath(xpath, namespaces=self.spec.nsmap):
                 if self.documentSpecEntries.get(node) is None:
+                    self.documentSpecEntries[node] = entry
+                elif len(xpath.replace('//', '/').split('/')) > len(self.documentSpecEntries.get(node).find('xpath').text.replace('//', '/').split('/')):
+                    # If this xpath is more specific (has more parts to its path) than the existing one, replace it
                     self.documentSpecEntries[node] = entry
 
         # Validate
         self.__validate_traverse(dom, iCleanUp=iCleanUp)
         self.dom = dom
 
+        # DEPRECATED. This will raise an error if an
+        # <monassis-templates> elements are found.
         # Convert monassis-style problems to worked examples and
         # exercises.
         # NOTE: This is temporary while we're transitioning to a new
