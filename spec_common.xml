@@ -1357,6 +1357,7 @@ else:
 	<element>sup</element>
 	<element>unit_number</element>
 	<element>unit</element>
+	<element>input</element>
       </one-of>
     </children>
   </entry>
@@ -1770,7 +1771,7 @@ else:
       </entry>
       <entry>
 	<name>effect</name>
-	<type>enum("bold","italics","underline","smallcaps","normal")</type>
+	<type>enum("bold","italics","underline","smallcaps","normal","highlight")</type>
 	<default>bold</default>
       </entry>
     </attributes>
