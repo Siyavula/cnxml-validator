@@ -5,6 +5,7 @@
 import os
 import sys
 import logging
+import subprocess
 
 from lxml import etree
 
@@ -23,6 +24,11 @@ class chapter:
         self.file = cnxmlplusfile
         self.chapter_number = None
         self.title = None
+        
+        # Run validator 
+        self.validate()
+
+        # Parse the xml
         self.parse_cnxmlplus()
 
     def parse_cnxmlplus(self):
@@ -50,7 +56,23 @@ class chapter:
             self.title = chapters[0].find('.//title').text
 
     def __str__(self):
-        return "{number} {title}".format(number=self.chapter_number, title=self.title)
+        chapno = str(self.chapter_number).ljust(4)
+        return "{number} {title}".format(number=chapno, title=self.title)
+
+
+    def validate(self):
+        ''' Run the validator on this file
+
+        Returns 0 if file is valid and 1 if it is not
+        '''
+        FNULL = open(os.devnull, 'w')
+
+        validator_dir = os.path.dirname(os.path.abspath(__file__))
+        validator_path = os.path.join(validator_dir, 'validate.py')
+        valid = subprocess.call(["python", validator_path, self.file], stdout=FNULL, stderr=subprocess.STDOUT)
+        self.valid = "Valid" if valid == 0 else "Not Valid"
+    
+
 
 
 class book:
@@ -79,7 +101,9 @@ class book:
 
         for chapter in self.chapters:
             print(chapter)
-            print("  file: {filename}".format(filename=chapter.file))
+            print("       file: {filename}".format(filename=chapter.file))
+            print("      valid: {valid}".format(valid=chapter.valid))
+            print("")
 
 
 if __name__ == "__main__":
