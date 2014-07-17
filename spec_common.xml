@@ -659,10 +659,20 @@ return etree.tostring(figure)
       </entry>
     </attributes>
     <children>
-      <any-number>
-	<element>usepackage</element>
-      </any-number>
-      <element>code</element>
+      <unordered>
+	<any-number>
+	  <element>usepackage</element>
+	</any-number>
+	<any-number>
+	  <element>include</element>
+	</any-number>
+	<optional>width</optional>
+	<optional>height</optional>
+	<one-of>
+	  <element>code</element>
+	  <element>src</element>
+	</one-of>
+      </unordered>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -799,6 +809,18 @@ return
   </entry>
 
   <entry>
+    <xpath>//pspicture/include</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//pspicture/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//pspicture/height</xpath>
+  </entry>
+
+  <entry>
     <xpath>//pspicture/code</xpath>
     <children>
       <any-number>
@@ -824,6 +846,10 @@ return
   </entry>
 
   <entry>
+    <xpath>//pspicture/src</xpath>
+  </entry>
+
+  <entry>
     <xpath>//tikzpicture</xpath>
     <attributes>
       <entry>
@@ -838,10 +864,20 @@ return
       </entry>
     </attributes>
     <children>
-      <any-number>
-	<element>usepackage</element>
-      </any-number>
-      <element>code</element>
+      <unordered>
+	<any-number>
+	  <element>usepackage</element>
+	</any-number>
+	<any-number>
+	  <element>include</element>
+	</any-number>
+	<optional>width</optional>
+	<optional>height</optional>
+	<one-of>
+	  <element>code</element>
+	  <element>src</element>
+	</one-of>
+      </unordered>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -882,6 +918,18 @@ return etree.tostring(usepackage)
   </entry>
 
   <entry>
+    <xpath>//tikzpicture/include</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//tikzpicture/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//tikzpicture/height</xpath>
+  </entry>
+
+  <entry>
     <xpath>//tikzpicture/code</xpath>
     <children>
       <any-number>
@@ -901,6 +949,10 @@ return etree.tostring(usepackage)
     <conversion-callback name="latex learner correct teacher">
 return self.text
     </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//tikzpicture/src</xpath>
   </entry>
 
   <entry>
@@ -936,35 +988,12 @@ return self.text
         <type>string</type>
         <default/>
       </entry>
-      <entry>
-        <name>src</name>
-        <type>string</type>
-        <default/>
-      </entry>
-      <entry>
-        <name>width</name>
-        <type>number</type>
-        <default/>
-      </entry>
-      <entry>
-        <name>height</name>
-        <type>number</type>
-        <default/>
-      </entry>
-      <entry>
-        <name>mime-type</name>
-        <type>string</type>
-        <default/>
-      </entry>
-      <!--<entry>
-	<name>style:format</name>
-	<type>string</type>
-	<default/>
-      </entry>-->
     </attributes>
     <children>
       <subset-of>
         <element>src</element>
+	<element>width</element>
+	<element>height</element>
         <element>attribution</element>
       </subset-of>
     </children>
@@ -1025,6 +1054,14 @@ return head + result + tail
 self.getparent().attrib['src'] = self.text.strip()
 return ''
     </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//image/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//image/height</xpath>
   </entry>
 
   <entry>
@@ -1300,7 +1337,6 @@ else:
 	<element>table</element>
 	<element>html5table</element>
 	<element>figure</element>
-	<!--<element>media</element>-->
 	<element>equation</element>
 	<element>latex</element>
 	<element>correct</element>
@@ -1343,10 +1379,8 @@ else:
 	<element>correct</element>
 	<element>currency</element>
 	<element>emphasis</element>
-	<!--<element>image</element>-->
 	<element>latex</element>
 	<element>link</element>
-	<!--<element>list</element>-->
 	<element>m:math</element>
 	<element>nth</element>
 	<element>nuclear_notation</element>
@@ -1357,6 +1391,7 @@ else:
 	<element>sup</element>
 	<element>unit_number</element>
 	<element>unit</element>
+	<element>input</element>
       </one-of>
     </children>
   </entry>
@@ -1379,13 +1414,6 @@ else:
     <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
-  </entry>
-
-  <!-- //currency/number shadows //number -->
-  <entry>
-    <xpath>//currency/number</xpath>
-    <validation-callback>is_float</validation-callback>
-    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -1509,7 +1537,7 @@ else:
 
   <entry>
     <xpath>//percentage</xpath>
-    <validation-callback>is_float</validation-callback>
+    <validation-callback>is_number</validation-callback>
     <conversion-callback name="latex learner correct teacher">
 return convert_using(self, '//number') + r'\%'
     </conversion-callback>
@@ -1623,6 +1651,12 @@ return result
 	<default>front</default>
       </entry>
     </attributes>
+  </entry>
+
+  <entry>
+    <xpath>//currency/number</xpath>
+    <validation-callback>is_float</validation-callback>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -1770,7 +1804,7 @@ else:
       </entry>
       <entry>
 	<name>effect</name>
-	<type>enum("bold","italics","underline","smallcaps","normal")</type>
+	<type>enum("bold","italics","underline","smallcaps","normal","highlight")</type>
 	<default>bold</default>
       </entry>
     </attributes>
@@ -1963,16 +1997,21 @@ return etree.tostring(self)
       </entry>
     </attributes>
     <children>
+      <optional>caption</optional>
       <optional>thead</optional>
       <optional>tfoot</optional>
-      <optional>tbody</optional>
-      <optional>caption</optional>
-      <any-number>
-	<optional>tr</optional>
-      </any-number>
+      <one-of>
+	<any-number from="1">
+	  <element>tbody</element>
+	</any-number>
+	<any-number from="1">
+	  <element>tr</element>
+	</any-number>
+      </one-of>
     </children>
+    <notext/>
     <conversion-callback name="latex learner correct teacher">
-      return "%HTML5 Table TODO
+return "%HTML5 Table TODO
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 self.tag = 'table'
@@ -1982,6 +2021,9 @@ return etree.tostring(self, pretty_print=True)
 
   <entry>
     <xpath>//html5table/caption</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
     <conversion-callback name="html learner correct teacher">
 return
     </conversion-callback>
@@ -1990,77 +2032,88 @@ return
   <entry>
     <xpath>//html5table/thead</xpath>
     <children>
-      <optional>tr</optional>
-      <optional>th</optional>
-    </children>
-  </entry>
-
-  <entry>
-    <xpath>//tr</xpath>
-    <children>
-      <any-number>
-	<optional>th</optional>
-	<optional>td</optional>
+      <any-number from="1">
+	<element>tr</element>
       </any-number>
     </children>
-  </entry>
-
-  <entry>
-    <xpath>//tr/th</xpath>
-  </entry>
-
-  <entry>
-    <xpath>//tr/td</xpath>
-  </entry>
-
-  <entry>
-    <xpath>//html5table/tbody</xpath>
-    <children>
-      <any-number>
-	<optional>tr</optional>
-	<optional>th</optional>
-      </any-number>
-    </children>
+    <notext/>
   </entry>
 
   <entry>
     <xpath>//html5table/tfoot</xpath>
     <children>
-      <any-number>
-	<optional>tr</optional>
-	<optional>th</optional>
+      <any-number from="1">
+	<element>tr</element>
       </any-number>
     </children>
+    <notext/>
   </entry>
 
   <entry>
-    <xpath>//html5table/tr/th</xpath>
+    <xpath>//html5table/tbody</xpath>
+    <children>
+      <any-number from="1">
+	<optional>tr</optional>
+      </any-number>
+    </children>
+    <notext/>
   </entry>
 
   <entry>
-    <xpath>//html5table/tr/td</xpath>
+    <xpath>//html5table//tr</xpath>
+    <children>
+      <any-number from="1">
+	<one-of>
+	  <element>th</element>
+	  <element>td</element>
+	</one-of>
+      </any-number>
+    </children>
+    <notext/>
   </entry>
 
   <entry>
-    <xpath>//html5table/tr</xpath>
+    <xpath>//html5table//tr/th</xpath>
+    <attributes>
+      <entry>
+	<name>rowspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <one-of>
-	<optional>thead</optional>
-	<optional>tbody</optional>
-	<optional>tfoot</optional>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
-      <any-number>
-	<optional>th</optional>
-	<optional>td</optional>
-      </any-number>
     </children>
-    <conversion-callback name="html learner correct teacher">
-return
-    </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>//html5table/th</xpath>
+    <xpath>//html5table//tr/td</xpath>
+    <attributes>
+      <entry>
+	<name>rowspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <one-of>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
   </entry>
 
 </spec>
