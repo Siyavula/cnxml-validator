@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 DEBUG = True
 
 def raise_error(message, element=None, exception=ValueError):
@@ -9,6 +11,9 @@ def raise_error(message, element=None, exception=ValueError):
     else:
         import sys
         sys.stderr.write('WARNING: ' + message + '\n')
+
+def __replace_unicode_minus(text):
+    return text.replace(u'\u2212', '-')
 
 def is_version_number(element):
     text = element.text
@@ -36,7 +41,7 @@ def is_integer(element):
         raise_error("Integer element must have 0 children", element)
     text = element.text if element.text is not None else ''
     try:
-        int(text)
+        int(__replace_unicode_minus(text))
     except ValueError:
         raise_error("Could not interpret text as an integer", element)
     return True
@@ -107,9 +112,9 @@ def is_numeric_value(element):
     if text[-3:] == '...':
         text = text[:-3]
     try:
-        float(text)
+        float(__replace_unicode_minus(text))
     except ValueError:
-        raise_error("<number> text not interpretable as float", element)
+        raise_error("<number> text %s not interpretable as float" % repr(text), element)
     return True
 
 def is_unit(element):
@@ -119,7 +124,7 @@ def is_unit(element):
         assert child.tag == 'sup' # From spec.xml we already know that each child is a <sup>
         text = child.text if child.text is not None else ''
         try:
-            int(text)
+            int(__replace_unicode_minus(text))
         except ValueError:
             raise_error("<sup> of <unit> could not be interpreted as an integer", element)
     return True
