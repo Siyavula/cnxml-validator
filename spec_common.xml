@@ -659,16 +659,20 @@ return etree.tostring(figure)
       </entry>
     </attributes>
     <children>
-      <any-number>
-	<one-of>
+      <unordered>
+	<any-number>
 	  <element>usepackage</element>
+	</any-number>
+	<any-number>
 	  <element>include</element>
+	</any-number>
+	<optional>width</optional>
+	<optional>height</optional>
+	<one-of>
+	  <element>code</element>
+	  <element>src</element>
 	</one-of>
-      </any-number>
-      <one-of>
-	<element>code</element>
-	<element>src</element>
-      </one-of>
+      </unordered>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -809,6 +813,14 @@ return
   </entry>
 
   <entry>
+    <xpath>//pspicture/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//pspicture/height</xpath>
+  </entry>
+
+  <entry>
     <xpath>//pspicture/code</xpath>
     <children>
       <any-number>
@@ -852,16 +864,20 @@ return
       </entry>
     </attributes>
     <children>
-      <any-number>
-	<one-of>
+      <unordered>
+	<any-number>
 	  <element>usepackage</element>
+	</any-number>
+	<any-number>
 	  <element>include</element>
+	</any-number>
+	<optional>width</optional>
+	<optional>height</optional>
+	<one-of>
+	  <element>code</element>
+	  <element>src</element>
 	</one-of>
-      </any-number>
-      <one-of>
-	<element>code</element>
-	<element>src</element>
-      </one-of>
+      </unordered>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -903,6 +919,14 @@ return etree.tostring(usepackage)
 
   <entry>
     <xpath>//tikzpicture/include</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//tikzpicture/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//tikzpicture/height</xpath>
   </entry>
 
   <entry>
