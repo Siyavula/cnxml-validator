@@ -660,9 +660,15 @@ return etree.tostring(figure)
     </attributes>
     <children>
       <any-number>
-	<element>usepackage</element>
+	<one-of>
+	  <element>usepackage</element>
+	  <element>include</element>
+	</one-of>
       </any-number>
-      <element>code</element>
+      <one-of>
+	<element>code</element>
+	<element>src</element>
+      </one-of>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -799,6 +805,10 @@ return
   </entry>
 
   <entry>
+    <xpath>//pspicture/include</xpath>
+  </entry>
+
+  <entry>
     <xpath>//pspicture/code</xpath>
     <children>
       <any-number>
@@ -824,6 +834,10 @@ return
   </entry>
 
   <entry>
+    <xpath>//pspicture/src</xpath>
+  </entry>
+
+  <entry>
     <xpath>//tikzpicture</xpath>
     <attributes>
       <entry>
@@ -839,9 +853,15 @@ return
     </attributes>
     <children>
       <any-number>
-	<element>usepackage</element>
+	<one-of>
+	  <element>usepackage</element>
+	  <element>include</element>
+	</one-of>
       </any-number>
-      <element>code</element>
+      <one-of>
+	<element>code</element>
+	<element>src</element>
+      </one-of>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -882,6 +902,10 @@ return etree.tostring(usepackage)
   </entry>
 
   <entry>
+    <xpath>//tikzpicture/include</xpath>
+  </entry>
+
+  <entry>
     <xpath>//tikzpicture/code</xpath>
     <children>
       <any-number>
@@ -901,6 +925,10 @@ return etree.tostring(usepackage)
     <conversion-callback name="latex learner correct teacher">
 return self.text
     </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//tikzpicture/src</xpath>
   </entry>
 
   <entry>
@@ -936,35 +964,12 @@ return self.text
         <type>string</type>
         <default/>
       </entry>
-      <entry>
-        <name>src</name>
-        <type>string</type>
-        <default/>
-      </entry>
-      <entry>
-        <name>width</name>
-        <type>number</type>
-        <default/>
-      </entry>
-      <entry>
-        <name>height</name>
-        <type>number</type>
-        <default/>
-      </entry>
-      <entry>
-        <name>mime-type</name>
-        <type>string</type>
-        <default/>
-      </entry>
-      <!--<entry>
-	<name>style:format</name>
-	<type>string</type>
-	<default/>
-      </entry>-->
     </attributes>
     <children>
       <subset-of>
         <element>src</element>
+	<element>width</element>
+	<element>height</element>
         <element>attribution</element>
       </subset-of>
     </children>
@@ -1025,6 +1030,14 @@ return head + result + tail
 self.getparent().attrib['src'] = self.text.strip()
 return ''
     </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//image/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//image/height</xpath>
   </entry>
 
   <entry>
@@ -1300,7 +1313,6 @@ else:
 	<element>table</element>
 	<element>html5table</element>
 	<element>figure</element>
-	<!--<element>media</element>-->
 	<element>equation</element>
 	<element>latex</element>
 	<element>correct</element>
@@ -1343,10 +1355,8 @@ else:
 	<element>correct</element>
 	<element>currency</element>
 	<element>emphasis</element>
-	<!--<element>image</element>-->
 	<element>latex</element>
 	<element>link</element>
-	<!--<element>list</element>-->
 	<element>m:math</element>
 	<element>nth</element>
 	<element>nuclear_notation</element>
@@ -1380,13 +1390,6 @@ else:
     <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
-  </entry>
-
-  <!-- //currency/number shadows //number -->
-  <entry>
-    <xpath>//currency/number</xpath>
-    <validation-callback>is_float</validation-callback>
-    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -1510,7 +1513,7 @@ else:
 
   <entry>
     <xpath>//percentage</xpath>
-    <validation-callback>is_float</validation-callback>
+    <validation-callback>is_number</validation-callback>
     <conversion-callback name="latex learner correct teacher">
 return convert_using(self, '//number') + r'\%'
     </conversion-callback>
@@ -1624,6 +1627,12 @@ return result
 	<default>front</default>
       </entry>
     </attributes>
+  </entry>
+
+  <entry>
+    <xpath>//currency/number</xpath>
+    <validation-callback>is_float</validation-callback>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
