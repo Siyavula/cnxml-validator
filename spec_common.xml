@@ -1964,16 +1964,21 @@ return etree.tostring(self)
       </entry>
     </attributes>
     <children>
+      <optional>caption</optional>
       <optional>thead</optional>
       <optional>tfoot</optional>
-      <optional>tbody</optional>
-      <optional>caption</optional>
-      <any-number>
-	<optional>tr</optional>
-      </any-number>
+      <one-of>
+	<any-number from="1">
+	  <element>tbody</element>
+	</any-number>
+	<any-number from="1">
+	  <element>tr</element>
+	</any-number>
+      </one-of>
     </children>
+    <notext/>
     <conversion-callback name="latex learner correct teacher">
-      return "%HTML5 Table TODO
+return "%HTML5 Table TODO
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 self.tag = 'table'
@@ -1983,6 +1988,9 @@ return etree.tostring(self, pretty_print=True)
 
   <entry>
     <xpath>//html5table/caption</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
     <conversion-callback name="html learner correct teacher">
 return
     </conversion-callback>
@@ -1991,77 +1999,88 @@ return
   <entry>
     <xpath>//html5table/thead</xpath>
     <children>
-      <optional>tr</optional>
-      <optional>th</optional>
-    </children>
-  </entry>
-
-  <entry>
-    <xpath>//tr</xpath>
-    <children>
-      <any-number>
-	<optional>th</optional>
-	<optional>td</optional>
+      <any-number from="1">
+	<element>tr</element>
       </any-number>
     </children>
-  </entry>
-
-  <entry>
-    <xpath>//tr/th</xpath>
-  </entry>
-
-  <entry>
-    <xpath>//tr/td</xpath>
-  </entry>
-
-  <entry>
-    <xpath>//html5table/tbody</xpath>
-    <children>
-      <any-number>
-	<optional>tr</optional>
-	<optional>th</optional>
-      </any-number>
-    </children>
+    <notext/>
   </entry>
 
   <entry>
     <xpath>//html5table/tfoot</xpath>
     <children>
-      <any-number>
-	<optional>tr</optional>
-	<optional>th</optional>
+      <any-number from="1">
+	<element>tr</element>
       </any-number>
     </children>
+    <notext/>
   </entry>
 
   <entry>
-    <xpath>//html5table/tr/th</xpath>
+    <xpath>//html5table/tbody</xpath>
+    <children>
+      <any-number from="1">
+	<optional>tr</optional>
+      </any-number>
+    </children>
+    <notext/>
   </entry>
 
   <entry>
-    <xpath>//html5table/tr/td</xpath>
+    <xpath>//html5table//tr</xpath>
+    <children>
+      <any-number from="1">
+	<one-of>
+	  <element>th</element>
+	  <element>td</element>
+	</one-of>
+      </any-number>
+    </children>
+    <notext/>
   </entry>
 
   <entry>
-    <xpath>//html5table/tr</xpath>
+    <xpath>//html5table//tr/th</xpath>
+    <attributes>
+      <entry>
+	<name>rowspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+    </attributes>
     <children>
       <one-of>
-	<optional>thead</optional>
-	<optional>tbody</optional>
-	<optional>tfoot</optional>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
       </one-of>
-      <any-number>
-	<optional>th</optional>
-	<optional>td</optional>
-      </any-number>
     </children>
-    <conversion-callback name="html learner correct teacher">
-return
-    </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>//html5table/th</xpath>
+    <xpath>//html5table//tr/td</xpath>
+    <attributes>
+      <entry>
+	<name>rowspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colspan</name>
+	<type>integer(0,)</type>
+	<default/>
+      </entry>
+    </attributes>
+    <children>
+      <one-of>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
   </entry>
 
 </spec>
