@@ -155,18 +155,30 @@ return self.text.strip()
   <entry>
     <xpath>//teachers-guide</xpath>
     <children>
+      <optional>title</optional>
       <reference>block-with-section-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher correct">
 environment = "TeachersGuide"
-return '\n\\begin{' + environment + '}\n' + self.text.strip() + r'\end{' + environment + '}\n'
+
+return '\n\\begin{' + environment + '}\n' +  self.text.strip() + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html teacher learner correct">
 tg = etree.Element('div')
 tg.attrib['class'] = 'teachers-guide'
 tg.text = self.text
 return etree.tostring(tg)
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//teachers-guide/title</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+    <conversion-callback name="latex learner teacher correct">
+return r'\textbf{' + self.text.strip() + r'}'
     </conversion-callback>
   </entry>
 
@@ -242,9 +254,18 @@ return ''
       <optional>title</optional>
       <element>problem-set</element>
     </children>
+    <attributes>
+      <entry>
+        <name>type</name>
+        <type>enum("testyourunderstanding", "endofchapter")</type>
+        <default></default>
+      </entry>
+    </attributes>
     <notext/>
     <conversion-callback name="latex learner teacher">
 environment = 'Exercises'
+if 'type' in self.attrib.keys():
+    environment += self.attrib['type'].title()
 
 # Shortcodes
 shortcodeColumns = 6
@@ -942,6 +963,25 @@ return etree.tostring(mathidentity)
     <conversion-callback name="latex correct"/>
   </entry>
 
+  <entry>
+    <xpath>//summary</xpath>
+    <children>
+      <reference>block-with-para-elements</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
+environment = 'Summary'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+environment = 'summary'
+summary = etree.Element('div')
+summary.attrib['class'] = environment
+summary.text = self.text
+return etree.tostring(summary)
+    </conversion-callback>
+    <conversion-callback name="latex correct"/>
+  </entry>
   <entry>
     <xpath>//math_extension</xpath>
     <children>

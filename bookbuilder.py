@@ -6,14 +6,19 @@ import os
 import sys
 import logging
 import subprocess
+import hashlib
 
 from lxml import etree
 
 try:
     from docopt import docopt
 except ImportError:
-    logging.error("Please install docopt")
+    logging.error("Please install docopt:\n sudo pip install docopt")
 
+try:
+    from termcolor import colored
+except ImportError:
+    logging.error("Please install termcolo:\n sudo pip install termcolor")
 
 class chapter:
     ''' Class to represent a single chapter
@@ -24,17 +29,27 @@ class chapter:
         self.file = cnxmlplusfile
         self.chapter_number = None
         self.title = None
-        
-        # Run validator 
+        self.hash = None
+
+        # Run validator
         self.validate()
 
         # Parse the xml
         self.parse_cnxmlplus()
 
+    def calculate_hash(self, content):
+        ''' Calculates the md5 hash of the file content and returns it
+        '''
+        m = hashlib.md5()
+        m.update(content)
+
+        return m.hexdigest()
+
     def parse_cnxmlplus(self):
         ''' Parse the xml file and save some information
         '''
         content = open(self.file, 'r').read()
+        self.hash = self.calculate_hash(content)
         xml = etree.XML(content)
 
         # save the number
@@ -44,7 +59,7 @@ class chapter:
             self.chapter_number = 'N/A'
             logging.warn("{file} doesn't follow naming convention CC-title-here.cnxmlplus".format(file=self.file))
 
-        # The title should be in in an element called <title> 
+        # The title should be in in an element called <title>
         # inside a <section type="chapter"> and there should only be one in the
         # file. For now.
         chapters = xml.findall('.//section[@type="chapter"]')
@@ -55,10 +70,23 @@ class chapter:
         else:
             self.title = chapters[0].find('.//title').text
 
+    def info(self):
+        ''' Returns a formatted string with all the details of the chapter
+        '''
+        info = '{file}\n'.format(file=self.file)
+
+        for name, attribute in [('Chapter', self.chapter_number),
+            ("Title", self.title),
+            ("Valid", self.valid),
+            ("Hash", self.hash)]:
+            info += '{name}'.format(name=name).ljust(8) + '{attr}\n'.format(attr=attribute)
+
+        return info
+
+
     def __str__(self):
         chapno = str(self.chapter_number).ljust(4)
         return "{number} {title}".format(number=chapno, title=self.title)
-
 
     def validate(self):
         ''' Run the validator on this file
@@ -70,9 +98,7 @@ class chapter:
         validator_dir = os.path.dirname(os.path.abspath(__file__))
         validator_path = os.path.join(validator_dir, 'validate.py')
         valid = subprocess.call(["python", validator_path, self.file], stdout=FNULL, stderr=subprocess.STDOUT)
-        self.valid = "Valid" if valid == 0 else "Not Valid"
-    
-
+        self.valid = colored("Valid", "green") if valid == 0 else colored("Not Valid", "red")
 
 
 class book:
@@ -93,20 +119,20 @@ class book:
         cnxmlplusfiles.sort()
 
         for cf in cnxmlplusfiles:
-            self.chapters.append(chapter(cf))
+            thischapter = chapter(cf)
+            self.chapters.append(thischapter)
+            print(thischapter.info())
 
     def show_chapters(self):
         ''' Print a listing of the chapters in book
         '''
-
+        print("")
         for chapter in self.chapters:
-            print(chapter)
-            print("       file: {filename}".format(filename=chapter.file))
-            print("      valid: {valid}".format(valid=chapter.valid))
-            print("")
-
+            print(chapter.info())
+        
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
     Book = book()
-    Book.show_chapters()
+    #Book.show_chapters()
+
