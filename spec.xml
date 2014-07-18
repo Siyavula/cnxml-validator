@@ -155,18 +155,30 @@ return self.text.strip()
   <entry>
     <xpath>//teachers-guide</xpath>
     <children>
+      <optional>title</optional>
       <reference>block-with-section-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher correct">
 environment = "TeachersGuide"
-return '\n\\begin{' + environment + '}\n' + self.text.strip() + r'\end{' + environment + '}\n'
+
+return '\n\\begin{' + environment + '}\n' +  self.text.strip() + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html teacher learner correct">
 tg = etree.Element('div')
 tg.attrib['class'] = 'teachers-guide'
 tg.text = self.text
 return etree.tostring(tg)
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//teachers-guide/title</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+    <conversion-callback name="latex learner teacher correct">
+return r'\textbf{' + self.text.strip() + r'}'
     </conversion-callback>
   </entry>
 
