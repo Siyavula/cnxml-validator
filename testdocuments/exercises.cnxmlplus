@@ -64,5 +64,29 @@
 </multi-part>
 </problem-set>
 </exercises>
+
+<exercises type='testyourunderstanding'>
+  <title>Test your understanding exercises</title>
+  <problem-set>
+    <entry>
+        <problem></problem>
+        <solution>
+          <correct/>
+        </solution>
+    </entry>
+  </problem-set>
+</exercises>
+
+<exercises type='endofchapter'>
+  <title>End of Chapter</title>
+  <problem-set>
+    <entry>
+        <problem></problem>
+        <solution>
+          <correct/>
+        </solution>
+    </entry>
+  </problem-set>
+</exercises>
 </content>
 </document>
