@@ -168,6 +168,14 @@ def is_subject(element):
 
 def problemset_entry_contains_correct_and_shortcode(iEntryNode):
     assert iEntryNode.tag == 'entry'
+
+    # Skip if this is a standalone exercise
+    root = iEntryNode
+    while root.getparent() is not None:
+        root = root.getparent()
+    if root.tag == 'exercise-container':
+        return True
+
     # Count number of <correct> elements
     innerCount = len(iEntryNode.xpath('./solution//correct'))
     outerCount = len(iEntryNode.xpath('./correct'))

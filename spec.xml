@@ -330,7 +330,6 @@ return etree.tostring(title)
 	  <element>problem-set</element>
 	  <element>multi-part</element>
 	  <element>entry</element>
-	  <!--<element>monassis-template</element>-->
 	</one-of>
       </any-number>
       <optional>footer</optional>
@@ -472,9 +471,7 @@ return etree.tostring(footer)
       <any-number from="0"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
 	<element>shortcode</element>
       </any-number>
-      <element>problem</element>
-      <element>solution</element>
-      <optional>correct</optional>
+      <reference>exercise-body</reference>
     </children>
     <notext/>
     <validation-callback>problemset_entry_contains_correct_and_shortcode</validation-callback>
@@ -557,31 +554,25 @@ return ''
   </entry>
 
   <entry>
-    <xpath>//exercises//problem-set/entry/problem</xpath>
-    <children>
-      <one-of>
-	<reference>block-or-minor-environment-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex learner teacher">
-environment = 'ExercisesProblemsetEntryProblem'
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
-    </conversion-callback>
-    <conversion-callback name="html learner teacher">
-environment = 'problem'
-problem = etree.Element('div')
-problem.attrib['class'] = environment
-problem.text = self.text
-return etree.tostring(problem)
-    </conversion-callback>
-    <conversion-callback name="latex correct">
+    <xpath>//exercises//multi-part/shortcode</xpath>
+    <validation-callback>is_exercise_shortcode</validation-callback>
+    <conversion-callback name="latex html learner teacher">
+# Store shortcode in parent problem-set
+problemsetParent = self.getparent().getparent()
+if problemsetParent.tag == 'problem-set': # multi-part can also have multi-part as a parent
+    count = int(problemsetParent.attrib.get('problem-set-entry-count', 0)) + 1
+    shortcodes = eval(problemsetParent.attrib.get('shortcodes', '{}'))
+    shortcodes[count] = self.text
+    problemsetParent.attrib['shortcodes'] = repr(shortcodes)
 return ''
     </conversion-callback>
   </entry>
 
+  <!-- This stays here to override //entry/solution in spec_common.xml
+       since solutions in the books can have FullMarks URLs. The
+       children are the same as //entry/solution though. -->
   <entry>
-    <xpath>//exercises//problem-set/entry/solution</xpath>
+    <xpath>//exercises//entry/solution</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -595,10 +586,7 @@ return ''
       </entry>
     </attributes>
     <children>
-      <one-of>
-	<reference>block-or-minor-environment-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
+      <reference>exercise-entry-solution</reference>
     </children>
     <conversion-callback name="latex learner teacher">
 if self.text.strip() == '':
@@ -629,188 +617,6 @@ else:
     </conversion-callback>
     <conversion-callback name="latex correct">
 return ''
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//problem-set/entry/correct</xpath>
-    <children>
-      <one-of>
-	<reference>block-with-para-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="html latex correct">
-return '\n' + self.text.strip() + '\n'
-    </conversion-callback>
-    <conversion-callback name="html latex learner teacher"/>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//problem-set/entry/solution//correct</xpath>
-    <children>
-      <one-of>
-	<reference>block-with-para-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex html learner correct teacher">
-return self.text
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part</xpath>
-    <attributes>
-      <entry>
-	<name>style:columns</name>
-	<type>integer(1,)</type>
-	<default>1</default>
-      </entry>
-    </attributes>
-    <children>
-      <optional>shortcode</optional>
-      <optional>header</optional>
-      <any-number>
-	<one-of>
-	  <element>multi-part</element>
-	  <element>entry</element>
-	  <!--<element>monassis-template</element>-->
-	</one-of>
-      </any-number>
-      <optional>footer</optional>
-    </children>
-    <notext/>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '//exercises//problem-set')
-    </conversion-callback>
-    <conversion-callback name="latex correct">
-return convert_using(self, '//exercises//problem-set')
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/header</xpath>
-    <children>
-      <reference>block-or-minor-environment-elements</reference>
-    </children>
-    <notext/>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '//exercises//problem-set/header')
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/footer</xpath>
-    <children>
-      <reference>block-or-minor-environment-elements</reference>
-    </children>
-    <notext/>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '//exercises//problem-set/footer')
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/entry</xpath>
-    <children>
-      <element>problem</element>
-      <element>solution</element>
-      <optional>correct</optional>
-    </children>
-    <notext/>
-    <validation-callback>problemset_entry_contains_correct_and_shortcode</validation-callback>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '//exercises//problem-set/entry')
-    </conversion-callback>
-    <conversion-callback name="latex html correct">
-return convert_using(self, '//exercises//problem-set/entry')
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/shortcode</xpath>
-    <validation-callback>is_exercise_shortcode</validation-callback>
-    <conversion-callback name="latex html learner teacher">
-# Store shortcode in parent problem-set
-problemsetParent = self.getparent().getparent()
-if problemsetParent.tag == 'problem-set': # multi-part can also have multi-part as a parent
-    count = int(problemsetParent.attrib.get('problem-set-entry-count', 0)) + 1
-    shortcodes = eval(problemsetParent.attrib.get('shortcodes', '{}'))
-    shortcodes[count] = self.text
-    problemsetParent.attrib['shortcodes'] = repr(shortcodes)
-return ''
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/entry/problem</xpath>
-    <children>
-      <one-of>
-	<reference>block-or-minor-environment-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '//exercises//problem-set/entry/problem')
-    </conversion-callback>
-    <conversion-callback name="latex html correct">
-return convert_using(self, '//exercises//problem-set/entry/problem')
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/entry/solution</xpath>
-    <attributes>
-      <entry>
-	<name>id</name>
-	<type>string</type>
-	<default/>
-      </entry>
-      <entry>
-	<name>url</name>
-	<type>url</type>
-	<default/>
-      </entry>
-    </attributes>
-    <children>
-      <one-of>
-	<reference>block-or-minor-environment-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex html teacher">
-return convert_using(self, '//exercises//problem-set/entry/solution')
-    </conversion-callback>
-    <conversion-callback name="latex html learner correct">
-return convert_using(self, '//exercises//problem-set/entry/solution')
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/entry/correct</xpath>
-    <children>
-      <one-of>
-	<reference>block-with-para-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex html correct">
-return convert_using(self, '//exercises//problem-set/entry/correct')
-    </conversion-callback>
-    <conversion-callback name="latex html learner teacher"/>
-  </entry>
-
-  <entry>
-    <xpath>//exercises//multi-part/entry/solution//correct</xpath>
-    <children>
-      <one-of>
-	<reference>block-with-para-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex html learner correct teacher">
-return convert_using(self, '//exercises//problem-set/entry/solution//correct')
     </conversion-callback>
   </entry>
 

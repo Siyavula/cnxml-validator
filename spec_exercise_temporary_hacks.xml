@@ -63,6 +63,21 @@
 	<type>string</type>
 	<default/>
       </entry>
+      <entry>
+	<name>table_frame</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>rowsep</name>
+	<type>integer</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>colsep</name>
+	<type>integer</type>
+	<default/>
+      </entry>
       <!-- /HACK -->
 
     </attributes>
@@ -95,6 +110,11 @@ return etree.tostring(self, pretty_print=True)
       <!-- HACK -->
       <entry>
 	<name>style</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>align</name>
 	<type>string</type>
 	<default/>
       </entry>
@@ -136,6 +156,11 @@ return etree.tostring(self, pretty_print=True)
 	<type>string</type>
 	<default/>
       </entry>
+      <entry>
+	<name>width</name>
+	<type>string</type>
+	<default/>
+      </entry>
       <!-- /HACK -->
 
     </attributes>
@@ -169,6 +194,11 @@ return etree.tostring(self, pretty_print=True)
       </entry>
       <entry>
 	<name>style</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>width</name>
 	<type>string</type>
 	<default/>
       </entry>

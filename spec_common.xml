@@ -2117,4 +2117,222 @@ return
     </children>
   </entry>
 
+  <entry>
+    <xpath>//multi-part</xpath>
+    <attributes>
+      <entry>
+	<name>style:columns</name>
+	<type>integer(1,)</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>shortcode</optional>
+      <optional>header</optional>
+      <any-number>
+	<one-of>
+	  <element>multi-part</element>
+	  <element>entry</element>
+	</one-of>
+      </any-number>
+      <optional>footer</optional>
+    </children>
+    <notext/>
+    <conversion-callback name="latex html learner teacher">
+return convert_using(self, '//exercises//problem-set')
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+return convert_using(self, '//exercises//problem-set')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part/header</xpath>
+    <children>
+      <reference>block-or-minor-environment-elements</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex html learner teacher">
+return convert_using(self, '//exercises//problem-set/header')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part/footer</xpath>
+    <children>
+      <reference>block-or-minor-environment-elements</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex html learner teacher">
+return convert_using(self, '//exercises//problem-set/footer')
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//multi-part/entry</xpath>
+    <children>
+      <reference>exercise-entry</reference>
+    </children>
+    <notext/>
+    <validation-callback>problemset_entry_contains_correct_and_shortcode</validation-callback>
+    <conversion-callback name="latex html learner teacher">
+return convert_using(self, '//exercises//problem-set/entry')
+    </conversion-callback>
+    <conversion-callback name="latex html correct">
+return convert_using(self, '//exercises//problem-set/entry')
+    </conversion-callback>
+  </entry>
+
+  <entry id="exercise-entry">
+    <xpath>//entry</xpath>
+    <children>
+      <reference>exercise-body</reference>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry id="exercise-body">
+    <children>
+      <element>problem</element>
+      <optional>response</optional>
+      <element>solution</element>
+      <optional>correct</optional>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry id="exercise-entry-problem">
+    <xpath>//entry/problem</xpath>
+    <children>
+      <one-of>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex learner teacher">
+environment = 'ExercisesProblemsetEntryProblem'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+environment = 'problem'
+problem = etree.Element('div')
+problem.attrib['class'] = environment
+problem.text = self.text
+return etree.tostring(problem)
+    </conversion-callback>
+    <conversion-callback name="latex correct">
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry id="exercise-entry-solution">
+    <xpath>//entry/solution</xpath>
+    <children>
+      <one-of>
+	<any-number>
+	  <one-of>
+	    <element>step</element>
+	    <element>hint</element>
+	  </one-of>
+	</any-number>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry id="exercise-entry-solution-step">
+    <xpath>//entry/solution/step</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>marks</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <optional>title</optional>
+      <optional>marks</optional>
+      <one-of>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//entry/solution/step/title</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//entry/solution/step/marks</xpath>
+    <validation-callback>is_float</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//entry/solution/hint</xpath>
+    <attributes>
+      <entry>
+	<name>id</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
+	<name>marks</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <children>
+      <reference>exercise-entry-solution-step</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//entry/solution/hint/title</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//entry/solution/hint/marks</xpath>
+    <validation-callback>is_float</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//entry/correct</xpath>
+    <children>
+      <one-of>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="html latex correct">
+return '\n' + self.text.strip() + '\n'
+    </conversion-callback>
+    <conversion-callback name="html latex learner teacher"/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/solution//correct</xpath>
+    <children>
+      <one-of>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex html learner correct teacher">
+return self.text
+    </conversion-callback>
+  </entry>
+
 </spec>
