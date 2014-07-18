@@ -1149,6 +1149,25 @@ return etree.tostring(mathidentity)
   </entry>
 
   <entry>
+    <xpath>//summary</xpath>
+    <children>
+      <reference>block-with-para-elements</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
+environment = 'Summary'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+environment = 'summary'
+summary = etree.Element('div')
+summary.attrib['class'] = environment
+summary.text = self.text
+return etree.tostring(summary)
+    </conversion-callback>
+    <conversion-callback name="latex correct"/>
+  </entry>
+  <entry>
     <xpath>//math_extension</xpath>
     <children>
       <element>title</element>

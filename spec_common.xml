@@ -1290,6 +1290,7 @@ else:
 	<element>new-words</element>
 	<element>linked-concepts</element>
 	<element>teachers-guide</element>
+	<element>summary</element>
       </one-of>
     </children>
   </entry>
