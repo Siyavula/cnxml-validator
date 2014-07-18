@@ -74,7 +74,7 @@ return self.text.strip()
   </entry>
 
   <entry>
-    <xpath>/document/content//activity/section</xpath>
+    <xpath>//activity/section</xpath>
     <children>
       <element>title</element>
       <reference>block-or-minor-environment-elements</reference>
@@ -94,7 +94,7 @@ return etree.tostring(activitysection)
   </entry>
 
   <entry>
-    <xpath>/document/content//activity/section/title</xpath>
+    <xpath>//activity/section/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -112,7 +112,7 @@ return etree.tostring(title)
   </entry>
 
   <entry>
-    <xpath>/document/content//section</xpath>
+    <xpath>//section</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -153,7 +153,7 @@ return self.text.strip()
   </entry>
 
   <entry>
-    <xpath>/document/content//teachers-guide</xpath>
+    <xpath>//teachers-guide</xpath>
     <children>
       <reference>block-with-section-elements</reference>
     </children>
@@ -171,7 +171,7 @@ return etree.tostring(tg)
   </entry>
 
   <entry>
-    <xpath>/document/content//section/title</xpath>
+    <xpath>//section/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -228,7 +228,7 @@ return etree.tostring(newElement)
   </entry>
 
   <entry>
-    <xpath>/document/content//section/shortcode</xpath>
+    <xpath>//section/shortcode</xpath>
     <validation-callback>is_section_shortcode</validation-callback>
     <conversion-callback name="html latex learner correct teacher">
 self.getparent().attrib['shortcode'] = self.text
@@ -237,7 +237,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises</xpath>
+    <xpath>//exercises</xpath>
     <children>
       <optional>title</optional>
       <element>problem-set</element>
@@ -296,7 +296,7 @@ return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' 
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises/title</xpath>
+    <xpath>//exercises/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -315,7 +315,7 @@ return etree.tostring(title)
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set</xpath>
+    <xpath>//exercises//problem-set</xpath>
     <attributes>
       <entry>
 	<name>style:columns</name>
@@ -430,7 +430,7 @@ else:
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/header</xpath>
+    <xpath>//exercises//problem-set/header</xpath>
     <children>
       <reference>block-or-minor-environment-elements</reference>
     </children>
@@ -449,7 +449,7 @@ return etree.tostring(header)
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/footer</xpath>
+    <xpath>//exercises//problem-set/footer</xpath>
     <children>
       <reference>block-or-minor-environment-elements</reference>
     </children>
@@ -467,7 +467,7 @@ return etree.tostring(footer)
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/entry</xpath>
+    <xpath>//exercises//problem-set/entry</xpath>
     <children>
       <any-number from="0"><!-- FIXME: This is a hack since multiple shortcodes have to point to the same thing in some exercises. This needs to become stricter since we cannot render multiple shortcodes in the book for one exercises. -->
 	<element>shortcode</element>
@@ -544,7 +544,7 @@ return result
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/entry/shortcode</xpath>
+    <xpath>//exercises//problem-set/entry/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
     <conversion-callback name="html latex learner teacher">
 # Store shortcode in problem-set
@@ -557,7 +557,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/entry/problem</xpath>
+    <xpath>//exercises//problem-set/entry/problem</xpath>
     <children>
       <one-of>
 	<reference>block-or-minor-environment-elements</reference>
@@ -581,7 +581,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/entry/solution</xpath>
+    <xpath>//exercises//problem-set/entry/solution</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -633,7 +633,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/entry/correct</xpath>
+    <xpath>//exercises//problem-set/entry/correct</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -647,7 +647,7 @@ return '\n' + self.text.strip() + '\n'
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//problem-set/entry/solution//correct</xpath>
+    <xpath>//exercises//problem-set/entry/solution//correct</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -660,7 +660,7 @@ return self.text
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part</xpath>
+    <xpath>//exercises//multi-part</xpath>
     <attributes>
       <entry>
 	<name>style:columns</name>
@@ -682,37 +682,37 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set')
+return convert_using(self, '//exercises//problem-set')
     </conversion-callback>
     <conversion-callback name="latex correct">
-return convert_using(self, '/document/content//exercises//problem-set')
+return convert_using(self, '//exercises//problem-set')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/header</xpath>
+    <xpath>//exercises//multi-part/header</xpath>
     <children>
       <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set/header')
+return convert_using(self, '//exercises//problem-set/header')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/footer</xpath>
+    <xpath>//exercises//multi-part/footer</xpath>
     <children>
       <reference>block-or-minor-environment-elements</reference>
     </children>
     <notext/>
     <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set/footer')
+return convert_using(self, '//exercises//problem-set/footer')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/entry</xpath>
+    <xpath>//exercises//multi-part/entry</xpath>
     <children>
       <element>problem</element>
       <element>solution</element>
@@ -721,15 +721,15 @@ return convert_using(self, '/document/content//exercises//problem-set/footer')
     <notext/>
     <validation-callback>problemset_entry_contains_correct_and_shortcode</validation-callback>
     <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set/entry')
+return convert_using(self, '//exercises//problem-set/entry')
     </conversion-callback>
     <conversion-callback name="latex html correct">
-return convert_using(self, '/document/content//exercises//problem-set/entry')
+return convert_using(self, '//exercises//problem-set/entry')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/shortcode</xpath>
+    <xpath>//exercises//multi-part/shortcode</xpath>
     <validation-callback>is_exercise_shortcode</validation-callback>
     <conversion-callback name="latex html learner teacher">
 # Store shortcode in parent problem-set
@@ -744,7 +744,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/entry/problem</xpath>
+    <xpath>//exercises//multi-part/entry/problem</xpath>
     <children>
       <one-of>
 	<reference>block-or-minor-environment-elements</reference>
@@ -752,15 +752,15 @@ return ''
       </one-of>
     </children>
     <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set/entry/problem')
+return convert_using(self, '//exercises//problem-set/entry/problem')
     </conversion-callback>
     <conversion-callback name="latex html correct">
-return convert_using(self, '/document/content//exercises//problem-set/entry/problem')
+return convert_using(self, '//exercises//problem-set/entry/problem')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/entry/solution</xpath>
+    <xpath>//exercises//multi-part/entry/solution</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -780,15 +780,15 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/prob
       </one-of>
     </children>
     <conversion-callback name="latex html teacher">
-return convert_using(self, '/document/content//exercises//problem-set/entry/solution')
+return convert_using(self, '//exercises//problem-set/entry/solution')
     </conversion-callback>
     <conversion-callback name="latex html learner correct">
-return convert_using(self, '/document/content//exercises//problem-set/entry/solution')
+return convert_using(self, '//exercises//problem-set/entry/solution')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/entry/correct</xpath>
+    <xpath>//exercises//multi-part/entry/correct</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -796,13 +796,13 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/solu
       </one-of>
     </children>
     <conversion-callback name="latex html correct">
-return convert_using(self, '/document/content//exercises//problem-set/entry/correct')
+return convert_using(self, '//exercises//problem-set/entry/correct')
     </conversion-callback>
     <conversion-callback name="latex html learner teacher"/>
   </entry>
 
   <entry>
-    <xpath>/document/content//exercises//multi-part/entry/solution//correct</xpath>
+    <xpath>//exercises//multi-part/entry/solution//correct</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -810,12 +810,12 @@ return convert_using(self, '/document/content//exercises//problem-set/entry/corr
       </one-of>
     </children>
     <conversion-callback name="latex html learner correct teacher">
-return convert_using(self, '/document/content//exercises//problem-set/entry/solution//correct')
+return convert_using(self, '//exercises//problem-set/entry/solution//correct')
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//definition</xpath>
+    <xpath>//definition</xpath>
     <children>
       <element>term</element>
       <element>meaning</element>
@@ -840,7 +840,7 @@ return etree.tostring(definition)
   </entry>
 
   <entry>
-    <xpath>/document/content//definition/term</xpath>
+    <xpath>//definition/term</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -851,7 +851,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//definition/meaning</xpath>
+    <xpath>//definition/meaning</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -864,7 +864,7 @@ return self.text
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem</xpath>
+    <xpath>//theorem</xpath>
     <children>
       <optional>label</optional>
       <optional>title</optional>
@@ -895,7 +895,7 @@ return etree.tostring(theorem)
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem/label</xpath>
+    <xpath>//theorem/label</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -906,7 +906,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem/title</xpath>
+    <xpath>//theorem/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -917,7 +917,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem/statement</xpath>
+    <xpath>//theorem/statement</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -938,7 +938,7 @@ return etree.tostring(theoremstatement)
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem/given</xpath>
+    <xpath>//theorem/given</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -959,7 +959,7 @@ return etree.tostring(theoremgiven)
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem/required</xpath>
+    <xpath>//theorem/required</xpath>
     <children>
       <one-of>
 	<reference>block-with-para-elements</reference>
@@ -980,7 +980,7 @@ return etree.tostring(theoremrequired)
   </entry>
 
   <entry>
-    <xpath>/document/content//theorem/proof</xpath>
+    <xpath>//theorem/proof</xpath>
     <children>
       <one-of>
 	<reference>block-or-minor-environment-elements</reference>
@@ -1001,7 +1001,7 @@ return etree.tostring(theoremproof)
   </entry>
 
   <entry>
-    <xpath>/document/content//activity</xpath>
+    <xpath>//activity</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -1051,7 +1051,7 @@ return etree.tostring(activity)
   </entry>
 
   <entry>
-    <xpath>/document/content//activity/title</xpath>
+    <xpath>//activity/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -1068,7 +1068,7 @@ return etree.tostring(title)
   </entry>
 
   <entry>
-    <xpath>/document/content//note</xpath>
+    <xpath>//note</xpath>
     <attributes>
       <entry>
 	<name>id</name>
@@ -1099,7 +1099,7 @@ return etree.tostring(note)
   </entry>
 
   <entry>
-    <xpath>/document/content//quote</xpath>
+    <xpath>//quote</xpath>
     <children>
       <reference>block-with-para-elements</reference>
     </children>
@@ -1117,7 +1117,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
   </entry>
 
   <entry>
-    <xpath>/document/content//math_identity</xpath>
+    <xpath>//math_identity</xpath>
     <children>
       <reference>block-with-para-elements</reference>
     </children>
@@ -1137,7 +1137,7 @@ return etree.tostring(mathidentity)
   </entry>
 
   <entry>
-    <xpath>/document/content//math_extension</xpath>
+    <xpath>//math_extension</xpath>
     <children>
       <element>title</element>
       <element>body</element>
@@ -1161,7 +1161,7 @@ return etree.tostring(mathextension)
   </entry>
 
   <entry>
-    <xpath>/document/content//math_extension/title</xpath>
+    <xpath>//math_extension/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -1172,7 +1172,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//math_extension/body</xpath>
+    <xpath>//math_extension/body</xpath>
     <children>
       <reference>block-with-para-elements</reference>
     </children>
@@ -1182,7 +1182,7 @@ return self.text
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts</xpath>
+    <xpath>//linked-concepts</xpath>
     <children>
       <any-number from="1">
 	<element>concept</element>
@@ -1204,7 +1204,7 @@ return etree.tostring(mylist)
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts/concept</xpath>
+    <xpath>//linked-concepts/concept</xpath>
     <children>
       <element>text</element>
       <element>subject</element>
@@ -1224,14 +1224,14 @@ return etree.tostring(li)
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts/concept/text</xpath>
+    <xpath>//linked-concepts/concept/text</xpath>
     <conversion-callback name="latex html learner teacher">
 return self.text
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts/concept/subject</xpath>
+    <xpath>//linked-concepts/concept/subject</xpath>
     <validation-callback>is_subject</validation-callback>
     <conversion-callback name="latex html learner teacher">
 subject = self.text.strip().lower()
@@ -1240,7 +1240,7 @@ return u' — ' + {'maths': 'Mathematics', 'science': 'Physical Sciences'}[subje
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts/concept/grade</xpath>
+    <xpath>//linked-concepts/concept/grade</xpath>
     <validation-callback>is_integer</validation-callback>
     <conversion-callback name="latex html learner teacher">
 return ', Grade %i'%(int(self.text))
@@ -1248,14 +1248,14 @@ return ', Grade %i'%(int(self.text))
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts/concept/chapter</xpath>
+    <xpath>//linked-concepts/concept/chapter</xpath>
     <conversion-callback name="latex html learner teacher">
 return ', ' + self.text.capitalize()
     </conversion-callback>
   </entry>
 
   <entry>
-    <xpath>/document/content//linked-concepts/concept/shortcode</xpath>
+    <xpath>//linked-concepts/concept/shortcode</xpath>
     <validation-callback>is_section_shortcode</validation-callback>
     <conversion-callback name="latex html learner teacher">
 return ''
@@ -1263,7 +1263,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//key-concepts</xpath>
+    <xpath>//key-concepts</xpath>
     <children>
       <reference>block-with-para-elements</reference>
     </children>
@@ -1283,7 +1283,7 @@ return etree.tostring(kc)
   </entry>
 
   <entry>
-    <xpath>/document/content//new-words</xpath>
+    <xpath>//new-words</xpath>
     <children>
       <any-number>
 	<element>word</element>
@@ -1304,7 +1304,7 @@ return etree.tostring(nw)
   </entry>
 
   <entry>
-    <xpath>/document/content//new-words/word</xpath>
+    <xpath>//new-words/word</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -1322,7 +1322,7 @@ return etree.tostring(word)
   </entry>
 
   <entry>
-    <xpath>/document/content//worked_example</xpath>
+    <xpath>//worked_example</xpath>
     <children>
       <element>title</element>
       <element>question</element>
@@ -1349,7 +1349,7 @@ return etree.tostring(workedexample)
   </entry>
 
   <entry>
-    <xpath>/document/content//worked_example/title</xpath>
+    <xpath>//worked_example/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -1361,7 +1361,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//worked_example/question</xpath>
+    <xpath>//worked_example/question</xpath>
     <children>
       <one-of>
 	<reference>block-or-minor-environment-elements</reference>
@@ -1387,7 +1387,7 @@ return etree.tostring(workedexampleq)
   </entry>
 
   <entry>
-    <xpath>/document/content//worked_example/answer</xpath>
+    <xpath>//worked_example/answer</xpath>
     <children>
       <one-of>
 	<any-number from="1">
@@ -1410,7 +1410,7 @@ return self.text
   </entry>
 
   <entry>
-    <xpath>/document/content//worked_example/answer/workstep</xpath>
+    <xpath>//worked_example/answer/workstep</xpath>
     <children>
       <element>title</element>
       <reference>block-or-minor-environment-elements</reference>
@@ -1434,7 +1434,7 @@ return etree.tostring(workstep)
   </entry>
 
   <entry>
-    <xpath>/document/content//worked_example/answer/workstep/title</xpath>
+    <xpath>//worked_example/answer/workstep/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
@@ -1446,7 +1446,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>/document/content//equation</xpath>
+    <xpath>//equation</xpath>
     <children>
       <element>m:math</element>
     </children>
@@ -1457,7 +1457,7 @@ return self.text
   </entry>
 
   <entry>
-    <xpath>/document/content//m:math</xpath>
+    <xpath>//m:math</xpath>
     <children>
       <reference>math-stuff</reference>
     </children>
@@ -1487,28 +1487,28 @@ return r'\(' + tex + r'\)'
     </conversion-callback>
   </entry>
 
-  <entry><xpath>/document/content//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mi</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mo</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mn</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mtext</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msub</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:munder</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
-  <entry><xpath>/document/content//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mrow</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mfrac</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mfenced</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mi</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mo</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mn</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mtable</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mtr</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mtd</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mtext</xpath><children><reference>math-stuff</reference></children><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:msub</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:msup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:msubsup</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mspace</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mphantom</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mstyle</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:msqrt</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:munder</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
+  <entry><xpath>//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher"/></entry>
 
   <entry id="math-stuff">
     <children>
