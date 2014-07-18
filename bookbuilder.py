@@ -15,6 +15,10 @@ try:
 except ImportError:
     logging.error("Please install docopt:\n sudo pip install docopt")
 
+try:
+    from termcolor import colored
+except ImportError:
+    logging.error("Please install termcolo:\n sudo pip install termcolor")
 
 class chapter:
     ''' Class to represent a single chapter
@@ -94,7 +98,7 @@ class chapter:
         validator_dir = os.path.dirname(os.path.abspath(__file__))
         validator_path = os.path.join(validator_dir, 'validate.py')
         valid = subprocess.call(["python", validator_path, self.file], stdout=FNULL, stderr=subprocess.STDOUT)
-        self.valid = "Valid" if valid == 0 else "Not Valid"
+        self.valid = colored("Valid", "green") if valid == 0 else colored("Not Valid", "red")
 
 
 class book:
