@@ -254,9 +254,18 @@ return ''
       <optional>title</optional>
       <element>problem-set</element>
     </children>
+    <attributes>
+      <entry>
+        <name>type</name>
+        <type>enum("testyourunderstanding", "endofchapter")</type>
+        <default></default>
+      </entry>
+    </attributes>
     <notext/>
     <conversion-callback name="latex learner teacher">
 environment = 'Exercises'
+if 'type' in self.attrib.keys():
+    environment += self.attrib['type'].title()
 
 # Shortcodes
 shortcodeColumns = 6
