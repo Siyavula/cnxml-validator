@@ -1,0 +1,93 @@
+block-or-major-environment-element
+==================================
+
+This contains all blocks, including major environments, which may span
+multiple pages. Major blocks may not appear inside table cells, list
+items, or paragraphs.
+
+ * worked_example
+ * activity
+ * exercises
+ * key-concepts
+ * new-words
+ * linked-concepts
+ * teachers-guide
+ * summary
+ * or anything from block-or-minor-environment-element
+
+
+block-or-minor-environment-element
+==================================
+
+This contains minor environments and blocks. Minor environments
+typically do not span multiple pages. Minor blocks may not appear in
+paragraphs, but may appear inside list items, table cells, or major
+blocks.
+
+ * definition
+ * theorem
+ * quote
+ * note
+ * math_extension
+ * math_identity
+ * teachers-guide
+ * or anything from block-with-para-element
+
+
+block-with-para-element
+=======================
+
+This contains all blockish elements that are not environments. It
+specifically separates out <para> since paragraphs can not appear
+inside other paragraphs, but they can appear inside list items or
+table cells.
+
+ * para
+ * or anything from block-no-para-element
+
+
+block-no-para-element
+=====================
+
+Blockish elements, excluding paragraphs.
+
+ * list
+ * presentation
+ * simulation
+ * video
+ * pspicture
+ * tikzpicture
+ * image
+ * table
+ * html5table
+ * figure
+ * equation
+ * latex
+ * correct
+
+
+inline-element
+==============
+
+What it says on the tin.
+
+ * br
+ * space
+ * newline
+ * chem_compound
+ * correct
+ * currency
+ * emphasis
+ * latex
+ * link
+ * m:math
+ * nth
+ * nuclear_notation
+ * number
+ * percentage
+ * spec_note
+ * sub
+ * sup
+ * unit_number
+ * unit
+ * input
