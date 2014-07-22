@@ -115,13 +115,11 @@ class chapter:
     def info(self):
         ''' Returns a formatted string with all the details of the chapter
         '''
-        info = '{file}\n'.format(file=self.file)
-
-        for name, attribute in [('Chapter', self.chapter_number),
-            ("Title", self.title),
-            ("Valid", colored('OK', 'green') if self.valid else colored('Invalid', 'red')),
-            ("Hash", self.hash)]:
-            info += '{name}'.format(name=name).ljust(8) + '{attr}\n'.format(attr=attribute)
+        info = '{ch}'.format(ch=self.chapter_number)
+        info += ' '*(4-len(info))
+        info += colored('OK'.center(8), 'green') if self.valid else colored('Not OK'.center(8), 'red')
+        info += ' '*(24-len(info))
+        info += '{file}'.format(file=self.file) 
 
         return info
 
@@ -136,7 +134,7 @@ class chapter:
 
         Returns 0 if file is valid and 1 if it is not
         '''
-        print("Validating", self.file)
+        print("Validating {f}".format(f=self.file))
         FNULL = open(os.devnull, 'w')
 
         validator_dir = os.path.dirname(os.path.abspath(__file__))
@@ -189,12 +187,13 @@ class book:
         self.write_cache()
         
 
-    def show_chapters(self):
+    def show_status(self):
         ''' Print a listing of the chapters in book
         '''
-        print("")
+        print("\nCh.  Valid     File\n" + '-'*79)
         for chapter in self.chapters:
             print(chapter.info())
+        print('-'*79)
        
     def read_cache(self):
         ''' Read cache object inside the .bookbuilder/cache_object.txt 
@@ -257,7 +256,5 @@ if __name__ == "__main__":
     arguments = docopt(__doc__)
     Book = book()
     Book.write_cache()
-    print(Book.show_chapters())
+    Book.show_status()
     
-
-
