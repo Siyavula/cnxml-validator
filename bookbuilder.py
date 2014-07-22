@@ -24,6 +24,7 @@ Examples:
 
 
 """
+import logging
 
 try:
     from docopt import docopt

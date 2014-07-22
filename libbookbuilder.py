@@ -1,5 +1,5 @@
 import os
-import sys
+import errno
 import logging
 import subprocess
 import hashlib
@@ -16,7 +16,8 @@ except ImportError:
 
 def mkdir_p(path):
     ''' mkdir -p functionality
-    from http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
+    from:
+    http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
     '''
     try:
         os.makedirs(path)
@@ -62,7 +63,8 @@ class chapter:
     def parse_cnxmlplus(self):
         ''' Parse the xml file and save some information
         '''
-        content = open(self.file, 'r').read()
+        with open(self.file, 'r') as f:
+            content = f.read()
 
         if (self.hash is None) or (self.valid is False):
             self.hash = self.calculate_hash(content)
@@ -141,6 +143,36 @@ class chapter:
             stdout=FNULL,
             stderr=subprocess.STDOUT)
         self.valid = True if valid == 0 else False
+
+    def _cnxmlplus_preprocess(self):
+        ''' This is an internal method for the chapter class that tweaks the
+        cnxmlplus before it is converted to one of the output formats e.g.
+        image links are changed to point one folder up so that the output files
+        in the build folder points to where the current images are located.
+
+        This method is called from the convert method.
+
+        I strongly discourage the use of this method for your own purposes
+        '''
+        with open(self.file, 'r').read() as f:
+            tweaked_cnxmlplus = etree.XML(f.read())
+
+
+# TODO add stuff here for tweaking
+
+        return tweaked_cnxmlplus
+
+    def convert(self, output_format):
+        ''' Convert the chapter to the specified output format
+
+        '''
+
+        # preprocess contains an etree dom object
+        preprocessed = self._cnxmlplus_preprocess()
+
+        converted = 'TODO: Convert this'
+
+        return converted
 
     def __str__(self):
         chapno = str(self.chapter_number).ljust(4)
