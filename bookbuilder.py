@@ -50,5 +50,5 @@ if __name__ == "__main__":
         for f in formats:
             print("Transforming book to {f}".format(f=f))
 
-    # Save the cache object again 
+    # Save the cache object again
     Book.write_cache()
