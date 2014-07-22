@@ -5,7 +5,7 @@ Book Builder.
 Usage:
     bookbuilder.py status
     bookbuilder.py build [<format>...]
-    bookbuilder.py --help
+    bookbuilder.py -h --help
 
 Options:
     status            # Shows status of every chapter file in the current repo
@@ -34,6 +34,7 @@ import libbookbuilder
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
+    # TODO remove this print statement
     print(arguments)
     # Initialise the book. This will read the cache object in .bookbuilder
     # and create it if it is not there
@@ -49,7 +50,5 @@ if __name__ == "__main__":
         for f in formats:
             print("Transforming book to {f}".format(f=f))
 
-
     # Save the cache object again 
     Book.write_cache()
-    

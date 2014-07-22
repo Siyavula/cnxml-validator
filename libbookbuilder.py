@@ -112,12 +112,6 @@ class chapter:
 
         return info
 
-
-    def __str__(self):
-        chapno = str(self.chapter_number).ljust(4)
-        return "{number} {title}".format(number=chapno, title=self.title)
-
-
     def validate(self):
         ''' Run the validator on this file
 
@@ -130,6 +124,10 @@ class chapter:
         validator_path = os.path.join(validator_dir, 'validate.py')
         valid = subprocess.call(["python", validator_path, self.file], stdout=FNULL, stderr=subprocess.STDOUT)
         self.valid = True if valid == 0 else False
+    
+    def __str__(self):
+        chapno = str(self.chapter_number).ljust(4)
+        return "{number} {title}".format(number=chapno, title=self.title)
 
 
 class book:
