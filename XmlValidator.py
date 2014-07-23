@@ -375,26 +375,3 @@ class XmlValidator(object):
         # Validate
         self.__validate_traverse(dom, iCleanUp=iCleanUp)
         self.dom = dom
-
-        # DEPRECATED. This will raise an error if an
-        # <monassis-templates> elements are found.
-        # Convert monassis-style problems to worked examples and
-        # exercises.
-        # NOTE: This is temporary while we're transitioning to a new
-        # XML spec that unifies CNXML+ and Monassis XML.
-        self.monassis_to_cnxml()
-
-        # Redo info attached to nodes since monassis_to_cnxml() changed some nodes
-        # Normalize text and tail of nodes
-        self.documentNodePath = {None: []}
-        for node in dom.xpath('//*'):
-            self.documentNodePath[node] = self.documentNodePath[node.getparent()] + [node.tag]
-        # Attach relevant spec entries to nodes in the DOM
-        self.documentSpecEntries = {}
-        for entry in self.spec:
-            if entry.find('xpath') is None:
-                continue
-            for node in dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
-                if self.documentSpecEntries.get(node) is None:
-                    self.documentSpecEntries[node] = entry
-
