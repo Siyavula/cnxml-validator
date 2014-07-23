@@ -3,8 +3,8 @@
 Book Builder.
 
 Usage:
-    bookbuilder.py status
-    bookbuilder.py build [<format>...]
+    bookbuilder.py status [--debug]
+    bookbuilder.py build [<format>...] [--debug]
     bookbuilder.py -h --help
 
 Options:
@@ -15,6 +15,7 @@ Options:
                       # used. These can be one or more of (tex, html )
 
     -h --help         # print help message
+    --debug           # switch on debug messages
 
 Examples:
     bookbuilder.py status
@@ -26,6 +27,7 @@ Examples:
 """
 import logging
 
+from termcolor import colored
 try:
     from docopt import docopt
 except ImportError:
@@ -36,10 +38,14 @@ import libbookbuilder
 if __name__ == "__main__":
     arguments = docopt(__doc__)
     # TODO remove this print statement
-    print(arguments)
     # Initialise the book. This will read the cache object in .bookbuilder
     # and create it if it is not there
+
     Book = libbookbuilder.book()
+
+    if arguments['--debug']:
+        libbookbuilder.DEBUG = True
+        print(colored("DEBUG: ", 'yellow') + str(arguments))
 
     if arguments['status']:
         Book.show_status()

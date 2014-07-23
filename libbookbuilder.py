@@ -1,7 +1,6 @@
 import os
 import errno
 import logging
-import subprocess
 import hashlib
 import ast
 
@@ -12,6 +11,10 @@ try:
     from termcolor import colored
 except ImportError:
     logging.error("Please install termcolor:\n sudo pip install termcolor")
+
+import XmlValidator
+
+DEBUG = False
 
 
 def mkdir_p(path):
@@ -131,20 +134,23 @@ class chapter:
     def validate(self):
         ''' Run the validator on this file
 
-        Returns 0 if file is valid and 1 if it is not
+        sets self.valid to True or False depending on the outcome
         '''
         print("Validating {f}".format(f=self.file))
-        FNULL = open(os.devnull, 'w')
 
-        validator_dir = os.path.dirname(os.path.abspath(__file__))
-        validator_path = os.path.join(validator_dir, 'validate.py')
-        valid = subprocess.call(
-            ["python", validator_path, self.file],
-            stdout=FNULL,
-            stderr=subprocess.STDOUT)
-        self.valid = True if valid == 0 else False
+        # create an instance of the Validator
+        specpath = os.path.join(os.path.dirname(__file__), 'spec.xml')
+        xmlValidator = XmlValidator.XmlValidator(open(specpath, 'rt').read())
+        with open(self.file, 'r') as xmlfile:
+            xml = xmlfile.read()
+            try:
+                xmlValidator.validate(xml)
+                self.valid = True
+            except XmlValidator.XmlValidationError as Err:
+                print(Err)
+                self.valid = False
 
-    def _cnxmlplus_preprocess(self):
+    def __cnxmlplus_preprocess(self):
         ''' This is an internal method for the chapter class that tweaks the
         cnxmlplus before it is converted to one of the output formats e.g.
         image links are changed to point one folder up so that the output files
