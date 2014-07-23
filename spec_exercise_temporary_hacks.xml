@@ -1,36 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1">
 
-  <entry id="inline-element">
-    <children>
-      <one-of>
-	<element>br</element>
-	<element>space</element>
-	<element>newline</element>
-	<element>chem_compound</element>
-	<element>correct</element>
-	<element>currency</element>
-	<element>emphasis</element>
-	<element>latex</element>
-	<element>link</element>
-	<element>m:math</element>
-	<element>nth</element>
-	<element>nuclear_notation</element>
-	<element>number</element>
-	<element>percentage</element>
-	<element>spec_note</element>
-	<element>sub</element>
-	<element>sup</element>
-	<element>unit_number</element>
-	<element>unit</element>
-	<element>input</element>
-	<element>font</element><!-- HACK -->
-      </one-of>
-    </children>
-  </entry>
-
   <entry>
-    <xpath>//font</xpath>
+    <xpath>//style</xpath>
     <attributes>
       <entry>
 	<name>color</name>

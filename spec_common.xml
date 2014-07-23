@@ -1394,6 +1394,7 @@ else:
 	<element>unit_number</element>
 	<element>unit</element>
 	<element>input</element>
+	<element>style</element>
       </one-of>
     </children>
   </entry>
@@ -1852,6 +1853,13 @@ elif self.attrib['effect'] == 'normal':
 emph.text = self.text
 return etree.tostring(emph)
     </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//style</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
   </entry>
 
   <entry>
