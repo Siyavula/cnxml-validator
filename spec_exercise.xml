@@ -96,7 +96,7 @@
 
   <entry>
     <xpath>/exercise-container/meta/derived_from/relationship</xpath>
-    <!-- translation, correction, rework  -->
+    <!-- translation, copy (exactly the same), correction (small fix), improvement (larger edits), rework (basis for a new exercise)  -->
     <text>
       <pre-processing-callback>strip</pre-processing-callback>
     </text>
