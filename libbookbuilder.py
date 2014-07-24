@@ -20,8 +20,9 @@ DEBUG = False
 
 
 def print_debug_msg(msg):
-    '''prints a debug message'''
-    print(colored("DEBUG: {msg}".format(msg=msg), "yellow"))
+    '''prints a debug message if DEBUG is True'''
+    if DEBUG:
+        print(colored("DEBUG: {msg}".format(msg=msg), "yellow"))
 
 
 def mkdir_p(path):
@@ -177,54 +178,75 @@ class chapter:
 
         return tweaked_cnxmlplus
 
-    def __copy_images(self, build_folder, output_path, output_format):
+    def __copy_tex_images(self, build_folder, output_path):
         ''' Find all images referenced in the cnxmlplus document and copy them
-        to their correct relative places in the build folder.
+        to their correct relative places in the build/tex folder.
 
         '''
         with open(self.file) as f:
             xml = etree.XML(f.read())
 
-        if output_format == 'tex':
-            # if it is tex, we can copy the images referenced in the cnxmlplus
-            # directly to the build/tex folder
-            for image in xml.findall('.//image'):
-                # find the src, it may be an attribute or a child element
-                if 'src' in image.attrib:
-                    src = image.attrib['src']
-                else:
-                    src = image.find('.//src').text.strip()
-                dest = os.path.join(build_folder, output_format, src)
-                if DEBUG:
+        # if it is tex, we can copy the images referenced in the cnxmlplus
+        # directly to the build/tex folder
+        for image in xml.findall('.//image'):
+            # find the src, it may be an attribute or a child element
+            if 'src' in image.attrib:
+                src = image.attrib['src'].strip()
+            else:
+                src = image.find('.//src').text.strip()
+
+            # check for paths starting with /
+            if src.startswith('/'):
+                print(colored("ERROR! image paths may not start with /: ",
+                              "red") + src)
+                continue
+
+            dest = os.path.join(build_folder, 'tex', src)
+            if not os.path.exists(dest):
+                try:
+                    mkdir_p(os.path.dirname(dest))
+                except OSError:
+                    msg = colored("WARNING! {dest} is not allowed!"
+                                  .format(dest=dest),
+                                  "magenta")
+                    print(msg)
+
+            if os.path.exists(src):
+                # check whether src was modified more than a second after dest
+                # and only copy if that was the case
+                srcmtime = os.path.getmtime(src)
+                try:
+                    destmtime = os.path.getmtime(dest)
+                    if srcmtime - destmtime > 1:
+                        shutil.copy2(src, dest)
+                        print_debug_msg("Copying {src} --> {dest}"
+                                        .format(src=src, dest=dest))
+                except OSError:
+                    # destination doesn't exist
+                    shutil.copy2(src, dest)
                     print_debug_msg("Copying {src} --> {dest}"
-                                    .format(src=src,
-                                            dest=dest))
-                if not os.path.exists(dest):
-                    try:
-                        mkdir_p(os.path.dirname(dest))
-                    except OSError:
-                        msg = colored("WARNING! {dest} is not allowed!"
-                                      .format(dest=dest),
-                                      "magenta")
-                        print(msg)
+                                    .format(src=src, dest=dest))
 
-                if os.path.exists(src):
-                    shutil.copy(src, dest)
-                else:
-                    print(colored("WARNING! {src} cannot be found!"
-                                  .format(src=src), "magenta"))
+            else:
+                print(colored("WARNING! {src} cannot be found!"
+                              .format(src=src), "magenta"))
 
-        elif output_format == 'html':
-            # if it is html the converted html will contain more images than
-            # the cnxmlplus references because pstricks and tikz figures are
-            # converted to images. We need to calculate the hashes in the same
-            # way that the tohtml.py script does and copy the files from the
-            # _plone_ignore_ folder to build/html
-            pass
+    def __copy_html_images(self, build_folder, output_path):
+        ''' Find all images referenced in the converted html document and copy
+        them to their correct relative places in the build/tex folder.
+
+        '''
+        # if it is html the converted html will contain more images than
+        # the cnxmlplus references because pstricks and tikz figures are
+        # converted to images. We need to calculate the hashes in the same
+        # way that the tohtml.py script does and copy the files from the
+        # _plone_ignore_ folder to build/html
+        pass
 
     def __tolatex(self):
         ''' Convert this chapter to latex
         '''
+        print_debug_msg("Entered __tolatex {f}".format(f=self.file))
         tolatexpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                    'tolatex.py')
         myprocess = subprocess.Popen(["python", tolatexpath, self.file],
@@ -277,16 +299,22 @@ class chapter:
                     converted = conversion_functions[outformat]()
                     print("Converting {ch} to {form}".format(ch=self.file,
                                                              form=outformat))
-                    # copy the images to the build folder
-                    self.__copy_images(build_folder, output_path, outformat)
-
                     with open(output_path, 'w') as f:
                         f.write(converted)
+
                 # file has not changed AND the file exists
                 elif (not self.has_changed) and (os.path.exists(output_path)):
                     print("{f} {space} done".format(f=self.file,
                                                     space=' ' *
                                                     (40 - len(self.file))))
+
+                # copy the images to the build folder even if the file has not
+                # changed and is still valid, the image may have been copied in
+                # by the user
+                if outformat == 'tex':
+                    self.__copy_tex_images(build_folder, output_path)
+                elif outformat == 'html':
+                    self.__copy_html_images(build_folder, output_path)
 
         return
 
