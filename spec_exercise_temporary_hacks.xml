@@ -4,14 +4,37 @@
   <entry>
     <xpath>//style</xpath>
     <attributes>
+      <!-- HACK -->
       <entry>
-	<name>color</name>
+	<name>font-color</name>
 	<type>string</type>
 	<default/>
       </entry>
+      <!-- /HACK -->
     </attributes>
     <children>
       <reference>inline-elements</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//para</xpath>
+    <!-- /HACK -->
+    <attributes>
+      <entry>
+	<name>align</name>
+	<type>enum("center",)</type>
+	<default/>
+      </entry>
+    </attributes>
+    <!-- /HACK -->
+    <children>
+      <any-number>
+	<one-of>
+	  <reference>block-no-para-element</reference>
+	  <reference>inline-element</reference>
+	</one-of>
+      </any-number>
     </children>
   </entry>
 
