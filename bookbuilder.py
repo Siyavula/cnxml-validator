@@ -27,7 +27,6 @@ Examples:
 """
 import logging
 
-from termcolor import colored
 try:
     from docopt import docopt
 except ImportError:
@@ -37,25 +36,24 @@ import libbookbuilder
 
 if __name__ == "__main__":
     arguments = docopt(__doc__)
-    # TODO remove this print statement
     # Initialise the book. This will read the cache object in .bookbuilder
-    # and create it if it is not there
-
+    # and create it if it is not there. This also finds and parses chapters
     Book = libbookbuilder.book()
 
     if arguments['--debug']:
         libbookbuilder.DEBUG = True
-        print(colored("DEBUG: ", 'yellow') + str(arguments))
+        libbookbuilder.print_debug_msg(arguments)
 
     if arguments['status']:
         Book.show_status()
+
     elif arguments['build']:
         print("Building book")
         formats = arguments['<format>']
         if not formats:
             formats = ['tex', 'html']
-        for f in formats:
-            print("Transforming book to {f}".format(f=f))
+
+        Book.convert(formats)
 
     # Save the cache object again
     Book.write_cache()
