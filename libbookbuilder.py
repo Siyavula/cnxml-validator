@@ -45,7 +45,7 @@ class chapter:
     '''
 
     def __init__(self, cnxmlplusfile, **kwargs):
-        ''' cnxmlplus file is the path of the file
+        ''' cnxmlplusfile is the path of the file
         '''
 
         # set some default attributes.
@@ -162,7 +162,7 @@ class chapter:
                 print(Err)
                 self.valid = False
 
-    def __cnxmlplus_preprocess(self):
+    def __xml_preprocess(self, xml):
         ''' This is an internal method for the chapter class that tweaks the
         cnxmlplus before it is converted to one of the output formats e.g.
         image links are changed to point one folder up so that the output files
@@ -170,13 +170,14 @@ class chapter:
 
         This method is called from the convert method.
 
+        input: cnxmlplus is an etree object of the cnxmlplus file
+        output: etree object with pr
+
         '''
-        with open(self.file, 'r') as f:
-            tweaked_cnxmlplus = etree.XML(f.read())
-
         # TODO add stuff here for tweaking
+        processed_xml = xml
 
-        return tweaked_cnxmlplus
+        return processed_xml
 
     def __copy_tex_images(self, build_folder, output_path):
         ''' Find all images referenced in the cnxmlplus document and copy them
