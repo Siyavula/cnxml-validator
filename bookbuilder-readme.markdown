@@ -35,6 +35,33 @@ To install them:
 
 ## Usage
 
+To see usage instructions run bookbuilder with the --help argument:
+
+```
+    python /path/to/cnxml-validator/bookbuilder.py --help
+
+    Usage:
+        bookbuilder.py status [--debug]
+        bookbuilder.py build [<format>...] [--debug]
+        bookbuilder.py -h --help
+    
+    Options:
+        status            # Shows status of every chapter file in the current repo
+    
+        build <format>... # Transform chapters to specified output formats. If no
+                          # formats are specified, all implemented formats will be
+                          # used. These can be one or more of (tex, html )
+    
+        -h --help         # print help message
+        --debug           # switch on debug messages
+    
+    Examples:
+        bookbuilder.py status
+        bookbuilder.py build
+        bookbuilder.py build tex
+        bookbuilder.py build tex html
+```
+
 bookbuilder is meant to be run in die repository where the book cnxmlplus
 content lives e.g.
 
