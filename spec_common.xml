@@ -981,7 +981,7 @@ return etree.tostring(usepackage)
 	</one-of>
       </any-number>
     </children>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 return self.text
     </conversion-callback>
   </entry>
@@ -1140,7 +1140,7 @@ return ''
 	</one-of>
       </any-number>
     </children>
-    <conversion-callback name="latex learner correct teacher">
+    <conversion-callback name="latex html learner correct teacher">
 # First check that there aren't any funny functions
 unslashedFunctions = latex_math_function_check(self.text)
 if len(unslashedFunctions) > 0:
@@ -1201,7 +1201,7 @@ else:
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
         return text
     </conversion-callback>
-    <conversion-callback name="html learner correct teacher">
+    <!--    <conversion-callback name="html learner correct teacher">
 def make_new_mathelement(TeX):
     mathmlelement = etree.Element('math')
     semantics = etree.Element('semantics')
@@ -1276,7 +1276,7 @@ else:
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
         return make_new_mathelement(text) #text
 
-    </conversion-callback>
+    </conversion-callback> -->
   </entry>
 
   <entry id="block-or-major-environment-element">
