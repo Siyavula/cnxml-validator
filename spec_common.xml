@@ -640,6 +640,41 @@ return etree.tostring(figure)
   </entry>
 
   <entry>
+    <xpath>//figure/type</xpath>
+    <validation-callback>is_figure_type</validation-callback>
+    <conversion-callback name="latex html learner correct teacher">
+self.getparent().attrib['type'] = self.text.strip()
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//figure/caption</xpath>
+    <children>
+      <one-of>
+	<reference>block-with-para-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex learner correct teacher">
+if self.text.strip().startswith(r'\par'):
+    self.text = self.text.strip()[4:]
+return r'  \Caption{' + self.text.strip() + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+if self.getparent().attrib['type'] == 'figure':
+    caption = etree.Element('figcaption')
+else:
+    caption = etree.Element('div')
+
+caption.attrib['class'] = 'caption'
+caption.text = self.text
+
+return '\n'+etree.tostring(caption)
+    </conversion-callback>
+  </entry>
+
+  <entry>
     <xpath>//pspicture</xpath>
     <attributes>
       <entry>
@@ -1075,41 +1110,6 @@ return ''
     <conversion-callback name="latex html learner correct teacher">
 self.getparent().attrib['attribution'] = self.text.strip()
 return ''
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//figure/type</xpath>
-    <validation-callback>is_figure_type</validation-callback>
-    <conversion-callback name="latex html learner correct teacher">
-self.getparent().attrib['type'] = self.text.strip()
-return ''
-    </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//figure/caption</xpath>
-    <children>
-      <one-of>
-	<reference>block-with-para-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
-    </children>
-    <conversion-callback name="latex learner correct teacher">
-if self.text.strip().startswith(r'\par'):
-    self.text = self.text.strip()[4:]
-return r'  \Caption{' + self.text.strip() + '}\n'
-    </conversion-callback>
-    <conversion-callback name="html learner correct teacher">
-if self.getparent().attrib['type'] == 'figure':
-    caption = etree.Element('figcaption')
-else:
-    caption = etree.Element('div')
-
-caption.attrib['class'] = 'caption'
-caption.text = self.text
-
-return '\n'+etree.tostring(caption)
     </conversion-callback>
   </entry>
 
@@ -1747,7 +1747,8 @@ return '\n'
         </entry>
         <entry>
             <name>effect</name>
-            <type>string</type>
+            <type>enum("none","underline")</type>
+	    <default>none</default>
         </entry>
     </attributes>
     <conversion-callback name="latex learner correct teacher">
