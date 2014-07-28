@@ -39,7 +39,7 @@ def mkdir_p(path):
             raise
 
 
-class chapter:
+class chapter(object):
 
     ''' Class to represent a single chapter
     '''
@@ -179,6 +179,32 @@ class chapter:
 
         return processed_xml
 
+    def __copy_if_newer(self, src, dest):
+        ''' Copy a file from src to  dest if src is newer than dest '''
+        dest_dir = os.path.dirname(dest)
+        if not os.path.exists(dest_dir):
+            mkdir_p(dest_dir)
+
+        if os.path.exists(src):
+            # check whether src was modified more than a second after dest
+            # and only copy if that was the case
+            srcmtime = os.path.getmtime(src)
+            try:
+                destmtime = os.path.getmtime(dest)
+                if srcmtime - destmtime > 1:
+                    shutil.copy2(src, dest)
+                    print_debug_msg("Copying {src} --> {dest}"
+                                    .format(src=src, dest=dest))
+            except OSError:
+                # destination doesn't exist
+                shutil.copy2(src, dest)
+                print_debug_msg("Copying {src} --> {dest}"
+                                .format(src=src, dest=dest))
+
+        else:
+            print(colored("WARNING! {src} cannot be found!"
+                          .format(src=src), "magenta"))
+
     def __copy_tex_images(self, build_folder, output_path):
         ''' Find all images referenced in the cnxmlplus document and copy them
         to their correct relative places in the build/tex folder.
@@ -211,26 +237,7 @@ class chapter:
                                   .format(dest=dest),
                                   "magenta")
                     print(msg)
-
-            if os.path.exists(src):
-                # check whether src was modified more than a second after dest
-                # and only copy if that was the case
-                srcmtime = os.path.getmtime(src)
-                try:
-                    destmtime = os.path.getmtime(dest)
-                    if srcmtime - destmtime > 1:
-                        shutil.copy2(src, dest)
-                        print_debug_msg("Copying {src} --> {dest}"
-                                        .format(src=src, dest=dest))
-                except OSError:
-                    # destination doesn't exist
-                    shutil.copy2(src, dest)
-                    print_debug_msg("Copying {src} --> {dest}"
-                                    .format(src=src, dest=dest))
-
-            else:
-                print(colored("WARNING! {src} cannot be found!"
-                              .format(src=src), "magenta"))
+            self.__copy_if_newer(src, dest)
 
     def __copy_html_images(self, build_folder, output_path):
         ''' Find all images referenced in the converted html document and copy
@@ -242,7 +249,17 @@ class chapter:
         # converted to images. We need to calculate the hashes in the same
         # way that the tohtml.py script does and copy the files from the
         # _plone_ignore_ folder to build/html
-        pass
+
+        print_debug_msg(output_path)
+
+        with open(output_path, 'r') as f:
+            html = etree.HTML(f.read())
+
+        for img in html.findall('.//img'):
+            src = img.attrib['src']
+            dest = os.path.join(os.path.dirname(output_path), src)
+            print_debug_msg("    " + src + " -> " + dest)
+            self.__copy_if_newer(src, dest)
 
     def __tolatex(self):
         ''' Convert this chapter to latex
@@ -260,13 +277,15 @@ class chapter:
     def __tohtml(self):
         ''' Convert this chapter to latex
         '''
-#       tohtmlpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-#                                 'tohtml.py')
-#       myprocess = subprocess.Popen(["python", tohtmlpath, self.file],
-#                                    stdout=subprocess.PIPE)
-#       html, err = myprocess.communicate()
+        print_debug_msg("Entered __tohtml {f}".format(f=self.file))
+        tohtmlpath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                  'tohtml.py')
+        myprocess = subprocess.Popen(["python", tohtmlpath, self.file],
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE)
+        html, err = myprocess.communicate()
+        print_debug_msg(err)
 
-        html = ""
         return html
 
     def convert(self, build_folder, output_format):
@@ -305,9 +324,10 @@ class chapter:
 
                 # file has not changed AND the file exists
                 elif (not self.has_changed) and (os.path.exists(output_path)):
-                    print("{f} {space} done".format(f=self.file,
-                                                    space=' ' *
-                                                    (40 - len(self.file))))
+                    print("{f} {space} done {form}"
+                          .format(f=self.file,
+                                  space=' ' * (40 - len(self.file)),
+                                  form=outformat))
 
                 # copy the images to the build folder even if the file has not
                 # changed and is still valid, the image may have been copied in
@@ -324,7 +344,7 @@ class chapter:
         return "{number} {title}".format(number=chapno, title=self.title)
 
 
-class book:
+class book(object):
 
     ''' Class to represent a whole book
     '''

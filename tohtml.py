@@ -87,7 +87,23 @@ if __name__ == "__main__":
             from lxml import etree
             import utils
             import hashlib
-            from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
+            try:
+                from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
+            except ImportError:
+                msg = '''\
+Please install siyavula.transforms repo from github into
+cnxml-validator repo and make sure it is on the htmlconversion branch:
+
+cd /some/path
+git clone git@github.com:Siyavula/siyavula.transforms.git
+cd siyavula.transforms
+git checkout htmlconversion
+cd /path/to/cnxml-validator
+ln -s /path/to/siyavula.transforms siyavula
+'''
+                print(msg)
+                sys.exit(1)
+
             localVars = {
                 'copy':copy,
                 'os':os,
