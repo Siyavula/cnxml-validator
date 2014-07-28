@@ -99,7 +99,7 @@ git clone git@github.com:Siyavula/siyavula.transforms.git
 cd siyavula.transforms
 git checkout htmlconversion
 cd /path/to/cnxml-validator
-ln -s /path/to/siyavula.transforms siyavula
+ln -s /path/to/siyavula.transforms/siyavula siyavula
 '''
                 print(msg)
                 sys.exit(1)
