@@ -937,6 +937,58 @@ else:
     tail = '\\end{Image}\n'
 return head + r'\par\scalebox{0.5}{\begin{tikzpicture}' + self.text + r'\end{tikzpicture}}' + '\n' + tail
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+code = self.find('.//code').text
+#TODO fix this, image names don't match the actual names.
+# bad hack, strip out all non-ascii characters from code element to calculate hash
+codetext = ''.join([c  for c in code if ord(c) &lt; 128])
+codeHash = hashlib.md5(''.join(codetext.encode('utf-8').split())).hexdigest()
+warning_message(codeHash)
+warning_message(codetext)
+
+pre = etree.Element('pre')
+pre.attrib['class'] = 'tikzpicture'
+code_element = self.find('.//code')
+pre.append(copy.deepcopy(code_element))
+
+nestedfig = etree.Element('figure')
+tikzpicture = etree.Element('div')
+tikzpicture.attrib['class'] = 'alternates'
+
+img = etree.Element('img')
+img.tail = '\n'
+img_path = '_plone_ignore_/cache/tikzpictures/%s.png'%codeHash
+# check if the file has been created already
+try:
+    with open(img_path): pass
+# if not, create the file
+except IOError:
+    try:
+        png = tikzpicture2png(self)
+        os.system('cp %s %s' % (png, img_path))
+    except Exception as E:
+        warning_message("Problem compiling tikz\n\nException:\n%s\n\n" % E + etree.tostring(self))
+        png = ''
+
+img.attrib['src'] = img_path
+#if width is not None:
+#    img.attrib['width'] = str(int(float(width)*780))
+#else:
+#    img.attrib['width'] = '780'
+#
+#img.attrib['alt'] = self.attrib.get('attribution')
+
+# add usepackages to pre element
+
+
+for up in self.findall('.//usepackage'):
+    pre.append(up)
+
+#nestedfig.append(tikzpicture)
+tikzpicture.append(img)
+tikzpicture.append(pre)
+return etree.tostring(tikzpicture)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -981,8 +1033,11 @@ return etree.tostring(usepackage)
 	</one-of>
       </any-number>
     </children>
-    <conversion-callback name="latex html learner correct teacher">
+    <conversion-callback name="latex learner correct teacher">
 return self.text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return
     </conversion-callback>
   </entry>
 
