@@ -1,17 +1,19 @@
 from lxml import etree
-import sys, os
+import sys
+import os
 import argparse
 import copy
 
-from xml.sax.saxutils import unescape, escape
+from xml.sax.saxutils import unescape
 from XmlValidator import XmlValidator
 import utils
 
 
 def escape_code(document):
-    '''Given document as string, return with code elements replaced by their escaped string'''
+    '''Given document as string, return with code elements replaced by their
+    escaped string'''
     xml = etree.HTML(document)
-    
+
     for pre in xml.findall('.//pre'):
         pre.text = ''
         for child in pre:
@@ -24,7 +26,8 @@ if __name__ == "__main__":
     MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
     # Parse command line arguments
-    argumentParser = argparse.ArgumentParser(description='Convert a CNXML+ document to a HTML document.')
+    argumentParser = argparse.ArgumentParser(
+        description='Convert a CNXML+ document to a HTML document.')
     argumentParser.add_argument(
         '--spec', dest='specFilename',
         default="spec.xml",
@@ -46,11 +49,13 @@ if __name__ == "__main__":
     else:
         outputFile = open(commandlineArguments.outputFilename, 'wt')
 
-    validator = XmlValidator(open(os.path.join(MY_PATH, commandlineArguments.specFilename),'rt').read())
+    validator = XmlValidator(
+        open(os.path.join(MY_PATH, commandlineArguments.specFilename), 'rt').read())
 
     mathml_transform = utils.MmlTex()
 
-    conversionFunctions = {} # Cache
+    conversionFunctions = {}  # Cache
+
     def cache_conversion_function(iSpec):
         global conversionFunctions, validator, utils, commandlineArguments
 
@@ -71,24 +76,29 @@ if __name__ == "__main__":
 
         if conversionFunction is None:
             # Cache conversion function
-            conversionFunctionNodes = specEntry.xpath('.//conversion-callback[contains(@name, "html") and contains(@name, "%s")]'%commandlineArguments.audience)
+            conversionFunctionNodes = specEntry.xpath(
+                './/conversion-callback[contains(@name, "html") and contains(@name, "%s")]' % commandlineArguments.audience)
             if len(conversionFunctionNodes) == 0:
-                utils.warning_message('No conversion entry for ' + specEntry.find('xpath').text)
+                utils.warning_message(
+                    'No conversion entry for ' + specEntry.find('xpath').text)
                 conversionFunctionSource = 'conversionFunction = lambda self: None'
             else:
                 if len(conversionFunctionNodes) != 1:
-                    utils.error_message('More than 1 conversion entry for ' + specEntry.find('xpath').text)
-                conversionFunctionSource = conversionFunctionNodes[0].text.strip()
+                    utils.error_message(
+                        'More than 1 conversion entry for ' + specEntry.find('xpath').text)
+                conversionFunctionSource = conversionFunctionNodes[
+                    0].text.strip()
                 if conversionFunctionSource == '':
                     conversionFunctionSource = 'conversionFunction = lambda self: None'
                 else:
-                    conversionFunctionSource = 'def conversionFunction(self):\n' + '\n'.join(['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
+                    conversionFunctionSource = 'def conversionFunction(self):\n' + '\n'.join(
+                        ['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
 
             from lxml import etree
             import utils
             import hashlib
             try:
-                from siyavula.transforms import pspicture2png, tikzpicture2png, LatexPictureError
+                from siyavula.transforms import pspicture2png, tikzpicture2png
             except ImportError:
                 msg = '''\
 Please install siyavula.transforms repo from github into
@@ -105,8 +115,8 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
                 sys.exit(1)
 
             localVars = {
-                'copy':copy,
-                'os':os,
+                'copy': copy,
+                'os': os,
                 'unescape': unescape,
                 'etree': etree,
                 'utils': utils,
@@ -134,12 +144,13 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
 
     def convert_image(iSourceFilename, iDestinationFilename):
         import subprocess
-        p = subprocess.Popen(['convert', iSourceFilename, iDestinationFilename])
+        p = subprocess.Popen(
+            ['convert', iSourceFilename, iDestinationFilename])
         p.wait()
 
     def traverse(iNode, iValidator):
         global conversionFunctions
-        
+
         children = iNode.getchildren()
         for child in children:
             traverse(child, iValidator)
@@ -147,13 +158,14 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
         # Get associated conversion function
         specEntry = iValidator.documentSpecEntries.get(iNode)
         if specEntry is None:
-            utils.error_message('Unhandled element at ' + utils.get_full_dom_path(iNode, iValidator.spec))
+            utils.error_message(
+                'Unhandled element at ' + utils.get_full_dom_path(iNode, iValidator.spec))
         conversionFunction = cache_conversion_function(specEntry)
         parent = iNode.getparent()
         try:
             converted = conversionFunction(iNode)
         except Exception as Error:
-            print 'Error: %s %s\nNode: %s\n Parent: %s\n line: %s'%(Error, type(Error), iNode.tag, parent.tag, iNode.sourceline)
+            print 'Error: %s %s\nNode: %s\n Parent: %s\n line: %s' % (Error, type(Error), iNode.tag, parent.tag, iNode.sourceline)
             sys.exit(1)
 
         if isinstance(converted, basestring):
@@ -168,23 +180,24 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
             if parent is None:
                 return unescape(converted)
             else:
-                utils.etree_replace_with_node_list(iNode.getparent(), iNode, converted)
-
+                utils.etree_replace_with_node_list(
+                    iNode.getparent(), iNode, converted)
 
     for filename in commandlineArguments.filename:
         if filename == '-':
             fp = sys.stdin
         else:
-            fp = open(filename,'rt')
+            fp = open(filename, 'rt')
         validator.validate(
             fp.read(),
             iCleanUp=True)
         document = validator.dom
-        
+
         Title = filename.replace('.cnxmlplus', '').replace('-', ' ')
 # capitalise first letter
 
-        #print etree.tostring(traverse(document, spec), encoding="utf-8", xml_declaration=True)
+        # print etree.tostring(traverse(document, spec), encoding="utf-8",
+        # xml_declaration=True)
         outputdoc = traverse(document, validator).encode('utf-8')
         htmloutputdoc = '''<!DOCTYPE html>
     <html>
@@ -198,3 +211,18 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
         htmloutputdoc = escape_code(htmloutputdoc)
         print htmloutputdoc
         outputFile.flush()
+
+        # clean up
+        for f in ["figure-autopp.cb",
+                  "figure.aux",
+                  "figure.cb",
+                  "figure.cb2",
+                  "figure.epsi",
+                  "figure.log",
+                  "figure.pdf",
+                  "figure-pics.pdf",
+                  "figure.png",
+                  "figure.ps",
+                  "figure.tex"]:
+            if os.path.exists(f):
+                os.remove(f)
