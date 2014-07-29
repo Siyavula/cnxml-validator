@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import errno
 import logging
@@ -8,6 +10,7 @@ import shutil
 
 import lxml
 from lxml import etree
+
 
 try:
     from termcolor import colored
@@ -250,15 +253,15 @@ class chapter(object):
         # way that the tohtml.py script does and copy the files from the
         # _plone_ignore_ folder to build/html
 
-        print_debug_msg(output_path)
-
         with open(output_path, 'r') as f:
             html = etree.HTML(f.read())
 
         for img in html.findall('.//img'):
             src = img.attrib['src']
             dest = os.path.join(os.path.dirname(output_path), src)
-            print_debug_msg("    " + src + " -> " + dest)
+            if not os.path.exists(src):
+                print_debug_msg(src + " doesn't exist")
+
             self.__copy_if_newer(src, dest)
 
     def __tolatex(self):
@@ -274,6 +277,31 @@ class chapter(object):
 
         return latex
 
+    def __check_if_html_images_rendered(self):
+        ''' Run a check on all the pstricks and tikzpicture elements
+        to see if they are in the _plone_ignore_folder
+        '''
+        with open(self.file, 'r') as f:
+            xml = etree.XML(f.read())
+            for c in xml.xpath('//comment()'):
+                c.getparent().remove(c)
+            for figtype in ['pspicture', 'tikzpicture']:
+                for code in xml.findall('.//{ft}/code'.format(ft=figtype)):
+                    codetext = code.text
+                    codetext = ''.join([c for c in codetext if ord(c) < 128])
+                    codeHash = hashlib.md5(
+                        ''.join(codetext.encode('utf-8').split())).hexdigest()
+                    imgpath = os.path.join('_plone_ignore_',
+                                           'cache',
+                                           figtype + 's',
+                                           codeHash + '.png')
+                    if not os.path.exists(imgpath):
+                        print(colored('Image did not render: ', 'red'), end='')
+                        print("{ft} on line {n}:".format(ft=figtype,
+                                                         n=code.sourceline))
+                        print(code.text)
+                        print("")
+
     def __tohtml(self):
         ''' Convert this chapter to latex
         '''
@@ -284,7 +312,6 @@ class chapter(object):
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE)
         html, err = myprocess.communicate()
-        print_debug_msg(err)
 
         return html
 
@@ -336,6 +363,7 @@ class chapter(object):
                     self.__copy_tex_images(build_folder, output_path)
                 elif outformat == 'html':
                     self.__copy_html_images(build_folder, output_path)
+                    self.__check_if_html_images_rendered()
 
         return
 
