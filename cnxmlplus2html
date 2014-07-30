@@ -5,7 +5,7 @@ import argparse
 import copy
 
 from xml.sax.saxutils import unescape
-from XmlValidator import XmlValidator
+from XmlValidator.XmlValidator import XmlValidator
 import utils
 
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         description='Convert a CNXML+ document to a HTML document.')
     argumentParser.add_argument(
         '--spec', dest='specFilename',
-        default="spec.xml",
+        default="XmlValidator/spec.xml",
         help='Filename of the XML specification document.')
     argumentParser.add_argument(
         '--audience', dest='audience',
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         outputFile = open(commandlineArguments.outputFilename, 'wt')
 
     validator = XmlValidator(
-        open(os.path.join(MY_PATH, commandlineArguments.specFilename), 'rt').read())
+        open(os.path.join('XmlValidator', MY_PATH, commandlineArguments.specFilename), 'rt').read())
 
     mathml_transform = utils.MmlTex()
 
