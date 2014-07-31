@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from lxml import etree
 import sys
 import os
@@ -5,8 +6,8 @@ import argparse
 import copy
 
 from xml.sax.saxutils import unescape
-from XmlValidator.XmlValidator import XmlValidator
-import utils
+from XmlValidator import XmlValidator
+from XmlValidator import utils
 
 
 def escape_code(document):
@@ -95,7 +96,7 @@ if __name__ == "__main__":
                         ['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
 
             from lxml import etree
-            import utils
+            from XmlValidator import utils
             import hashlib
             try:
                 from siyavula.transforms import pspicture2png, tikzpicture2png
