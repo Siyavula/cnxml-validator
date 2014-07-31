@@ -4,6 +4,7 @@ import sys
 import os
 import argparse
 import copy
+import inspect
 
 from xml.sax.saxutils import unescape
 from XmlValidator import XmlValidator
@@ -25,13 +26,14 @@ def escape_code(document):
 
 if __name__ == "__main__":
     MY_PATH = os.path.realpath(os.path.dirname(__file__))
+    SPEC_PATH = os.path.dirname(inspect.getfile(XmlValidator))
 
     # Parse command line arguments
     argumentParser = argparse.ArgumentParser(
         description='Convert a CNXML+ document to a HTML document.')
     argumentParser.add_argument(
         '--spec', dest='specFilename',
-        default="XmlValidator/spec.xml",
+        default="spec.xml",
         help='Filename of the XML specification document.')
     argumentParser.add_argument(
         '--audience', dest='audience',
@@ -51,7 +53,7 @@ if __name__ == "__main__":
         outputFile = open(commandlineArguments.outputFilename, 'wt')
 
     validator = XmlValidator(
-        open(os.path.join('XmlValidator', MY_PATH, commandlineArguments.specFilename), 'rt').read())
+        open(os.path.join(SPEC_PATH, commandlineArguments.specFilename), 'rt').read())
 
     mathml_transform = utils.MmlTex()
 

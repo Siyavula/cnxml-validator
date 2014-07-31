@@ -135,7 +135,7 @@ class MmlTex:
         import os
         from lxml import etree
         MY_PATH = os.path.realpath(os.path.dirname(__file__))
-        self.__call__ = etree.XSLT(etree.parse(os.path.join(MY_PATH, '../mmltex/mmltex.xsl')))
+        self.__call__ = etree.XSLT(etree.parse(os.path.join(MY_PATH, 'mmltex/mmltex.xsl')))
 
 def escape_latex(iText, iIgnore='', iUnescape=False):
     """

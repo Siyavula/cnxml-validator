@@ -2,17 +2,19 @@
 import sys
 import os
 import argparse
+import inspect
 
 from XmlValidator import XmlValidator
 from XmlValidator import utils
 
+SPEC_PATH = os.path.join(os.path.dirname(inspect.getfile(XmlValidator)))
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
 # Parse command line arguments
 argumentParser = argparse.ArgumentParser(description='Convert a CNXML+ document to a LaTeX document.')
 argumentParser.add_argument(
     '--spec', dest='specFilename',
-    default="XmlValidator/spec.xml",
+    default="spec.xml",
     help='Filename of the XML specification document.')
 argumentParser.add_argument(
     '--audience', dest='audience',
@@ -31,7 +33,7 @@ if commandlineArguments.outputFilename is None:
 else:
     outputFile = open(commandlineArguments.outputFilename, 'wt')
 
-validator = XmlValidator(open(os.path.join('XmlValidator', MY_PATH, commandlineArguments.specFilename),'rt').read())
+validator = XmlValidator(open(os.path.join(SPEC_PATH, commandlineArguments.specFilename),'rt').read())
 
 mathml_transform = utils.MmlTex()
 
