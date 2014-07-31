@@ -1,2 +1,3 @@
 from XmlValidator import XmlValidator
+from XmlValidator import XmlValidationError
 import callbacks
