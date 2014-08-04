@@ -797,21 +797,21 @@ pre.append(copy.deepcopy(code_element))
 pspicture = etree.Element('div')
 pspicture.attrib['class'] = 'alternates'
 
-img = etree.Element('img')
-img_path = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
-# check if the file has been created already
-try:
-    with open(img_path): pass
-# if not, create the file
-except IOError:
-    try:
-        png = pspicture2png(self)
-        os.system('cp %s %s' % (png, img_path))
-    except Exception as E:
-        warning_message("Problem compiling pstricks\n\nException:\n%s\n\n" % E + etree.tostring(self))
-        png = ''
-
-img.attrib['src'] = img_path
+#img = etree.Element('img')
+#img_path = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
+## check if the file has been created already
+#try:
+#    with open(img_path): pass
+## if not, create the file
+#except IOError:
+#    try:
+#        png = pspicture2png(self)
+#        os.system('cp %s %s' % (png, img_path))
+#    except Exception as E:
+#        warning_message("Problem compiling pstricks\n\nException:\n%s\n\n" % E + etree.tostring(self))
+#        png = ''
+#
+#img.attrib['src'] = img_path
 #if width is not None:
 #    img.attrib['width'] = str(int(float(width)*780))
 #else:
@@ -825,7 +825,7 @@ img.attrib['src'] = img_path
 for up in self.findall('.//usepackage'):
     pre.append(up)
 
-pspicture.append(img)
+#pspicture.append(img)
 pspicture.append(pre)
 return etree.tostring(pspicture)
     </conversion-callback>
@@ -955,22 +955,22 @@ nestedfig = etree.Element('figure')
 tikzpicture = etree.Element('div')
 tikzpicture.attrib['class'] = 'alternates'
 
-img = etree.Element('img')
-img.tail = '\n'
-img_path = '_plone_ignore_/cache/tikzpictures/%s.png'%codeHash
-# check if the file has been created already
-try:
-    with open(img_path): pass
-# if not, create the file
-except IOError:
-    try:
-        png = tikzpicture2png(self)
-        os.system('cp %s %s' % (png, img_path))
-    except Exception as E:
-        warning_message("Problem compiling tikz\n\nException:\n%s\n\n" % E + etree.tostring(self))
-        png = ''
-
-img.attrib['src'] = img_path
+#img = etree.Element('img')
+#img.tail = '\n'
+#img_path = '_plone_ignore_/cache/tikzpictures/%s.png'%codeHash
+## check if the file has been created already
+#try:
+#    with open(img_path): pass
+## if not, create the file
+#except IOError:
+#    try:
+#        png = tikzpicture2png(self)
+#        os.system('cp %s %s' % (png, img_path))
+#    except Exception as E:
+#        warning_message("Problem compiling tikz\n\nException:\n%s\n\n" % E + etree.tostring(self))
+#        png = ''
+#
+#img.attrib['src'] = img_path
 #if width is not None:
 #    img.attrib['width'] = str(int(float(width)*780))
 #else:
@@ -985,7 +985,7 @@ for up in self.findall('.//usepackage'):
     pre.append(up)
 
 #nestedfig.append(tikzpicture)
-tikzpicture.append(img)
+#tikzpicture.append(img)
 tikzpicture.append(pre)
 return etree.tostring(tikzpicture)
     </conversion-callback>
