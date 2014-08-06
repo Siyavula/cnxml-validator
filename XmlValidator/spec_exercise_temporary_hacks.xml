@@ -205,6 +205,11 @@ return etree.tostring(self, pretty_print=True)
 	<default/>
       </entry>
       <entry>
+	<name>bgcolor</name>
+	<type>string</type>
+	<default/>
+      </entry>
+      <entry>
 	<name>width</name>
 	<type>string</type>
 	<default/>
