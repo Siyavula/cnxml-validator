@@ -39,6 +39,18 @@
   </entry>
 
   <entry>
+    <xpath>//number</xpath>
+    <children>
+      <subset-of>
+	<element>coeff</element>
+	<element>base</element>
+	<element>exp</element>
+      </subset-of>
+    </children>
+    <!--<validation-callback>is_number</validation-callback>-->
+  </entry>
+
+  <entry>
     <xpath>//html5table</xpath>
     <attributes>
       <entry>
