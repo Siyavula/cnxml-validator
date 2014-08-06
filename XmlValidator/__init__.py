@@ -1,3 +1,7 @@
-from XmlValidator import XmlValidator
-from XmlValidator import XmlValidationError
+from XmlValidator import (
+    XmlValidator,
+    ExerciseValidator,
+    XmlValidationError,
+)
+
 import callbacks

@@ -375,3 +375,11 @@ class XmlValidator(object):
         # Validate
         self.__validate_traverse(dom, iCleanUp=iCleanUp)
         self.dom = dom
+
+
+class ExerciseValidator(XmlValidator):
+    def __init__(self):
+        import os
+        myPath = os.path.realpath(os.path.dirname(__file__))
+        with open(os.path.join(myPath, 'spec_exercise.xml')) as fp:
+            super(ExerciseValidator, self).__init__(fp.read())
