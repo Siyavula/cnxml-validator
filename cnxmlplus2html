@@ -1,29 +1,42 @@
+#!/usr/bin/env python
 from lxml import etree
 import sys
 import os
 import argparse
 import copy
+import inspect
 
-from xml.sax.saxutils import unescape
 from XmlValidator import XmlValidator
-import utils
+from XmlValidator import utils
+from xml.sax.saxutils import unescape
 
 
 def escape_code(document):
     '''Given document as string, return with code elements replaced by their
     escaped string'''
-    xml = etree.HTML(document)
+    # THIS STEP REMOVES < and > from code blocks!!!!!
+#   xml = etree.HTML(document)
 
-    for pre in xml.findall('.//pre'):
-        pre.text = ''
-        for child in pre:
-            pre.text += etree.tostring(child)
-            pre.remove(child)
+#   for pre in xml.findall('.//pre'):
+#       pre.text = ''
+#       for child in pre:
+#           pre.text += etree.tostring(child)
+#           pre.remove(child)
+    code_start = document.split(r'<code>')
+    for code_block in code_start[1:]:
+        code_end = code_block.find(r'</code>')
+        code = code_block[0:code_end]
+        # escape the > < and &
+        newcode = code.replace('&', '&amp;')
+        newcode = newcode.replace('>', '&gt;')
+        newcode = newcode.replace('<', '&lt;')
+        document = document.replace(code, newcode)
 
-    return etree.tostring(xml)
+    return document
 
 if __name__ == "__main__":
     MY_PATH = os.path.realpath(os.path.dirname(__file__))
+    SPEC_PATH = os.path.dirname(inspect.getfile(XmlValidator))
 
     # Parse command line arguments
     argumentParser = argparse.ArgumentParser(
@@ -50,7 +63,7 @@ if __name__ == "__main__":
         outputFile = open(commandlineArguments.outputFilename, 'wt')
 
     validator = XmlValidator(
-        open(os.path.join(MY_PATH, commandlineArguments.specFilename), 'rt').read())
+        open(os.path.join(SPEC_PATH, commandlineArguments.specFilename), 'rt').read())
 
     mathml_transform = utils.MmlTex()
 
@@ -95,7 +108,7 @@ if __name__ == "__main__":
                         ['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
 
             from lxml import etree
-            import utils
+            from XmlValidator import utils
             import hashlib
             try:
                 from siyavula.transforms import pspicture2png, tikzpicture2png
@@ -117,7 +130,6 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
             localVars = {
                 'copy': copy,
                 'os': os,
-                'unescape': unescape,
                 'etree': etree,
                 'utils': utils,
                 'convert_using': convert_using,
@@ -126,11 +138,6 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
                 'mathml_transform': mathml_transform,
                 'escape_latex': utils.escape_latex,
                 'latex_math_function_check': utils.latex_math_function_check,
-                'convert_image': convert_image,
-                'pspicture2png': pspicture2png,
-                'tikzpicture2png': tikzpicture2png,
-                'hashlib': hashlib,
-                'unescape': unescape,
             }
             exec(conversionFunctionSource, localVars)
             conversionFunction = localVars['conversionFunction']
@@ -210,19 +217,19 @@ ln -s /path/to/siyavula.transforms/siyavula siyavula
     </html>'''.format(Content=outputdoc, Title=Title)
         htmloutputdoc = escape_code(htmloutputdoc)
         print htmloutputdoc
-        outputFile.flush()
+#       outputFile.flush()
 
         # clean up
-        for f in ["figure-autopp.cb",
-                  "figure.aux",
-                  "figure.cb",
-                  "figure.cb2",
-                  "figure.epsi",
-                  "figure.log",
-                  "figure.pdf",
-                  "figure-pics.pdf",
-                  "figure.png",
-                  "figure.ps",
-                  "figure.tex"]:
-            if os.path.exists(f):
-                os.remove(f)
+#       for f in ["figure-autopp.cb",
+#                 "figure.aux",
+#                 "figure.cb",
+#                 "figure.cb2",
+#                 "figure.epsi",
+#                 "figure.log",
+#                 "figure.pdf",
+#                 "figure-pics.pdf",
+#                 "figure.png",
+#                 "figure.ps",
+#                 "figure.tex"]:
+#           if os.path.exists(f):
+#               os.remove(f)

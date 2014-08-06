@@ -1,16 +1,19 @@
+#!/usr/bin/env python
 from lxml import etree
 import sys, os
 import argparse
+import inspect
 
 from XmlValidator import XmlValidator
 
+SPEC_PATH = os.path.join(os.path.dirname(inspect.getfile(XmlValidator)))
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
 # Parse command line arguments
 argumentParser = argparse.ArgumentParser(description='Check the validity of a CNXML+ document.')
 argumentParser.add_argument(
     '--spec', dest='specFilename',
-    default="spec.xml",
+    default='spec.xml',
     help='Filename of the XML specification document.')
 argumentParser.add_argument(
     '--clean-up', dest='produceCleanedXML', action='store_true',
@@ -29,8 +32,7 @@ if commandlineArguments.outputFilename is None:
     outputFile = sys.stdout
 else:
     outputFile = open(commandlineArguments.outputFilename, 'wt')
-
-xmlValidator = XmlValidator(open(os.path.join(MY_PATH, commandlineArguments.specFilename),'rt').read())
+xmlValidator = XmlValidator(open(os.path.join(SPEC_PATH, commandlineArguments.specFilename),'rt').read())
 
 cleanUp = commandlineArguments.produceCleanedXML
 for filename in commandlineArguments.filename:

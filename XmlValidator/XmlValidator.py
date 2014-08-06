@@ -235,7 +235,7 @@ class XmlValidator(object):
         callbackNode = specEntry.find('validation-callback')
         if callbackNode is not None:
             callbackFunctionName = callbackNode.text.strip()
-            import callbacks
+            from . import callbacks
             callbackFunction = eval('callbacks.' + callbackFunctionName)
             if not callbackFunction(iNode):
                 self.__log_error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
@@ -375,3 +375,11 @@ class XmlValidator(object):
         # Validate
         self.__validate_traverse(dom, iCleanUp=iCleanUp)
         self.dom = dom
+
+
+class ExerciseValidator(XmlValidator):
+    def __init__(self):
+        import os
+        myPath = os.path.realpath(os.path.dirname(__file__))
+        with open(os.path.join(myPath, 'spec_exercise.xml')) as fp:
+            super(ExerciseValidator, self).__init__(fp.read())

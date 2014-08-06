@@ -27,6 +27,21 @@
 \ncline{4,6}{3,7}
 \ncline{3,5}{4,6}
           </code>
-        </pspicture>
+      </pspicture>
+
+
+<pspicture>
+<code>
+(-3,-2)(4,2)
+\psaxes[dx=1,Dx=1,arrows=&lt;-&gt;](0,0)(-3,-2)(4,2)
+\psplot[xunit=1,plotstyle=curve,arrows=&lt;-&gt;]{0.5}{2.5}{x 2 mul 3 sub}
+\psplot[xunit=1,plotstyle=curve,arrows=&lt;-&gt;]{-1.5}{3.5}{x 0.5 mul}
+\uput[l](2,1.1){$(2;1)$}
+\psdot(2,1)
+\uput[r](3,1.3){{$y=\frac{1}{2}x$}}
+\uput[u](2.2, 1.8){{$y=2x-3$}}
+</code>
+</pspicture>
+
 </content>
 </document>
