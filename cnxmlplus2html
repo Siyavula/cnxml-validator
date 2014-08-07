@@ -14,23 +14,20 @@ from xml.sax.saxutils import unescape
 def escape_code(document):
     '''Given document as string, return with code elements replaced by their
     escaped string'''
-    # THIS STEP REMOVES < and > from code blocks!!!!!
-#   xml = etree.HTML(document)
-
-#   for pre in xml.findall('.//pre'):
-#       pre.text = ''
-#       for child in pre:
-#           pre.text += etree.tostring(child)
-#           pre.remove(child)
-    code_start = document.split(r'<code>')
-    for code_block in code_start[1:]:
-        code_end = code_block.find(r'</code>')
-        code = code_block[0:code_end]
-        # escape the > < and &
-        newcode = code.replace('&', '&amp;')
-        newcode = newcode.replace('>', '&gt;')
-        newcode = newcode.replace('<', '&lt;')
-        document = document.replace(code, newcode)
+    envs = [('<code>', r'</code>'),
+            (r'\(', r'\)'),
+            (r'\[', r'\]')]
+    for env in envs:
+        start, end = env
+        code_start = document.split(start)
+        for code_block in code_start[1:]:
+            code_end = code_block.find(end)
+            code = code_block[0:code_end]
+            # escape the > < and &
+            newcode = code.replace(r'&', r'&amp;')
+            newcode = newcode.replace(r'>', r'&gt;')
+            newcode = newcode.replace(r'<', r'&lt;')
+            document = document.replace(code, newcode)
 
     return document
 
