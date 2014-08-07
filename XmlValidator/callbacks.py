@@ -136,17 +136,16 @@ def is_nuclear_notation(element):
     for tag in ['symbol', 'mass_number', 'atomic_number']:
         children[tag] = element.find(tag).text
 
-    if children['symbol'] not in periodicTable:
-        raise_error("Unknown element symbol %s"%repr(children['symbol']), element)
-
-    for tag in ['mass_number','atomic_number']:
+    for tag in ['mass_number', 'atomic_number']:
         try:
             int(children[tag])
         except ValueError:
-            raise_error("Could not interpret <%s> as integer"%tag, element)
+            raise_error("Could not interpret <%s> as integer" % tag, element)
 
-    if int(children['atomic_number']) != periodicTable[children['symbol']]:
-        raise_error("Atomic number does not position in periodic table", element)
+    if children['symbol'] not in periodicTable:
+        raise_error("Unknown element symbol %s"%repr(children['symbol']), element, exception=None)
+    elif int(children['atomic_number']) != periodicTable[children['symbol']]:
+        raise_error("Atomic number does not match position in periodic table", element, exception=None)
 
     return True
 
