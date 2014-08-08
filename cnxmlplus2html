@@ -8,7 +8,7 @@ import inspect
 
 from XmlValidator import XmlValidator
 from XmlValidator import utils
-from xml.sax.saxutils import unescape
+from xml.sax.saxutils import unescape, escape
 
 
 def escape_code(document):
@@ -20,15 +20,16 @@ def escape_code(document):
     for env in envs:
         start, end = env
         code_start = document.split(start)
-        for code_block in code_start[1:]:
+        for i, code_block in enumerate(code_start):
             code_end = code_block.find(end)
+            if not code_end > 1:
+                continue
             code = code_block[0:code_end]
             # escape the > < and &
-            newcode = code.replace(r'&', r'&amp;')
-            newcode = newcode.replace(r'>', r'&gt;')
-            newcode = newcode.replace(r'<', r'&lt;')
-            document = document.replace(code, newcode)
+            newcode = escape(code)
+            code_start[i] = newcode + code_start[i][code_end:]
 
+        document = start.join(code_start)
     return document
 
 if __name__ == "__main__":
@@ -106,7 +107,7 @@ if __name__ == "__main__":
 
             from lxml import etree
             from XmlValidator import utils
-
+            import xml
             localVars = {
                 'copy': copy,
                 'os': os,
@@ -196,7 +197,7 @@ if __name__ == "__main__":
       </body>
     </html>'''.format(Content=outputdoc, Title=Title)
         htmloutputdoc = escape_code(htmloutputdoc)
-        print htmloutputdoc
+        print(htmloutputdoc.encode('utf-8'))
 #       outputFile.flush()
 
         # clean up
