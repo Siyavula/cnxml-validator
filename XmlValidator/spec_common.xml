@@ -1956,7 +1956,7 @@ if url is not None:
 return r'$_{\text{%s}}$'%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return self
+return r"&lt;sub&gt;" + self.text + "&lt;/sub&gt;"
     </conversion-callback>
   </entry>
 
@@ -1969,11 +1969,11 @@ return self
 return r'$^{\text{%s}}$'%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return self
+return r"&lt;sup&gt;" + self.text + "&lt;/sup&gt;"
     </conversion-callback>
   </entry>
 
-  <entry>
+  <!--  <entry>
     <xpath>//sup</xpath>
     <children>
       <reference>inline-elements</reference>
@@ -1981,7 +1981,7 @@ return self
     <conversion-callback name="html latex learner correct teacher">
 return etree.tostring(self)
     </conversion-callback>
-  </entry>
+  </entry> -->
     
   <entry>
     <xpath>//html5table</xpath>
