@@ -8,30 +8,28 @@ import inspect
 
 from XmlValidator import XmlValidator
 from XmlValidator import utils
-from xml.sax.saxutils import unescape
+from xml.sax.saxutils import unescape, escape
 
 
 def escape_code(document):
     '''Given document as string, return with code elements replaced by their
     escaped string'''
-    # THIS STEP REMOVES < and > from code blocks!!!!!
-#   xml = etree.HTML(document)
+    envs = [('<code>', r'</code>'),
+            (r'\(', r'\)'),
+            (r'\[', r'\]')]
+    for env in envs:
+        start, end = env
+        code_start = document.split(start)
+        for i, code_block in enumerate(code_start):
+            code_end = code_block.find(end)
+            if not code_end > 1:
+                continue
+            code = code_block[0:code_end]
+            # escape the > < and &
+            newcode = escape(code)
+            code_start[i] = newcode + code_start[i][code_end:]
 
-#   for pre in xml.findall('.//pre'):
-#       pre.text = ''
-#       for child in pre:
-#           pre.text += etree.tostring(child)
-#           pre.remove(child)
-    code_start = document.split(r'<code>')
-    for code_block in code_start[1:]:
-        code_end = code_block.find(r'</code>')
-        code = code_block[0:code_end]
-        # escape the > < and &
-        newcode = code.replace('&', '&amp;')
-        newcode = newcode.replace('>', '&gt;')
-        newcode = newcode.replace('<', '&lt;')
-        document = document.replace(code, newcode)
-
+        document = start.join(code_start)
     return document
 
 if __name__ == "__main__":
@@ -109,7 +107,7 @@ if __name__ == "__main__":
 
             from lxml import etree
             from XmlValidator import utils
-
+            import xml
             localVars = {
                 'copy': copy,
                 'os': os,
@@ -199,7 +197,7 @@ if __name__ == "__main__":
       </body>
     </html>'''.format(Content=outputdoc, Title=Title)
         htmloutputdoc = escape_code(htmloutputdoc)
-        print htmloutputdoc
+        print(htmloutputdoc.encode('utf-8'))
 #       outputFile.flush()
 
         # clean up
