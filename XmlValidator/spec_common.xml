@@ -1649,6 +1649,11 @@ return result
 
   <entry>
     <xpath>//chem_compound</xpath>
+    <children>
+      <any-number>
+	<element>style</element>
+      </any-number>
+    </children>
     <conversion-callback name="latex html learner correct teacher">
 text = self.text.strip()
 pos = 0
