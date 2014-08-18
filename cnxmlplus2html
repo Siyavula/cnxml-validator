@@ -16,7 +16,8 @@ def escape_code(document):
     escaped string'''
     envs = [('<code>', r'</code>'),
             (r'\(', r'\)'),
-            (r'\[', r'\]')]
+            (r'\[', r'\]'),
+            (r'\begin{align*}', r'\end{align*}')]
     for env in envs:
         start, end = env
         code_start = document.split(start)
