@@ -941,6 +941,11 @@ return etree.tostring(note)
 environment = 'Quote'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
+    <conversion-callback name="html learner teacher">
+element = etree.Element("blockquote")
+element.text = self.text
+return etree.tostring(element)
+    </conversion-callback>
   </entry>
 
   <entry>
