@@ -1514,8 +1514,9 @@ return '$^{' + self.text + '}$'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 parents = [a.tag for a in self.iterancestors()]
-if 'latex' in parents:
-    return '^{%s}'%self.text
+latex = ['latex', 'unit_number', 'unit']
+if any(l in parents for l in latex):
+    return '$^{%s}$'%self.text
 else:
     sup = etree.Element('sup')
     sup.text = self.text
@@ -1961,7 +1962,14 @@ if url is not None:
 return r'$_{\text{%s}}$'%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return r"&lt;sub&gt;" + self.text + "&lt;/sub&gt;"
+parents = [a.tag for a in self.iterancestors()]
+latex = ['latex', 'unit_number', 'unit']
+if any(l in parents for l in latex):
+    return '$_{%s}$'%self.text
+else:
+    sub = etree.Element('sub')
+    sub.text = self.text
+    return etree.tostring(sub)
     </conversion-callback>
   </entry>
 
