@@ -1531,7 +1531,12 @@ else:
 return convert_using(self, '//number') + r'\%'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return convert_using(self, '//number') + r'%'
+parents = [a.tag for a in self.iterancestors()]
+latex = ['latex', 'unit_number', 'unit', 'pspicture', 'tikzpicture']
+if any(l in parents for l in latex):
+  return convert_using(self, '//number') + r'\%'
+else:
+  return convert_using(self, '//number') + r'%'
     </conversion-callback>
   </entry>
 
