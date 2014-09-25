@@ -171,6 +171,7 @@
     <xpath>//entry/response</xpath>
     <children>
       <unordered>
+	<optional>linked-concepts</optional>
 	<element>type</element>
 	<element>marks</element>
 	<element>correct</element>
@@ -178,6 +179,48 @@
       </unordered>
     </children>
     <validation-callback>response_entries_count_matches</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/linked-concepts</xpath>
+    <children>
+      <one-of>
+	<any-number>
+	  <element>value</element>
+	</any-number>
+	<any-number>
+	  <element>concept</element>
+	</any-number>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/linked-concepts/value</xpath>
+    <children>
+      <any-number>
+	<element>concept</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//linked-concepts//concept</xpath>
+    <attributes>
+      <entry>
+	<name>type</name>
+	<type>enum('primary', 'remote test', 'path picker', 'jumper')</type>
+	<default>primary</default>
+      </entry>
+      <entry>
+	<name>weight</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <!-- validate that element text is a valid concept id -->
   </entry>
 
   <entry>
