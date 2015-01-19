@@ -1087,16 +1087,77 @@ return ''
   <entry>
     <xpath>//image/attribution</xpath>
     <children>
-      <one-of>
-	<reference>block-with-para-elements</reference>
-	<reference>inline-elements</reference>
-      </one-of>
+      <subset-of>
+	    <reference>block-with-para-elements</reference>
+	    <reference>inline-elements</reference>
+        <element>title</element>
+        <element>author</element>
+        <element>licence</element>
+        <element>url</element>
+      </subset-of>
     </children>
     <conversion-callback name="latex html learner correct teacher">
 self.getparent().attrib['attribution'] = self.text.strip()
 return ''
     </conversion-callback>
   </entry>
+
+
+  <entry>
+    <xpath>//image/attribution/title</xpath>
+    <children>
+      <one-of>
+	    <reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex html learner correct teacher">
+self.getparent().attrib['title'] = self.text.strip()
+return ''
+    </conversion-callback>
+  </entry>
+
+
+  <entry>
+    <xpath>//image/attribution/author</xpath>
+    <children>
+      <one-of>
+	    <reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex html learner correct teacher">
+self.getparent().attrib['author'] = self.text.strip()
+return ''
+    </conversion-callback>
+  </entry>
+
+
+  <entry>
+    <xpath>//image/attribution/licence</xpath>
+    <children>
+      <one-of>
+	    <reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex html learner correct teacher">
+self.getparent().attrib['licence'] = self.text.strip()
+return ''
+    </conversion-callback>
+  </entry>
+
+  <entry>
+    <xpath>//image/attribution/url</xpath>
+    <children>
+      <one-of>
+	    <reference>inline-elements</reference>
+      </one-of>
+    </children>
+    <conversion-callback name="latex html learner correct teacher">
+self.getparent().attrib['url'] = self.text.strip()
+return ''
+    </conversion-callback>
+  </entry>
+
+
 
   <entry>
     <xpath>//latex</xpath>
