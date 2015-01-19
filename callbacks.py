@@ -124,7 +124,9 @@ def is_nuclear_notation(element):
         children[tag] = element.find(tag).text
 
     if children['symbol'] not in periodicTable:
-        raise_error("Unknown element symbol %s"%repr(children['symbol']), element)
+        import sys
+        sys.stderr.write('WARNING: ' + "Unknown element symbol %s"%repr(children['symbol']))
+        return True
 
     for tag in ['mass_number','atomic_number']:
         try:
