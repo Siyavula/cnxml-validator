@@ -1,5 +1,6 @@
 import sys
 import entities
+import lxml.etree as etree
 
 def warning_message(message, newLine=True):
     sys.stderr.write('WARNING: ' + message.encode('utf-8'))
@@ -189,3 +190,19 @@ def latex_math_function_check(iLatex):
         start, stop = match.span()
         matches.append(paddedText[start+1:stop-1])
     return matches
+
+def make_new_mathelement(TeX):
+    '''make new mathml element containing tex in annotation, for Wysiwhat editor'''
+    mathmlelement = etree.Element('math')
+    semantics = etree.Element('semantics')
+    junk = etree.Element('mtext')
+    junk.text = 'CLICKME'
+    semantics.append(junk)
+    annotation = etree.Element('annotation')
+    annotation.attrib['encoding'] = 'TeX'
+    annotation.text = TeX
+
+    semantics.append(annotation)
+    mathmlelement.append(semantics)
+    return etree.tostring(mathmlelement)
+

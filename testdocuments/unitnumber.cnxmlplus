@@ -29,64 +29,10 @@
     <pspicture-generator-version>1.1</pspicture-generator-version>
   </metadata>
   <content>
-<exercises>
-<title>Some exercises</title>
-<problem-set>
-<header><para>This is the header</para></header>
-<entry>
-<shortcode>AABBCC</shortcode>
-    <problem>
-    <para> Problem statement</para>
-    </problem>
-    <solution>
-    <para> Solution here </para>
-    </solution>
-</entry>
-<multi-part>
-<shortcode>AABBCC</shortcode>
-<header><para>Multi-part: This is the header</para></header>
-<entry>
-    <problem>
-    <para> Problem statement</para>
-    </problem>
-    <solution>
-    <para> Solution here </para>
-    </solution>
-</entry>
-<entry>
-    <problem>
-    <para> Problem statement</para>
-    </problem>
-    <solution>
-    <para> Solution here </para>
-    </solution>
-</entry>
-</multi-part>
-</problem-set>
-</exercises>
-
-<exercises type='testyourunderstanding'>
-  <title>Test your understanding exercises</title>
-  <problem-set>
-    <entry>
-        <problem></problem>
-        <solution>
-          <correct/>
-        </solution>
-    </entry>
-  </problem-set>
-</exercises>
-
-<exercises type='endofchapter'>
-  <title>End of Chapter</title>
-  <problem-set>
-    <entry>
-        <problem></problem>
-        <solution>
-          <correct/>
-        </solution>
-    </entry>
-  </problem-set>
-</exercises>
-</content>
+    <latex>g=<unit_number><number>9.8</number><unit>m·s<sup>-2</sup></unit></unit_number></latex>
+    <para>
+      <unit_number><number>40</number><unit>km·hr<sup>-1</sup></unit></unit_number>
+    </para>
+  </content>
 </document>
+

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1" xmlns:its="http://www.w3.org/2005/11/its">
+
+  <import>spec_exercise_temporary_hacks.xml</import>
+  <import>spec_common.xml</import>
+
+  <entry>
+    <xpath>/exercise-container</xpath>
+    <children>
+      <element>meta</element>
+      <one-of>
+	<element>multi-part</element>
+	<element>entry</element>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta</xpath>
+    <children>
+      <unordered>
+	<element>id</element>
+	<element>version</element>
+	<optional>random_seed</optional>
+	<optional>derived_from</optional>
+	<element>title</element>
+	<optional>authors</optional>
+	<optional>last_updated</optional>
+	<element>difficulty</element>
+	<element>language</element>
+	<any-number>
+	  <element>link</element>
+	</any-number>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/id</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/version</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/random_seed</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_integer</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/derived_from</xpath>
+    <children>
+      <unordered>
+	<element>id</element>
+	<element>version</element>
+	<optional>random_seed</optional>
+	<element>relationship</element>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/derived_from/id</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/derived_from/version</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/derived_from/random_seed</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_integer</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/derived_from/relationship</xpath>
+    <!-- translation, copy (exactly the same), correction (small fix), improvement (larger edits), rework (basis for a new exercise)  -->
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/title</xpath>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/authors</xpath>
+    <children>
+      <any-number>
+	<element>author</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/authors/author</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/difficulty</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/last_updated</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_iso8601</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/language</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_language_code</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>/exercise-container/meta/link</xpath>
+    <attributes>
+      <entry>
+	<name>rel</name>
+	<type>enum('textbook', 'conceptmap', 'shortcode')</type>
+	<!-- textbook => this template should appear in the chapter or section associated with the given textbook path -->
+	<!-- conceptmap => this template depends on the given concept map node -->
+	<!-- shortcode => this is the static exercise associated with the given shortcode -->
+      </entry>
+      <entry>
+	<name>href</name>
+	<type>url</type>
+      </entry>
+    </attributes>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response</xpath>
+    <children>
+      <unordered>
+	<optional>linked-concepts</optional>
+	<element>type</element>
+	<element>marks</element>
+	<element>correct</element>
+	<element>query</element>
+      </unordered>
+    </children>
+    <validation-callback>response_entries_count_matches</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/linked-concepts</xpath>
+    <children>
+      <one-of>
+	<any-number>
+	  <element>value</element>
+	</any-number>
+	<any-number>
+	  <element>concept</element>
+	</any-number>
+      </one-of>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/linked-concepts/value</xpath>
+    <children>
+      <any-number>
+	<element>concept</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//linked-concepts//concept</xpath>
+    <attributes>
+      <entry>
+	<name>type</name>
+	<type>enum('primary', 'remote test', 'path picker', 'jumper')</type>
+	<default>primary</default>
+      </entry>
+      <entry>
+	<name>weight</name>
+	<type>number</type>
+	<default>1</default>
+      </entry>
+    </attributes>
+    <!-- validate that element text is a valid concept id -->
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/type</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/type/value</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/marks</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/marks/value</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+    <validation-callback>is_float</validation-callback>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/correct</xpath>
+    <children>
+      <any-number>
+	<element>value</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/correct/value</xpath>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/query</xpath>
+    <children>
+      <one-of>
+	<reference>block-or-minor-environment-elements</reference>
+	<reference>inline-elements</reference>
+      </one-of>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/query//input</xpath>
+    <attributes>
+      <entry>
+	<name>group</name>
+	<type>string</type>
+	<default/>
+      </entry>
+    </attributes>
+    <notext/>
+  </entry>
+
+</spec>

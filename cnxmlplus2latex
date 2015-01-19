@@ -1,9 +1,13 @@
-import sys, os
+#!/usr/bin/env python
+import sys
+import os
 import argparse
+import inspect
 
 from XmlValidator import XmlValidator
-import utils
+from XmlValidator import utils
 
+SPEC_PATH = os.path.join(os.path.dirname(inspect.getfile(XmlValidator)))
 MY_PATH = os.path.realpath(os.path.dirname(__file__))
 
 # Parse command line arguments
@@ -29,7 +33,7 @@ if commandlineArguments.outputFilename is None:
 else:
     outputFile = open(commandlineArguments.outputFilename, 'wt')
 
-validator = XmlValidator(open(os.path.join(MY_PATH, commandlineArguments.specFilename),'rt').read())
+validator = XmlValidator(open(os.path.join(SPEC_PATH, commandlineArguments.specFilename),'rt').read())
 
 mathml_transform = utils.MmlTex()
 
@@ -68,7 +72,7 @@ def cache_conversion_function(iSpec):
                 conversionFunctionSource = 'def conversionFunction(self):\n' + '\n'.join(['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
 
         from lxml import etree
-        import utils
+        from XmlValidator import utils
         localVars = {
             'etree': etree,
             'utils': utils,

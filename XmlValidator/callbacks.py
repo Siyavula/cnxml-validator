@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 DEBUG = True
 
 def raise_error(message, element=None, exception=ValueError):
@@ -9,6 +11,9 @@ def raise_error(message, element=None, exception=ValueError):
     else:
         import sys
         sys.stderr.write('WARNING: ' + message + '\n')
+
+def __replace_unicode_minus(text):
+    return text.replace(u'\u2212', '-')
 
 def is_version_number(element):
     text = element.text
@@ -36,7 +41,7 @@ def is_integer(element):
         raise_error("Integer element must have 0 children", element)
     text = element.text if element.text is not None else ''
     try:
-        int(text)
+        int(__replace_unicode_minus(text))
     except ValueError:
         raise_error("Could not interpret text as an integer", element)
     return True
@@ -67,11 +72,7 @@ def is_figure_type(element):
 def is_number(element):
     if len(element) == 0:
         # No children, means it's just a plain number: either int or float
-        text = element.text if element.text is not None else ''
-        try:
-            float(text)
-        except ValueError:
-            raise_error("<number> text not interpretable as float", element)
+        return is_numeric_value(element)
     else:
         # Scientific or exponential notation: parse out coefficient, base and exponent
         allowedChildren = ['base', 'coeff', 'exp']
@@ -84,6 +85,8 @@ def is_number(element):
                 raise_error("<number> cannot have more than one <%s> child"%(child.tag), element)
             children[child.tag] = child
             text = child.text if child.text is not None else ''
+            if text[-3:] == '...':
+                text = text[:-3]
             try:
                 float(text)
             except ValueError:
@@ -104,6 +107,16 @@ def is_number(element):
 
     return True
 
+def is_numeric_value(element):
+    text = element.text if element.text is not None else ''
+    if text[-3:] == '...':
+        text = text[:-3]
+    try:
+        float(__replace_unicode_minus(text))
+    except ValueError:
+        raise_error("<number> text %s not interpretable as float" % repr(text), element)
+    return True
+
 def is_unit(element):
     if (len(element) == 0) and (element.text.strip() == ''):
         raise_error("<unit> is empty", element)
@@ -111,7 +124,7 @@ def is_unit(element):
         assert child.tag == 'sup' # From spec.xml we already know that each child is a <sup>
         text = child.text if child.text is not None else ''
         try:
-            int(text)
+            int(__replace_unicode_minus(text))
         except ValueError:
             raise_error("<sup> of <unit> could not be interpreted as an integer", element)
     return True
@@ -123,19 +136,24 @@ def is_nuclear_notation(element):
     for tag in ['symbol', 'mass_number', 'atomic_number']:
         children[tag] = element.find(tag).text
 
-    if children['symbol'] not in periodicTable:
-        import sys
-        sys.stderr.write('WARNING: ' + "Unknown element symbol %s"%repr(children['symbol']))
-        return True
+#    if children['symbol'] not in periodicTable:
+#        import sys
+#        sys.stderr.write('WARNING: ' + "Unknown element symbol %s"%repr(children['symbol']))
+#        return True
 
-    for tag in ['mass_number','atomic_number']:
+    atomicNumberIsInt = True
+    for tag in ['mass_number', 'atomic_number']:
         try:
             int(children[tag])
         except ValueError:
-            raise_error("Could not interpret <%s> as integer"%tag, element)
+            raise_error("Could not interpret <%s> as integer" % tag, element, exception=None)
+            if tag == 'atomic_number':
+                atomicNumberIsInt = False
 
-    if int(children['atomic_number']) != periodicTable[children['symbol']]:
-        raise_error("Atomic number does not position in periodic table", element)
+    if children['symbol'] not in periodicTable:
+        raise_error("Unknown element symbol %s"%repr(children['symbol']), element, exception=None)
+    elif atomicNumberIsInt and (int(children['atomic_number']) != periodicTable[children['symbol']]):
+        raise_error("Atomic number does not match position in periodic table", element, exception=None)
 
     return True
 
@@ -157,6 +175,14 @@ def is_subject(element):
 
 def problemset_entry_contains_correct_and_shortcode(iEntryNode):
     assert iEntryNode.tag == 'entry'
+
+    # Skip if this is a standalone exercise
+    root = iEntryNode
+    while root.getparent() is not None:
+        root = root.getparent()
+    if root.tag == 'exercise-container':
+        return True
+
     # Count number of <correct> elements
     innerCount = len(iEntryNode.xpath('./solution//correct'))
     outerCount = len(iEntryNode.xpath('./correct'))
@@ -171,3 +197,19 @@ def problemset_entry_contains_correct_and_shortcode(iEntryNode):
         raise_error("Found problem entry with multiple (%i) shortcodes, namely %s."%(count, repr(shortcodes)), iEntryNode, exception=None)
     '''
     return True
+
+def response_entries_count_matches(iResponseNode):
+    # TODO
+    return True
+
+def is_language_code(iNode):
+    return iNode.text.strip() in ['en', 'en-ZA', 'af', 'af-ZA']
+
+def is_iso8601(iNode):
+    from dateutil.parser import parse
+    string = (iNode.text or '').strip()
+    try:
+        parse(string)
+        return True
+    except ValueError:
+        raise_error("The ISO8601 timestamp %s is not valid" % repr(string), iNode)

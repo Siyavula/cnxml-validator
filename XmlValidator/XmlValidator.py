@@ -21,6 +21,19 @@ class XmlValidator(object):
         else:
             raise TypeError, "XML spec needs to be either an XML string or a DOM"
 
+        # Resolve imports
+        import os
+        myPath = os.path.realpath(os.path.dirname(__file__))
+        for element in specDom.xpath('/spec/import'):
+            path = os.path.join(myPath, element.text.strip())
+            with open(path, 'rt') as fp:
+                subSpec = XmlValidator(fp.read())
+            parent = element.getparent()
+            index = parent.index(element)
+            parent.remove(element)
+            for entry in subSpec.spec:
+                parent.insert(index, entry)
+
         # Normalize text and tail of nodes
         for node in specDom.xpath('//*'):
             if node.text is None:
@@ -62,7 +75,10 @@ class XmlValidator(object):
             tag = iPatternNode.text.strip()
             assert tag != ''
             if iPatternNode.tag == 'reference':
-                referenceEntry = [child for child in self.spec if child.attrib.get('id') == tag][0]
+                try:
+                    referenceEntry = [child for child in self.spec if child.attrib.get('id') == tag][0]
+                except IndexError:
+                    raise ValueError, "Could not find referenced entry %s in specification" % (repr(tag))
                 return self.__validate_traverse_children_xml(referenceEntry.find('children'))
             if iPatternNode.tag == 'optional':
                 return '(' + tag + ',)?'
@@ -219,13 +235,14 @@ class XmlValidator(object):
         callbackNode = specEntry.find('validation-callback')
         if callbackNode is not None:
             callbackFunctionName = callbackNode.text.strip()
-            import callbacks
+            from . import callbacks
             callbackFunction = eval('callbacks.' + callbackFunctionName)
             if not callbackFunction(iNode):
                 self.__log_error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
 
 
     def monassis_to_cnxml(self):
+        assert len(self.dom.xpath('//monassis-template')) == 0, "monassis-template elements are deprecated"
         for templateNode in self.dom.xpath('//monassis-template'):
             renderer = templateNode.attrib.get('rendered-as', 'exercise')
             if renderer == "example":
@@ -344,33 +361,25 @@ class XmlValidator(object):
         # Attach relevant spec entries to nodes in the DOM
         self.documentSpecEntries = {}
         for entry in self.spec:
-            if entry.find('xpath') is None:
+            xpath = entry.find('xpath')
+            if xpath is None:
                 continue
-            for node in dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
+            xpath = xpath.text
+            for node in dom.xpath(xpath, namespaces=self.spec.nsmap):
                 if self.documentSpecEntries.get(node) is None:
+                    self.documentSpecEntries[node] = entry
+                elif len(xpath.replace('//', '/').split('/')) > len(self.documentSpecEntries.get(node).find('xpath').text.replace('//', '/').split('/')):
+                    # If this xpath is more specific (has more parts to its path) than the existing one, replace it
                     self.documentSpecEntries[node] = entry
 
         # Validate
         self.__validate_traverse(dom, iCleanUp=iCleanUp)
         self.dom = dom
 
-        # Convert monassis-style problems to worked examples and
-        # exercises.
-        # NOTE: This is temporary while we're transitioning to a new
-        # XML spec that unifies CNXML+ and Monassis XML.
-        self.monassis_to_cnxml()
 
-        # Redo info attached to nodes since monassis_to_cnxml() changed some nodes
-        # Normalize text and tail of nodes
-        self.documentNodePath = {None: []}
-        for node in dom.xpath('//*'):
-            self.documentNodePath[node] = self.documentNodePath[node.getparent()] + [node.tag]
-        # Attach relevant spec entries to nodes in the DOM
-        self.documentSpecEntries = {}
-        for entry in self.spec:
-            if entry.find('xpath') is None:
-                continue
-            for node in dom.xpath(entry.find('xpath').text, namespaces=self.spec.nsmap):
-                if self.documentSpecEntries.get(node) is None:
-                    self.documentSpecEntries[node] = entry
-
+class ExerciseValidator(XmlValidator):
+    def __init__(self):
+        import os
+        myPath = os.path.realpath(os.path.dirname(__file__))
+        with open(os.path.join(myPath, 'spec_exercise.xml')) as fp:
+            super(ExerciseValidator, self).__init__(fp.read())

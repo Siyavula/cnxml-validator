@@ -29,64 +29,16 @@
     <pspicture-generator-version>1.1</pspicture-generator-version>
   </metadata>
   <content>
-<exercises>
-<title>Some exercises</title>
-<problem-set>
-<header><para>This is the header</para></header>
-<entry>
-<shortcode>AABBCC</shortcode>
-    <problem>
-    <para> Problem statement</para>
-    </problem>
-    <solution>
-    <para> Solution here </para>
-    </solution>
-</entry>
-<multi-part>
-<shortcode>AABBCC</shortcode>
-<header><para>Multi-part: This is the header</para></header>
-<entry>
-    <problem>
-    <para> Problem statement</para>
-    </problem>
-    <solution>
-    <para> Solution here </para>
-    </solution>
-</entry>
-<entry>
-    <problem>
-    <para> Problem statement</para>
-    </problem>
-    <solution>
-    <para> Solution here </para>
-    </solution>
-</entry>
-</multi-part>
-</problem-set>
-</exercises>
+<section>
+    <title>Chapter title</title>
+    <para>
+        They say the <nth>1</nth> beer is good.
+        They say the <nth>2</nth> beer is better.
+        They say the <nth>3</nth> beer is great.
+        They say the <nth>4</nth> beer is the best!
 
-<exercises type='testyourunderstanding'>
-  <title>Test your understanding exercises</title>
-  <problem-set>
-    <entry>
-        <problem></problem>
-        <solution>
-          <correct/>
-        </solution>
-    </entry>
-  </problem-set>
-</exercises>
-
-<exercises type='endofchapter'>
-  <title>End of Chapter</title>
-  <problem-set>
-    <entry>
-        <problem></problem>
-        <solution>
-          <correct/>
-        </solution>
-    </entry>
-  </problem-set>
-</exercises>
+    </para>
+</section>
 </content>
+
 </document>

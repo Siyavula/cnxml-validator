@@ -100,7 +100,7 @@ self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-title = etree.Element('h1')
+title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.text = self.text.strip()
 self.getparent().attrib['title'] = self.text.strip()
@@ -135,14 +135,8 @@ if self.attrib.get('shortcode') is not None:
 return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-result = self.text.strip()
-newElement = etree.Element('div')
-newElement.attrib['class'] = 'section'
-newElement.attrib['class'] = 'section'
-newElement.text = result
-if self.attrib.get('shortcode') is not None:
-    newElement.attrib['id'] = 'sc%s'%self.attrib.get('shortcode')
-return etree.tostring(newElement)
+# TextbookHTML must not have sections, instead it must have only h classes
+return self.text
     </conversion-callback>
     <conversion-callback name="latex html correct">
 return self.text.strip()
@@ -216,9 +210,8 @@ else:
     headlevel = headinglevels[level]
 
 newElement = etree.Element(headlevel)
-newElement.attrib['class'] = 'title'
-newElement.attrib['class'] = 'title'
 newElement.text = self.text
+newElement.tail = '\n'
 
 return etree.tostring(newElement)
     </conversion-callback>
@@ -665,12 +658,7 @@ if len(shortcodeArray) > 0:
 return '\n\\begin{' + environment + '}{' + self.attrib.get('title', '') + '}\n' + self.text + shortcodeLatex + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = etree.Element('div')
-environment.attrib['class'] = 'exercises'
-environment.text = self.text
-environment.tail = '\n'
-
-return etree.tostring(environment)
+return self.text
     </conversion-callback>
     <conversion-callback name="latex correct">
 environment = 'Exercises'
@@ -690,10 +678,10 @@ return ''
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 title = etree.Element('h1')
-title.text = self.text.strip()
-if title.text == '': title.text = ' '
+title.text = 'Exercises'
 title.attrib['class'] = 'title'
-
+title.attrib['data-class'] = 'complex-section'
+title.tail = '\n'
 return etree.tostring(title)
     </conversion-callback>
   </entry>
@@ -770,11 +758,10 @@ else:
     return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-problemset = etree.Element('div')
-problemset.attrib['class'] = 'problemset'
-problemset.text = self.text
-
-return etree.tostring(problemset)
+ps = etree.Element('div')
+ps.attrib['class'] = 'problemset'
+ps.text = '\n'+self.text
+return etree.tostring(ps)
     </conversion-callback>
     <conversion-callback name="latex correct">
 entriesEnvironment = 'enumerate' # 'ExercisesProblemsetEntries' # HACK to solve number scrunching problem
@@ -827,7 +814,7 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 environment = 'header'
 header = etree.Element('div')
 header.attrib['class'] = environment
-header.text = self.text
+header.text = '\n' + self.text
 return etree.tostring(header)
     </conversion-callback>
   </entry>
@@ -843,9 +830,10 @@ environment = 'ExercisesProblemsetFooter'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'header'
+environment = 'footer'
 footer = etree.Element('div')
 footer.attrib['class'] = environment
+footer.text = '\n' + self.text
 return etree.tostring(footer)
     </conversion-callback>
   </entry>
@@ -893,11 +881,10 @@ if (self.getnext() is None) or (self.getnext().tag == 'footer'):
 return result
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-problemsetEnvironment = 'entry'
 problemset = etree.Element('div')
-problemset.attrib['class'] = problemsetEnvironment
-problemset.text = self.text
-
+problemset.attrib['class'] = 'exercise'
+problemset.attrib['data-class'] = 'entry'
+problemset.text =  '\n' + self.text
 return etree.tostring(problemset)
     </conversion-callback>
     <conversion-callback name="latex correct">
@@ -1101,7 +1088,7 @@ return r'''
 environment = 'theorem'
 theorem = etree.Element('div')
 theorem.attrib['class'] = environment
-title = etree.Element('h1')
+title = etree.Element('div')
 title.text = self.attrib.get('theoremLabel', 'Theorem') + ': ' + self.attrib.get('theoremTitle','')
 title.tail=self.text
 theorem.append(title)
@@ -1258,8 +1245,9 @@ else:
     environment = activityType.capitalize()
 
 activity = etree.Element('div')
-activity.attrib['class'] = 'activity'
-activity.attrib['type'] = environment
+activity.attrib['class'] = 'example'
+activity.attrib['data-class'] = 'activity'
+activity.attrib['data-type'] = environment
 activity.text = self.text
 activity.tail = '\n'
 return etree.tostring(activity)
@@ -1276,7 +1264,7 @@ self.getparent().attrib['title'] = self.text.strip()
 return ''
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-title = etree.Element('h1')
+title = etree.Element('div')
 title.attrib['class']= 'title'
 title.text = self.text
 return etree.tostring(title)
@@ -1329,6 +1317,14 @@ return etree.tostring(note)
     <conversion-callback name="latex learner teacher">
 environment = 'Quote'
 return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html learner teacher">
+quote = etree.Element('div')
+quote.attrib['data-class'] = 'note'
+quote.attrib['data-type'] = 'quote'
+quote.text = self.text
+
+return etree.tostring(quote)
     </conversion-callback>
 </entry>
 
@@ -1753,10 +1749,11 @@ environment = 'Workedexample'
 return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
     <conversion-callback name="html learner teacher">
-environment = 'worked_example'
 workedexample = etree.Element('div')
-workedexample.attrib['class'] = environment
-title = etree.Element('h1')
+workedexample.attrib['class'] = 'exercise'
+workedexample.attrib['data-class'] = 'worked_example'
+workedexample.attrib['data-type'] = 'Worked Example'
+title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.tail = self.text
 title.text = self.attrib['title']
@@ -1797,7 +1794,8 @@ return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment +
 if self.text is None:
     raise ValueError, "Worked example question should not be empty."
 workedexampleq = etree.Element('div')
-workedexampleq.attrib['class'] = 'question'
+workedexampleq.attrib['class'] = 'problem'
+workedexampleq.attrib['data-class'] = 'question'
 workedexampleq.text = self.text
 
 return etree.tostring(workedexampleq)
@@ -1841,8 +1839,10 @@ return '\n\\begin{' + environment + '}{' + self.attrib['title'] + '}\n' + self.t
     </conversion-callback>
     <conversion-callback name="html learner teacher">
 workstep = etree.Element('div')
-workstep.attrib['class'] = 'workstep'
-title = etree.Element('h2')
+workstep.attrib['class'] = 'solution'
+workstep.attrib['data-class'] = 'workstep'
+workstep.attrib['data-type'] = 'Step'
+title = etree.Element('div')
 title.attrib['class'] = 'title'
 title.text = self.attrib['title']
 title.tail = '\n'+self.text
@@ -2093,18 +2093,23 @@ result += r'\end{' + environment + '}\n'
 return result
     </conversion-callback>
     <conversion-callback name="html learner correct teacher"><!-- type already creates start of environment -->
+
 # if the figure contains an image
-if self.attrib['type'] == 'figure':
-    figure = etree.Element('figure')
-    figure.text = self.text
-else:
-    environment = 'Figure' + self.attrib['type'].capitalize()
-    id = self.attrib.get('id')
-    figure = etree.Element('div')
-    figure.attrib['data-class'] = environment
-    if id is not None:
-        figure.attrib['id'] = id
-    figure.text = self.text
+#if self.attrib['type'] == 'figure':
+figure = etree.Element('figure')
+figure.text = self.text
+figure.attrib['class'] = 'figure'
+id = self.attrib.get('id')
+if id is not None:
+    figure.attrib['id'] = id.replace(':', '-')
+#else:
+#    environment = 'Figure' + self.attrib['type'].capitalize()
+#    id = self.attrib.get('id')
+#    figure = etree.Element('div')
+#    figure.attrib['data-class'] = environment
+#    if id is not None:
+#        figure.attrib['id'] = id.replace(':', '-')
+#    figure.text = self.text
 
 return etree.tostring(figure)
     </conversion-callback>
@@ -2220,11 +2225,13 @@ pre.attrib['class'] = 'pspicture'
 code_element = self.find('.//code')
 pre.append(copy.deepcopy(code_element))
 
+#nestedfig = etree.Element('figure')
 pspicture = etree.Element('div')
 pspicture.attrib['class'] = 'alternates'
 
 img = etree.Element('img')
 img_path = '_plone_ignore_/cache/pspictures/%s.png'%codeHash
+img.tail = '\n'
 # check if the file has been created already
 try:
     with open(img_path): pass
@@ -2251,9 +2258,18 @@ img.attrib['src'] = img_path
 for up in self.findall('.//usepackage'):
     pre.append(up)
 
+siblings = [c for c in self.getparent()]
+fig = etree.Element('figure')
+fig.attrib['class'] = 'figure'
+if len(siblings) > 2:
+    fig.append(pspicture)
 pspicture.append(img)
 pspicture.append(pre)
-return etree.tostring(pspicture)
+
+if len(fig) > 0:
+    return etree.tostring(fig)
+else:
+    return etree.tostring(pspicture)
     </conversion-callback>
   </entry>
 
@@ -2337,6 +2353,58 @@ else:
     tail = '\\end{Image}\n'
 return head + r'\par\scalebox{0.5}{\begin{tikzpicture}' + self.text + r'\end{tikzpicture}}' + '\n' + tail
     </conversion-callback>
+    <conversion-callback name="html learner teacher correct">
+code = self.find('.//code').text
+#TODO fix this, image names don't match the actual names.
+# bad hack, strip out all non-ascii characters from code element to calculate hash
+codetext = ''.join([c  for c in code if ord(c) &lt; 128])
+codeHash = hashlib.md5(''.join(codetext.encode('utf-8').split())).hexdigest()
+warning_message(codeHash)
+warning_message(codetext)
+
+pre = etree.Element('pre')
+pre.attrib['class'] = 'tikzpicture'
+code_element = self.find('.//code')
+pre.append(copy.deepcopy(code_element))
+
+nestedfig = etree.Element('figure')
+tikzpicture = etree.Element('div')
+tikzpicture.attrib['class'] = 'alternates'
+
+img = etree.Element('img')
+img.tail = '\n'
+img_path = '_plone_ignore_/cache/tikzpictures/%s.png'%codeHash
+# check if the file has been created already
+try:
+    with open(img_path): pass
+# if not, create the file
+except IOError:
+    try:
+        png = tikzpicture2png(self)
+        os.system('cp %s %s' % (png, img_path))
+    except Exception as E:
+        warning_message("Problem compiling tikz\n\nException:\n%s\n\n" % E + etree.tostring(self))
+        png = ''
+
+img.attrib['src'] = img_path
+#if width is not None:
+#    img.attrib['width'] = str(int(float(width)*780))
+#else:
+#    img.attrib['width'] = '780'
+#
+#img.attrib['alt'] = self.attrib.get('attribution')
+
+# add usepackages to pre element
+
+
+for up in self.findall('.//usepackage'):
+    pre.append(up)
+
+#nestedfig.append(tikzpicture)
+tikzpicture.append(img)
+tikzpicture.append(pre)
+return etree.tostring(tikzpicture)
+    </conversion-callback>
   </entry>
 
   <entry>
@@ -2371,6 +2439,9 @@ return etree.tostring(usepackage)
     </children>
     <conversion-callback name="latex learner correct teacher">
 return self.text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+return
     </conversion-callback>
   </entry>
 
@@ -2473,6 +2544,20 @@ else:
 if self.attrib.get('attribution') is not None:
     img.attrib['alt'] = self.attrib.get('attribution')
 
+if self.getparent().tag != 'figure':
+    figure = etree.Element('figure')
+    figure.attrib['class'] = 'figure'
+    figure.append(img)
+    return etree.tostring(figure)
+else:
+    siblings = [c for c in self.getparent()]
+    fig = etree.Element('figure')
+    fig.attrib['class'] = 'figure'
+
+    if len(siblings) > 2:
+        fig.append(img)
+        return etree.tostring(fig)
+
 return etree.tostring(img)
 </conversion-callback>
     <conversion-callback name="latex correct">
@@ -2540,8 +2625,11 @@ if self.getparent().attrib['type'] == 'figure':
 else:
     caption = etree.Element('div')
 
+para = etree.Element('p')
+para.text = self.text
+
 caption.attrib['class'] = 'caption'
-caption.text = self.text
+caption.insert(0, para)
 
 return '\n'+etree.tostring(caption)
     </conversion-callback>
@@ -2646,20 +2734,11 @@ else:
         return text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-def make_new_mathelement(TeX):
-    mathmlelement = etree.Element('math')
-    semantics = etree.Element('semantics')
-    junk = etree.Element('mtext')
-    junk.text = 'CLICKME'
-    semantics.append(junk)
-    annotation = etree.Element('annotation')
-    annotation.attrib['encoding'] = 'TeX'
-    annotation.text = TeX
-
-    semantics.append(annotation)
-    mathmlelement.append(semantics)
-    return etree.tostring(mathmlelement)
-
+#if self.getparent().tag != 'p':
+#    p = etree.Element('p', attrib={'class':'keep-validator-quiet'})
+#    self.addprevious(p)
+#    p.append(copy.deepcopy(self))
+#    self = p[0]
 # First check that there aren't any funny functions
 unslashedFunctions = latex_math_function_check(self.text)
 if len(unslashedFunctions) > 0:
@@ -2669,7 +2748,11 @@ insideTable = ('table' in utils.get_full_dom_path(self))
 
 numberEquations = False
 if self.attrib['display'] == 'inline':
-    return make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
+    if self.getparent().tag != 'code':
+        return utils.make_new_mathelement(self.text.strip()) #r'\(' + self.text.strip() + r'\)'
+    else:
+        return self.text.strip()
+
 else:
     foundMathEnvironment = False
     text = self.text.strip()
@@ -2705,7 +2788,10 @@ else:
                     endSubstr = endSubstr[:-1] + '*}'
             break
     if not foundMathEnvironment:
-        return make_new_mathelement(text) #r'\[' + text + r'\]'
+        if self.getparent().tag != 'code':
+            return utils.make_new_mathelement(text) #r'\[' + text + r'\]'
+        else:
+            return text
     else:
         environmentsWithAmpersands = {'align': 1, 'align*': 1, 'eqnarray': 2, 'eqnarray*': 2}
         if environmentName in environmentsWithAmpersands:
@@ -2718,7 +2804,11 @@ else:
                     error_message('Extra ampersands (expected %i) in aligned equation: %s'%(ampersands, line))
                 if (lineIndex == len(lines)-1) and (line == endSubstr):
                     error_message('Extra \\\\ at end of aligned equation: %s'%(text.strip()))
-        return make_new_mathelement(text) #text
+        
+        if self.getparent().tag != 'code':
+            return utils.make_new_mathelement(text) #text
+        else:
+            return text.strip()
 
     </conversion-callback>
   </entry>
@@ -2750,7 +2840,7 @@ unslashedFunctions = latex_math_function_check(tex)
 if len(unslashedFunctions) > 0:
     warning_message('Found the following functions: (%s) without a backslash in a m:math element (converted to LaTeX):\n%s'%(', '.join(unslashedFunctions), tex))
 
-return r'\(' + tex + r'\)'
+return utils.make_new_mathelement(tex)
     </conversion-callback>
   </entry>
 
@@ -2999,8 +3089,10 @@ if nodes['exp'] is not None:
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
+picMode = ('pspicture' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    if not picMode:
+        result = utils.make_new_mathelement(result)
 
 return result
     </conversion-callback>
@@ -3032,11 +3124,15 @@ return result
     <conversion-callback name="latex html learner correct teacher">
 unitsWithoutSpace = [u'°']
 inUnitNumber = (self.getparent().tag == 'unit_number')
-result = r'\text{' + self.text + '}'
+result = r'\text{' + self.text.strip() + '}'
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
+picMode = ('pspicture' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    if picMode:
+        result = '$%s$'%result
+    else:
+        result = utils.make_new_mathelement(result)
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         result = '~' + result
 else:
@@ -3055,8 +3151,8 @@ return '$^{' + self.text + '}$'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 parents = [a.tag for a in self.iterancestors()]
-if 'latex' in parents:
-    return '^{%s}'%self.text
+if any([tag in parents for tag in ['latex','unit']]):
+    return '^{%s}'%self.text.strip()
 else:
     sup = etree.Element('sup')
     sup.text = self.text
@@ -3184,7 +3280,7 @@ return result
 
   <entry>
     <xpath>/document/content//chem_compound</xpath>
-    <conversion-callback name="latex html learner correct teacher">
+    <conversion-callback name="latex learner correct teacher">
 text = self.text.strip()
 pos = 0
 while pos &lt; len(text):
@@ -3201,6 +3297,22 @@ latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
     text = r'\(' + text + r'\)'
 return text
+    </conversion-callback>
+    <conversion-callback name="html learner correct teacher">
+text = self.text.strip()
+pos = 0
+while pos &lt; len(text):
+    if text[pos].isalpha():
+        start = pos
+        pos += 1
+        while (pos &lt; len(text)) and text[pos].isalpha():
+            pos += 1
+        text = text[:start] + r'\text{' + text[start:pos] + '}' + text[pos:]
+        pos += 7
+    else:
+        pos += 1
+latexMode = ('latex' in utils.get_full_dom_path(self))
+return utils.make_new_mathelement(text)
     </conversion-callback>
   </entry>
 
@@ -3433,11 +3545,14 @@ return self.text
       <optional>footer</optional>
     </children>
     <notext/>
-    <conversion-callback name="latex html learner teacher">
-return convert_using(self, '/document/content//exercises//problem-set')
+    <conversion-callback name="html learner teacher correct">
+mp = etree.Element('div')
+mp.attrib['class'] = 'multipart'
+mp.text = '\n' + self.text
+return etree.tostring(mp)
     </conversion-callback>
-    <conversion-callback name="latex correct">
-return convert_using(self, '/document/content//exercises//problem-set')
+    <conversion-callback name="latex learner teacher correct">
+return ''#convert_using(self, '/document/content//exercises//problem-set')
     </conversion-callback>
   </entry>
 
@@ -3645,6 +3760,8 @@ if url is not None:
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 target = self.attrib.get('target-id')
+if target is not None:
+    target = target.replace(':', '-')
 link = etree.Element('a')
 if target is not None:
     link.attrib['href'] = '#'+target
@@ -3687,20 +3804,15 @@ return self
 return r'$^{\text{%s}}$'%self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return self
+ancestors = [a.tag for a in self.iterancestors()]
+print ancestors
+if 'latex' in ancestors:
+    return r'^{\text{%s}}'%self.text
+else:
+    return self
     </conversion-callback>
   </entry>
 
-  <entry>
-    <xpath>/document/content//sup</xpath>
-    <children>
-      <reference>inline-element</reference>
-    </children>
-    <conversion-callback name="html latex learner correct teacher">
-return etree.tostring(self)
-    </conversion-callback>
-  </entry>
-  
   <entry>
     <xpath>//its:rules</xpath>
     <attributes>
