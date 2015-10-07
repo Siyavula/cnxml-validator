@@ -9,8 +9,8 @@
     <children>
       <element>meta</element>
       <one-of>
-	<element>multi-part</element>
-	<element>entry</element>
+    <element>multi-part</element>
+    <element>entry</element>
       </one-of>
     </children>
     <notext/>
@@ -20,18 +20,18 @@
     <xpath>/exercise-container/meta</xpath>
     <children>
       <unordered>
-	<element>id</element>
-	<element>version</element>
-	<optional>random_seed</optional>
-	<optional>derived_from</optional>
-	<element>title</element>
-	<optional>authors</optional>
-	<optional>last_updated</optional>
-	<element>difficulty</element>
-	<element>language</element>
-	<any-number>
-	  <element>link</element>
-	</any-number>
+    <element>id</element>
+    <element>version</element>
+    <optional>random_seed</optional>
+    <optional>derived_from</optional>
+    <element>title</element>
+    <optional>authors</optional>
+    <optional>last_updated</optional>
+    <element>difficulty</element>
+    <element>language</element>
+    <any-number>
+      <element>link</element>
+    </any-number>
       </unordered>
     </children>
     <notext/>
@@ -63,10 +63,10 @@
     <xpath>/exercise-container/meta/derived_from</xpath>
     <children>
       <unordered>
-	<element>id</element>
-	<element>version</element>
-	<optional>random_seed</optional>
-	<element>relationship</element>
+    <element>id</element>
+    <element>version</element>
+    <optional>random_seed</optional>
+    <element>relationship</element>
       </unordered>
     </children>
     <notext/>
@@ -113,7 +113,7 @@
     <xpath>/exercise-container/meta/authors</xpath>
     <children>
       <any-number>
-	<element>author</element>
+    <element>author</element>
       </any-number>
     </children>
     <notext/>
@@ -153,15 +153,15 @@
     <xpath>/exercise-container/meta/link</xpath>
     <attributes>
       <entry>
-	<name>rel</name>
-	<type>enum('textbook', 'conceptmap', 'shortcode')</type>
-	<!-- textbook => this template should appear in the chapter or section associated with the given textbook path -->
-	<!-- conceptmap => this template depends on the given concept map node -->
-	<!-- shortcode => this is the static exercise associated with the given shortcode -->
+    <name>rel</name>
+    <type>enum('textbook', 'conceptmap', 'shortcode')</type>
+    <!-- textbook => this template should appear in the chapter or section associated with the given textbook path -->
+    <!-- conceptmap => this template depends on the given concept map node -->
+    <!-- shortcode => this is the static exercise associated with the given shortcode -->
       </entry>
       <entry>
-	<name>href</name>
-	<type>url</type>
+    <name>href</name>
+    <type>url</type>
       </entry>
     </attributes>
     <notext/>
@@ -171,11 +171,11 @@
     <xpath>//entry/response</xpath>
     <children>
       <unordered>
-	<optional>linked-concepts</optional>
-	<element>type</element>
-	<element>marks</element>
-	<element>correct</element>
-	<element>query</element>
+    <optional>linked-concepts</optional>
+    <element>type</element>
+    <element>marks</element>
+    <element>correct</element>
+    <element>query</element>
       </unordered>
     </children>
     <validation-callback>response_entries_count_matches</validation-callback>
@@ -185,12 +185,12 @@
     <xpath>//entry/response/linked-concepts</xpath>
     <children>
       <one-of>
-	<any-number>
-	  <element>value</element>
-	</any-number>
-	<any-number>
-	  <element>concept</element>
-	</any-number>
+    <any-number>
+      <element>value</element>
+    </any-number>
+    <any-number>
+      <element>concept</element>
+    </any-number>
       </one-of>
     </children>
     <notext/>
@@ -200,7 +200,7 @@
     <xpath>//entry/response/linked-concepts/value</xpath>
     <children>
       <any-number>
-	<element>concept</element>
+    <element>concept</element>
       </any-number>
     </children>
     <notext/>
@@ -210,14 +210,14 @@
     <xpath>//linked-concepts//concept</xpath>
     <attributes>
       <entry>
-	<name>type</name>
-	<type>enum('primary', 'remote test', 'path picker', 'jumper')</type>
-	<default>primary</default>
+    <name>type</name>
+    <type>enum('primary', 'remote test', 'path picker', 'jumper')</type>
+    <default>primary</default>
       </entry>
       <entry>
-	<name>weight</name>
-	<type>number</type>
-	<default>1</default>
+    <name>weight</name>
+    <type>number</type>
+    <default>1</default>
       </entry>
     </attributes>
     <!-- validate that element text is a valid concept id -->
@@ -227,7 +227,7 @@
     <xpath>//entry/response/type</xpath>
     <children>
       <any-number>
-	<element>value</element>
+    <element>value</element>
       </any-number>
     </children>
     <notext/>
@@ -244,7 +244,7 @@
     <xpath>//entry/response/marks</xpath>
     <children>
       <any-number>
-	<element>value</element>
+    <element>value</element>
       </any-number>
     </children>
     <notext/>
@@ -262,7 +262,7 @@
     <xpath>//entry/response/correct</xpath>
     <children>
       <any-number>
-	<element>value</element>
+    <element>value</element>
       </any-number>
     </children>
     <notext/>
@@ -279,8 +279,8 @@
     <xpath>//entry/response/query</xpath>
     <children>
       <one-of>
-	<reference>block-or-minor-environment-elements</reference>
-	<reference>inline-elements</reference>
+    <reference>block-or-minor-environment-elements</reference>
+    <reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
@@ -289,9 +289,9 @@
     <xpath>//entry/response/query//input</xpath>
     <attributes>
       <entry>
-	<name>group</name>
-	<type>string</type>
-	<default/>
+    <name>group</name>
+    <type>string</type>
+    <default/>
       </entry>
     </attributes>
     <notext/>
