@@ -164,7 +164,6 @@ return etree.tostring(newElement)
 return self.text.strip()
     </conversion-callback>
     <conversion-callback name="html5 learner teacher">
-        sectionType = self.attrib['type']
 result = self.text.strip()
 newElement = etree.Element('section')
 newElement.attrib['class'] = 'section'
