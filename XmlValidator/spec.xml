@@ -167,7 +167,8 @@ return self.text.strip()
         sectionType = self.attrib['type']
 result = self.text.strip()
 newElement = etree.Element('section')
-    newElement.attrib['class'] = sectionType <!--might need a second identical line here?-->
+newElement.attrib['class'] = 'section'
+newElement.attrib['class'] = 'section'
 newElement.text = result
 if self.attrib.get('shortcode') is not None:
     newElement.attrib['id'] = 'sc%s'%self.attrib.get('shortcode')
@@ -1452,7 +1453,7 @@ return self.text
     </conversion-callback>
   </entry>
 
-  <!--<entry>
+  <entry>
     <xpath>//m:math</xpath>
     <children>
       <reference>math-stuff</reference>
@@ -1504,9 +1505,9 @@ return r'\(' + tex + r'\)'
   <entry><xpath>//m:munder</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher html5"/></entry>
   <entry><xpath>//m:munderover</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher html5"/></entry>
   <entry><xpath>//m:mroot</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher html5"/></entry>
-  <entry><xpath>//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher html5"/></entry>-->
+  <entry><xpath>//m:mref</xpath><children><reference>math-stuff</reference></children><notext/><conversion-callback name="latex html learner correct teacher html5"/></entry>
 
-  <!--<entry id="math-stuff">
+  <entry id="math-stuff">
     <children>
       <any-number>
     <one-of>
@@ -1535,7 +1536,7 @@ return r'\(' + tex + r'\)'
     </one-of>
       </any-number>
     </children>
-  </entry>-->
+  </entry>
 
   <entry id="block-with-section-element">
     <children>
