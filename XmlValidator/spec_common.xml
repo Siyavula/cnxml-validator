@@ -88,7 +88,7 @@ else:
 
 return '\n\\begin{' + environment + '}\n%s' % startval + self.text + r'\end{' + environment + '}\n'
     </conversion-callback>
-    <conversion-callback name="html html5 learner correct teacher">
+    <conversion-callback name="html learner correct teacher">
 listType = self.attrib['list-type']
 if listType == 'bulleted':
     environment = 'ListBulleted'
@@ -99,6 +99,20 @@ elif listType == 'enumerated':
 
 newlist.text = self.text
 newlist.attrib['data-class'] = environment
+
+return etree.tostring(newlist)
+    </conversion-callback>
+    <conversion-callback name="html5 learner correct teacher">
+listType = self.attrib['list-type']
+if listType == 'bulleted':
+    environment = 'ListBulleted'
+    newlist = etree.Element('ul')
+elif listType == 'enumerated':
+    environment = 'ListEnumerated'
+    newlist = etree.Element('ol')
+
+newlist.text = self.text
+newlist.attrib['class'] = environment
 
 return etree.tostring(newlist)
     </conversion-callback>
@@ -414,9 +428,19 @@ else:
     <conversion-callback name="latex learner teacher">
 return r'\presentation{' + self.attrib.get('shortcode', 'SHORTCODE') + '}{' + self.attrib.get('title', 'TITLE') + '}\n'
     </conversion-callback>
-    <conversion-callback name="html html5 learner teacher">
+    <conversion-callback name="html learner teacher">
 presentation = etree.Element('p')
 presentation.attrib['data-class'] = 'presentation'
+presentation.attrib['id'] = 'sc' + self.attrib.get('shortcode', 'SHORTCODE')
+url = etree.Element('a')
+url.attrib['href'] = self.attrib.get('url')
+url.text = 'Presentation: %s'%self.attrib.get('shortcode')
+presentation.text = '%s'% etree.tostring(url)
+return etree.tostring(presentation)
+</conversion-callback>
+<conversion-callback name="html5 learner teacher">
+presentation = etree.Element('p')
+presentation.attrib['class'] = 'presentation'
 presentation.attrib['id'] = 'sc' + self.attrib.get('shortcode', 'SHORTCODE')
 url = etree.Element('a')
 url.attrib['href'] = self.attrib.get('url')
@@ -476,9 +500,20 @@ self.getparent().attrib['url'] = self.text
     <conversion-callback name="latex learner teacher">
 return r'\simulation{' + self.attrib.get('shortcode', 'SHORTCODE') + '}{' + self.attrib.get('title', 'TITLE') + '}\n'
     </conversion-callback>
-    <conversion-callback name="html html5 learner teacher">
+    <conversion-callback name="html learner teacher">
 simulation = etree.Element('p')
 simulation.attrib['data-class'] = 'simulation'
+simulation.attrib['id'] = 'sc' + self.attrib.get('shortcode', 'SHORTCODE')
+url = etree.Element('a')
+url.attrib['href'] = self.attrib.get('url')
+url.text = 'Simulation: %s'%self.attrib.get('shortcode')
+simulation.text = '%s'% etree.tostring(url)
+
+return etree.tostring(simulation)
+</conversion-callback>
+<conversion-callback name="html5 learner teacher">
+simulation = etree.Element('p')
+simulation.attrib['class'] = 'simulation'
 simulation.attrib['id'] = 'sc' + self.attrib.get('shortcode', 'SHORTCODE')
 url = etree.Element('a')
 url.attrib['href'] = self.attrib.get('url')
@@ -1947,7 +1982,7 @@ pattern = {
 }[self.attrib['effect']]
 return pattern%self.text
     </conversion-callback>
-    <conversion-callback name="html html5 learner correct teacher">
+    <conversion-callback name="html learner correct teacher">
 #pattern = {
 #    'bold': r'\(\textbf{%s}\)',
 #    'italics': r'\(\textit{%s}\)',
@@ -1972,6 +2007,35 @@ elif self.attrib['effect'] == 'smallcaps':
 elif self.attrib['effect'] == 'normal':
     emph = etree.Element('span')
     emph.attrib['data-class'] = 'normal'
+
+emph.text = self.text
+return etree.tostring(emph)
+    </conversion-callback>
+    <conversion-callback name="html html5 learner correct teacher">
+#pattern = {
+#    'bold': r'\(\textbf{%s}\)',
+#    'italics': r'\(\textit{%s}\)',
+#    'underline': r'\(\underline{%s}\)',
+#    'smallcaps': r'\(\textsc{%s}\)',
+#    'normal': '%s',
+#}[self.attrib['effect']]
+
+if self.attrib['effect'] == 'bold':
+    emph = etree.Element('strong')
+
+elif self.attrib['effect'] == 'italics':
+    emph = etree.Element('em')
+
+elif self.attrib['effect'] == 'underline':
+    emph = etree.Element('u')
+
+elif self.attrib['effect'] == 'smallcaps':
+    emph = etree.Element('span')
+    emph.attrib['class'] = 'smallcaps'
+
+elif self.attrib['effect'] == 'normal':
+    emph = etree.Element('span')
+    emph.attrib['class'] = 'normal'
 
 emph.text = self.text
 return etree.tostring(emph)
@@ -2003,8 +2067,8 @@ except ValueError:
     isInt = False
 
 format = self.attrib['format']
-if (format == 'word') and isInt and (-1 &lt; value &lt; 12):
-    return ['zeroeth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value]
+if (format == 'word') and isInt and (value &lt; 12):
+    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value]
 else:
     # format == 'superscript'
     if isInt:
@@ -2087,11 +2151,11 @@ link = etree.Element('a')
 if target is not None:
     link.attrib['href'] = '#'+target
     link.text = target
-    link.attrib['data-class'] = 'InternalLink'
+    link.attrib['class'] = 'InternalLink'
     return etree.tostring(link)
 url = self.attrib.get('url')
 if url is not None:
-    link.attrib['data-class'] = 'ExternalLink'
+    link.attrib['class'] = 'ExternalLink'
     if self.text != '':
         link.text = self.text
         link.attrib['href'] = url
