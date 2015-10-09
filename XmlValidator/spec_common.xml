@@ -2068,7 +2068,7 @@ except ValueError:
 
 format = self.attrib['format']
 if (format == 'word') and isInt and (value &lt; 12):
-    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value]
+    return ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh'][value-1]
 else:
     # format == 'superscript'
     if isInt:
