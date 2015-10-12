@@ -6,9 +6,9 @@
     <attributes>
       <!-- HACK -->
       <entry>
-        <name>font-color</name>
-        <type>string</type>
-        <default/>
+       <name>font-color</name>
+       <type>string</type>
+       <default/>
       </entry>
       <!-- /HACK -->
     </attributes>
@@ -22,9 +22,9 @@
     <!-- /HACK -->
     <attributes>
       <entry>
-        <name>align</name>
-        <type>enum("center",)</type>
-        <default/>
+       <name>align</name>
+       <type>enum("center",)</type>
+       <default/>
       </entry>
     </attributes>
     <!-- /HACK -->
@@ -42,9 +42,9 @@
     <xpath>//number</xpath>
     <children>
       <subset-of>
-        <element>coeff</element>
-        <element>base</element>
-        <element>exp</element>
+       <element>coeff</element>
+       <element>base</element>
+       <element>exp</element>
       </subset-of>
     </children>
     <!--<validation-callback>is_number</validation-callback>-->
@@ -121,9 +121,9 @@ return etree.tostring(self, pretty_print=True)
     <default/>
       </entry>
       <entry>
-        <name>align</name>
-        <type>string</type>
-        <default/>
+       <name>align</name>
+       <type>string</type>
+       <default/>
       </entry>
       <!-- /HACK -->
     </attributes>
@@ -142,9 +142,9 @@ return etree.tostring(self, pretty_print=True)
     <xpath>//html5table//tr/th</xpath>
     <attributes>
       <entry>
-        <name>rowspan</name>
-        <type>integer(0,)</type>
-        <default/>
+       <name>rowspan</name>
+       <type>integer(0,)</type>
+       <default/>
       </entry>
       <entry>
     <name>colspan</name>
@@ -154,27 +154,27 @@ return etree.tostring(self, pretty_print=True)
 
       <!-- HACK -->
       <entry>
-        <name>align</name>
-        <type>enum('left','right','center')</type>
-        <default/>
+       <name>align</name>
+       <type>enum('left','right','center')</type>
+       <default/>
       </entry>
       <entry>
-        <name>style</name>
-        <type>string</type>
-        <default/>
+       <name>style</name>
+       <type>string</type>
+       <default/>
       </entry>
       <entry>
-        <name>width</name>
-        <type>string</type>
-        <default/>
+       <name>width</name>
+       <type>string</type>
+       <default/>
       </entry>
       <!-- /HACK -->
 
     </attributes>
     <children>
       <one-of>
-        <reference>block-or-minor-environment-elements</reference>
-        <reference>inline-elements</reference>
+       <reference>block-or-minor-environment-elements</reference>
+       <reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
@@ -183,44 +183,44 @@ return etree.tostring(self, pretty_print=True)
     <xpath>//html5table//tr/td</xpath>
     <attributes>
       <entry>
-        <name>rowspan</name>
-        <type>integer(0,)</type>
-        <default/>
+       <name>rowspan</name>
+       <type>integer(0,)</type>
+       <default/>
       </entry>
       <entry>
-        <name>colspan</name>
-        <type>integer(0,)</type>
-        <default/>
+       <name>colspan</name>
+       <type>integer(0,)</type>
+       <default/>
       </entry>
 
       <!-- HACK -->
       <entry>
-        <name>align</name>
-        <type>enum('left','right','center')</type>
-        <default/>
+       <name>align</name>
+       <type>enum('left','right','center')</type>
+       <default/>
       </entry>
       <entry>
-        <name>style</name>
-        <type>string</type>
-        <default/>
+       <name>style</name>
+       <type>string</type>
+       <default/>
       </entry>
       <entry>
-        <name>bgcolor</name>
-        <type>string</type>
-        <default/>
+       <name>bgcolor</name>
+       <type>string</type>
+       <default/>
       </entry>
       <entry>
-        <name>width</name>
-        <type>string</type>
-        <default/>
+       <name>width</name>
+       <type>string</type>
+       <default/>
       </entry>
       <!-- /HACK -->
 
     </attributes>
     <children>
       <one-of>
-    <reference>block-or-minor-environment-elements</reference>
-    <reference>inline-elements</reference>
+       <reference>block-or-minor-environment-elements</reference>
+       <reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
