@@ -87,6 +87,9 @@ def is_number(element):
             text = child.text if child.text is not None else ''
             if text[-3:] == '...':
                 text = text[:-3]
+            if '|' in text:
+                index = text.find('|')
+                text = text[:index] + text[index+1:]
             try:
                 float(text)
             except ValueError:
@@ -111,6 +114,9 @@ def is_numeric_value(element):
     text = element.text if element.text is not None else ''
     if text[-3:] == '...':
         text = text[:-3]
+    if '|' in text:
+        index = text.find('|')
+        text = text[:index] + text[index+1:]
     try:
         float(__replace_unicode_minus(text))
     except ValueError:

@@ -1508,7 +1508,11 @@ for key in text:
         text[key] = text[key][1:]
     else:
         minus = ''
-    text[key] = minus + r'\text{' + utils.format_number(text[key]) + '}'
+    if '|' in text[key]:
+        index = text[key].find('|')
+        text[key] = minus + r'\text{' + utils.format_number(text[key][:index]) + ' | ' + text[key][index+1:] + '}'
+    else:
+        text[key] = minus + r'\text{' + utils.format_number(text[key]) + '}'
 
 # Build LaTeX representation
 result = text['coeff'] if nodes['coeff'] is not None else ''
