@@ -12,6 +12,7 @@ class FormatNumberTest(unittest.TestCase):
     def test_thousand_separator(self):
         assert format_number('1000') == u'1\xa0000'
         assert format_number('14739') == u'14\xa0739'
+        assert format_number('999') == u'999'
 
     def test_thousand_separator_with_parameter(self):
         assert format_number('1000', thousandsSeparator='|') == u'1|000'
