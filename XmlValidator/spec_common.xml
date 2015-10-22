@@ -804,7 +804,7 @@ if self.text.strip() not in ['pst-solides3d', 'pst-3dplot', 'pst-node']:
 return ''
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return 
+return
     </conversion-callback>
   </entry>
 
@@ -841,7 +841,7 @@ return
 return self.text
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-return 
+return
     </conversion-callback>
   </entry>
 
@@ -1508,7 +1508,7 @@ for key in text:
         text[key] = text[key][1:]
     else:
         minus = ''
-    text[key] = minus + r'\text{' + utils.format_number(text[key], thousandsSeparator=r'\ ') + '}'
+    text[key] = minus + r'\text{' + utils.format_number(text[key]) + '}'
 
 # Build LaTeX representation
 result = text['coeff'] if nodes['coeff'] is not None else ''
@@ -1631,7 +1631,7 @@ except ValueError:
     defaultPrecision = 2
 currencyPrecision = int(self.attrib.get('precision', defaultPrecision))
 numberText = ("%%.%if"%currencyPrecision)%float(numberText)
-numberText = utils.format_number(numberText, thousandsSeparator=r'\ ')
+numberText = utils.format_number(numberText)
 
 symbolNode = self.find('symbol')
 if symbolNode is None:
@@ -1678,10 +1678,9 @@ else:
 
 
 if symbolLocation == 'front':
-    result = symbol + r' ' + numberText
+    result = r'\text{' + symbol + '}' + r'\,' + r'\text{' + numberText + '}'
 else:
-    result = numberText + r' ' + symbol
-result = r'\text{' + result + '}'
+    result = r'\text{' + numberText + '}' + r'\,' + r'\text{' + symbol + '}'
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
@@ -2061,7 +2060,7 @@ return r"&lt;sup&gt;" + self.text + "&lt;/sup&gt;"
 return etree.tostring(self)
     </conversion-callback>
   </entry> -->
-    
+
   <entry>
     <xpath>//html5table</xpath>
     <attributes>

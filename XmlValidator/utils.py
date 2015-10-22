@@ -109,7 +109,7 @@ def format_number(numString, decimalSeparator=',', thousandsSeparator=entities.u
         intPart = numString[:decimalPos]
         fracPart = numString[decimalPos+1:]
     # Add thousands separator to integer part
-    if len(intPart) > 4:
+    if len(intPart) > 3:
         pos = len(intPart)-3
         while pos > 0:
             intPart = intPart[:pos] + thousandsSeparator + intPart[pos:]
