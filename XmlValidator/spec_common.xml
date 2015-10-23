@@ -1648,9 +1648,9 @@ else:
 
 
 if symbolLocation == 'front':
-    result = symbol + r'\ ' + numberText
+    result = symbol + r'\,' + numberText
 else:
-    result = numberText + r'\ ' + symbol
+    result = numberText + r'\,' + symbol
 result = r'\text{' + result + '}'
 
 # Check whether already in math mode
