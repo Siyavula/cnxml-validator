@@ -1014,8 +1014,10 @@ return
         <element>src</element>
 	<element>width</element>
 	<element>height</element>
-        <element>attribution</element>
       </subset-of>
+      <any-number>
+          <element>attribution</element>
+      </any-number>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -1562,7 +1564,7 @@ latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
     result = r'\(' + result + r'\)'
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
-        result = '~' + result
+        result = ' ' + result
 else:
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         assert result[:6] == r'\text{', "Weird error in //unit conversion."
@@ -1761,7 +1763,6 @@ return convert_using(self, '//chem_compound')
       </unordered>
     </children>
     <notext/>
-    <validation-callback>is_nuclear_notation</validation-callback>
     <conversion-callback name="latex html learner correct teacher">
 latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
 latexMode = ('latex' in utils.get_full_dom_path(self))
