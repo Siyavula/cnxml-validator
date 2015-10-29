@@ -1,7 +1,10 @@
 from __future__ import division
-from lxml import etree
 
+import os
+import re
 import utils
+
+from lxml import etree
 
 
 class XmlValidationError(Exception):
@@ -19,10 +22,9 @@ class XmlValidator(object):
         elif isinstance(iSpec, etree._Element):
             specDom = iSpec
         else:
-            raise TypeError, "XML spec needs to be either an XML string or a DOM"
+            raise TypeError("XML spec needs to be either an XML string or a DOM")
 
         # Resolve imports
-        import os
         myPath = os.path.realpath(os.path.dirname(__file__))
         for element in specDom.xpath('/spec/import'):
             path = os.path.join(myPath, element.text.strip())
@@ -43,27 +45,22 @@ class XmlValidator(object):
 
         self.spec = specDom
 
-
     def __tag_prefix_to_namespace(self, iTag):
         return utils.tag_prefix_to_namespace(iTag, iSpec=self.spec)
-
 
     def __tag_namespace_to_prefix(self, iTag):
         return utils.tag_namespace_to_prefix(iTag, iSpec=self.spec)
 
-
     def __get_full_dom_path(self, iNode):
         return utils.get_full_dom_path(iNode, iSpec=self.spec)
 
-
     def __log_warning_message(self, iMessage):
+        # TODO: Fix this. This is so ugly - printing to stdout rather than returning the warnings
+        # subject to the desireability of seeing those warnings but leave this in for now.
         return utils.warning_message(iMessage)
 
-
     def __log_error_message(self, iMessage):
-        utils.error_message(iMessage, terminate=False)
-        raise XmlValidationError
-
+        raise XmlValidationError(iMessage.encode('utf-8'))
 
     def __validate_traverse_children_xml(self, iPatternNode):
         if iPatternNode is None:
@@ -76,35 +73,43 @@ class XmlValidator(object):
             assert tag != ''
             if iPatternNode.tag == 'reference':
                 try:
-                    referenceEntry = [child for child in self.spec if child.attrib.get('id') == tag][0]
+                    referenceEntry = [
+                        child for child in self.spec if child.attrib.get('id') == tag][0]
                 except IndexError:
-                    raise ValueError, "Could not find referenced entry %s in specification" % (repr(tag))
+                    raise ValueError(
+                        "Could not find referenced entry %s in specification" % (repr(tag)))
                 return self.__validate_traverse_children_xml(referenceEntry.find('children'))
             if iPatternNode.tag == 'optional':
                 return '(' + tag + ',)?'
             else:
                 return '(' + tag + ',)'
         else:
-            assert iPatternNode.tag in ['children', 'optional', 'subset-of', 'any-number', 'one-of', 'unordered'], iPatternNode.tag
-            subPatterns = [self.__validate_traverse_children_xml(child) for child in iPatternNode.getchildren()]
+            assert iPatternNode.tag in [
+                'children', 'optional', 'subset-of', 'any-number', 'one-of',
+                'unordered'], iPatternNode.tag
+            subPatterns = [self.__validate_traverse_children_xml(child) for child
+                           in iPatternNode.getchildren()]
             if iPatternNode.tag == 'children':
                 return '(' + ''.join(subPatterns) + ')'
             elif iPatternNode.tag == 'optional':
                 return '((' + ''.join(subPatterns) + ')?)'
             elif iPatternNode.tag == 'subset-of':
-                # TODO: this is currently broken and will also match repetitions of the elements. it will match correct patterns, but will also match some incorrect ones
+                # TODO: this is currently broken and will also match repetitions of the elements.
+                # It will match correct patterns, but will also match some incorrect ones
                 return '((' + '|'.join(subPatterns) + ')*)'
             elif iPatternNode.tag == 'any-number':
-                return '((' + ''.join(subPatterns) + '){%s,%s})'%(iPatternNode.attrib.get('from', ''), iPatternNode.attrib.get('to', ''))
+                return '((' + ''.join(subPatterns) + '){%s,%s})' % (
+                    iPatternNode.attrib.get('from', ''), iPatternNode.attrib.get('to', ''))
             elif iPatternNode.tag == 'one-of':
                 return '(' + '|'.join(subPatterns) + ')'
             elif iPatternNode.tag == 'unordered':
-                # TODO: this is currently broken and will also match repetitions of the elements or a subset of the elements. it will match correct patterns, but will also match some incorrect ones
+                # TODO: this is currently broken and will also match repetitions of the
+                # elements or a subset of the elements. it will match correct patterns,
+                # but will also match some incorrect ones
                 return '((' + '|'.join(subPatterns) + ')*)'
             else:
                 assert False
                 return '(' + ''.join(subPatterns) + ')'
-
 
     def __validate_traverse(self, iNode, iCleanUp):
         children = iNode.getchildren()
@@ -115,20 +120,24 @@ class XmlValidator(object):
         specEntry = self.documentSpecEntries.get(iNode)
         if specEntry is None:
             self.__log_warning_message('Unhandled element at ' + self.__get_full_dom_path(iNode))
-            return # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
+            # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
+            return
 
         # Check attributes
         nodeAttributes = dict(iNode.attrib)
         for key in nodeAttributes:
-            if key[0] == '{': # attribute name has namespace
+            if key[0] == '{':  # attribute name has namespace
                 value = nodeAttributes[key]
                 del nodeAttributes[key]
                 nodeAttributes[self.__tag_namespace_to_prefix(key)] = value
         specAttributes = specEntry.find('attributes')
         if specAttributes is None:
             if len(nodeAttributes) > 0:
-                if not ((nodeAttributes.keys() == ['id',]) or (iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
-                    self.__log_error_message('Extra attributes in ' + self.__get_full_dom_path(iNode) + ': ' + repr(iNode.attrib))
+                if not ((nodeAttributes.keys() == ['id', ]) or (
+                        iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
+                    self.__log_error_message(
+                        'Extra attributes in {}; {}'.format(
+                            self.__get_full_dom_path(iNode), repr(iNode.attrib)))
         else:
             for entry in specAttributes:
                 attributeName = entry.find('name').text
@@ -137,9 +146,11 @@ class XmlValidator(object):
                 if attributeValue is None:
                     specDefaultNode = entry.find('default')
                     if specDefaultNode is None:
-                        raise KeyError, "Missing attribute '%s' in %s"%(attributeName, self.__get_full_dom_path(iNode))
+                        raise KeyError("Missing attribute '%s' in %s" % (
+                            attributeName, self.__get_full_dom_path(iNode)))
                     elif iCleanUp and (specDefaultNode.text != ''):
-                        iNode.attrib[self.__tag_prefix_to_namespace(attributeName)] = specDefaultNode.text
+                        iNode.attrib[self.__tag_prefix_to_namespace(
+                            attributeName)] = specDefaultNode.text
                 else:
                     if attributeType == 'string':
                         passed = True
@@ -174,38 +185,45 @@ class XmlValidator(object):
                     else:
                         passed = False
                     if not passed:
-                        self.__log_error_message('Attribute value %s does not conform to type %s in '%(repr(attributeValue), repr(attributeType)) + self.__get_full_dom_path(iNode))
+                        self.__log_error_message(
+                            'Attribute value %s does not conform to type %s in ' % (
+                                repr(attributeValue),
+                                repr(attributeType)) + self.__get_full_dom_path(iNode))
                     del nodeAttributes[attributeName]
             if len(nodeAttributes) > 0:
                 # There are still unhandled node attributes
-                raise KeyError, "Unknown attribute(s) '%s' in %s"%("', '".join(nodeAttributes.keys()), self.__get_full_dom_path(iNode))
+                raise KeyError(
+                    "Unknown attribute(s) '%s' in %s" % (
+                        "', '".join(nodeAttributes.keys()), self.__get_full_dom_path(iNode)))
 
         # Validate children: build regex from spec
         regex = self.__validate_traverse_children_xml(specEntry.find('children'))
         if regex is None:
             # No children
             if len(children) != 0:
-                self.__log_error_message('''No children expected in ''' + self.documentSpecEntries[iNode].find('xpath').text + '''
-    *** These are superfluous children:
-    ''' + ','.join([self.__tag_namespace_to_prefix(child.tag) for child in children]) + '''
-    *** The offending element looks like this:
-    ''' + etree.tostring(iNode))
+                self.__log_error_message(
+                    'No children expected in {}\n'
+                    '*** These are superfluous children:\n'
+                    '{}\n*** The offending element looks like this:\n{}'.format(
+                        self.documentSpecEntries[iNode].find('xpath').text,
+                        ','.join([self.__tag_namespace_to_prefix(child.tag) for child in children]),
+                        etree.tostring(iNode)))
         else:
-            import re
             pattern = re.compile('^' + regex + '$')
             # Validate children: build children pattern
             if len(children) > 0:
-                childrenPattern = ','.join([self.__tag_namespace_to_prefix(child.tag) for child in children]) + ','
+                childrenPattern = ','.join(
+                    [self.__tag_namespace_to_prefix(child.tag) for child in children]) + ','
             else:
                 childrenPattern = ''
             if pattern.match(childrenPattern) is None:
-                self.__log_error_message('''Child match failed for a ''' + self.documentSpecEntries[iNode].find('xpath').text + ''' element.
-    *** I was expecting the children to follow this pattern:
-    ''' + regex + '''
-    *** Instead I got these children:
-    ''' + childrenPattern + '''
-    *** The offending element looks like this:
-    ''' + etree.tostring(iNode))
+                self.__log_error_message(
+                    'Child match failed for a {} element.\n'
+                    '*** I was expecting the children to follow this pattern:\n{}\n'
+                    '*** Instead I got these children:\n{}\n'
+                    '*** The offending element looks like this:\n{}\n'.format(
+                        self.documentSpecEntries[iNode].find('xpath').text,
+                        regex, childrenPattern, etree.tostring(iNode)))
 
         # Check that text matches text spec
         if specEntry.find('notext') is not None:
@@ -221,15 +239,17 @@ class XmlValidator(object):
                     if child.tail is not None:
                         text = child.tail.strip()
                         if text != '':
-                            location = 'after a %s child'%child.tag
+                            location = 'after a %s child' % child.tag
                             break
                         if iCleanUp:
                             child.tail = None
             if text != '':
-                self.__log_error_message(self.documentSpecEntries[iNode].find('xpath').text + ''' element must not have any text.
-    *** Found the following text ''' + location + ': ' + text + '''
-    *** The offending element looks like this:
-    ''' + etree.tostring(iNode))
+                self.__log_error_message(
+                    '{} element must not have any text.\n'
+                    '*** Found the following text {}: {}\n'
+                    '*** The offending element looks like this: {}'.format(
+                        self.documentSpecEntries[iNode].find('xpath').text,
+                        location, text, etree.tostring(iNode)))
 
         # Do validation callback
         callbackNode = specEntry.find('validation-callback')
@@ -238,11 +258,14 @@ class XmlValidator(object):
             from . import callbacks
             callbackFunction = eval('callbacks.' + callbackFunctionName)
             if not callbackFunction(iNode):
-                self.__log_error_message("Validation callback " + repr(callbackFunctionName) + " failed on the following element:\n" + etree.tostring(iNode))
-
+                self.__log_error_message(
+                    "Validation callback {}\n"
+                    "failed on the following element:\n{}".format(
+                        repr(callbackFunctionName), etree.tostring(iNode)))
 
     def monassis_to_cnxml(self):
-        assert len(self.dom.xpath('//monassis-template')) == 0, "monassis-template elements are deprecated"
+        assert len(self.dom.xpath('//monassis-template')
+                   ) == 0, "monassis-template elements are deprecated"
         for templateNode in self.dom.xpath('//monassis-template'):
             renderer = templateNode.attrib.get('rendered-as', 'exercise')
             if renderer == "example":
@@ -317,21 +340,19 @@ class XmlValidator(object):
                         solutionNode.append(child)
                 templateNode.getparent().replace(templateNode, contentNode)
             else:
-                raise ValueError, "Unknown renderer for monassis template: %s"%repr(renderer)
-
+                raise ValueError("Unknown renderer for monassis template: %s" % repr(renderer))
 
     def convert_exercises(self, dom):
         for exercisesNode in dom.xpath('//exercises'):
             index = 0
             if exercisesNode[0].tag == 'title':
                 index += 1
-            if (len(exercisesNode) > index+1) or (exercisesNode[index].tag != 'problem-set'):
+            if (len(exercisesNode) > index + 1) or (exercisesNode[index].tag != 'problem-set'):
                 problemsetNode = etree.Element('problem-set')
                 for child in exercisesNode.getchildren()[index:]:
                     problemsetNode.append(child)
                 assert len(exercisesNode) == index
                 exercisesNode.append(problemsetNode)
-        
 
     def validate(self, iXml, iCleanUp=False):
         if isinstance(iXml, basestring):
@@ -342,7 +363,7 @@ class XmlValidator(object):
         elif isinstance(iXml, etree._Element):
             dom = iXml
         else:
-            raise TypeError, "XML input needs to be either an XML string or a DOM"
+            raise TypeError("XML input needs to be either an XML string or a DOM")
 
         # Normalize text and tail of nodes
         self.documentNodePath = {None: []}
@@ -368,8 +389,11 @@ class XmlValidator(object):
             for node in dom.xpath(xpath, namespaces=self.spec.nsmap):
                 if self.documentSpecEntries.get(node) is None:
                     self.documentSpecEntries[node] = entry
-                elif len(xpath.replace('//', '/').split('/')) > len(self.documentSpecEntries.get(node).find('xpath').text.replace('//', '/').split('/')):
-                    # If this xpath is more specific (has more parts to its path) than the existing one, replace it
+                elif len(xpath.replace('//', '/').split('/')) > len(
+                        self.documentSpecEntries.get(node).find('xpath').text.replace(
+                            '//', '/').split('/')):
+                    # If this xpath is more specific (has more parts to its path) than the
+                    # existing one, replace it
                     self.documentSpecEntries[node] = entry
 
         # Validate
@@ -378,8 +402,8 @@ class XmlValidator(object):
 
 
 class ExerciseValidator(XmlValidator):
+
     def __init__(self):
-        import os
         myPath = os.path.realpath(os.path.dirname(__file__))
         with open(os.path.join(myPath, 'spec_exercise.xml')) as fp:
             super(ExerciseValidator, self).__init__(fp.read())
