@@ -1185,6 +1185,8 @@ return ''
 	  <element>currency</element>
 	  <element>chem_compound</element>
 	  <element>correct</element>
+      <element>nuclear_notation</element>
+      <element>spec_note</element>
 	</one-of>
       </any-number>
     </children>
@@ -1764,7 +1766,12 @@ return convert_using(self, '//chem_compound')
     </children>
     <notext/>
     <conversion-callback name="latex html learner correct teacher">
-latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
+if self.find('atomic_number').text == ' ':
+    latex = r'^{%s}\text{%s}'%(self.find('mass_number').text, self.find('symbol').text)
+elif self.find('mass_number').text == ' ':
+    latex = r'_{%s}\text{%s}'%(self.find('atomic_number').text, self.find('symbol').text)
+else:
+    latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
     latex = r'\(' + latex + r'\)'
@@ -1907,6 +1914,9 @@ elif self.attrib['effect'] == 'underline':
 elif self.attrib['effect'] == 'smallcaps':
     emph = etree.Element('span')
     emph.attrib['data-class'] = 'smallcaps'
+
+elif self.attrib['effect'] == 'highlight':
+    emph = etree.Element('mark')
 
 elif self.attrib['effect'] == 'normal':
     emph = etree.Element('span')
@@ -2423,7 +2433,7 @@ return self.text
       </entry>
       <entry>
     <name>type</name>
-    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote","highlight")</type>
+    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote")</type>
       </entry>
     </attributes>
     <children>
