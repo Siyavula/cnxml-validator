@@ -1760,15 +1760,15 @@ return convert_using(self, '//chem_compound')
     <children>
       <unordered>
 	<element>symbol</element>
-	<element>mass_number</element>
-	<element>atomic_number</element>
+	<optional>mass_number</optional>
+	<optional>atomic_number</optional>
       </unordered>
     </children>
     <notext/>
     <conversion-callback name="latex html learner correct teacher">
-if self.find('atomic_number').text == ' ':
+if self.find('atomic_number') is None:
     latex = r'^{%s}\text{%s}'%(self.find('mass_number').text, self.find('symbol').text)
-elif self.find('mass_number').text == ' ':
+elif self.find('mass_number') is None:
     latex = r'_{%s}\text{%s}'%(self.find('atomic_number').text, self.find('symbol').text)
 else:
     latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
