@@ -48,6 +48,9 @@ class ExerciseValidatorTests(TestCase):
         self.exercise_validator = ExerciseValidator()
 
     def test_validate_with_valid_xml(self):
+        '''
+        This should represent the minimum needed elements for a template. Response is actually optional since that is not needed for entries in books.
+        '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -71,3 +74,190 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         self.exercise_validator.validate(good_template_dom)
+
+    def test_validate_with_note_tag(self):
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <note type="note">
+                    </note>
+                </problem>
+                <solution>
+                    <note type="note">
+                    </note>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    @raises(KeyError)
+    def test_validate_with_note_tag_with_no_attribute(self):
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <note>
+                    </note>
+                </problem>
+                <solution>
+                    <note>
+                    </note>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        self.exercise_validator.validate(good_template_dom)
+
+    @raises(XmlValidationError)
+    def test_validate_with_note_tag_with_incorrect_attribute(self):
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <note type="bob">
+                    </note>
+                </problem>
+                <solution>
+                    <note type="bob">
+                    </note>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        self.exercise_validator.validate(good_template_dom)
+
+    def test_validate_with_nuclear_notation_tag_no_atomic_number(self):
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <nuclear_notation><symbol>He</symbol><mass_number>5</mass_number></nuclear_notation>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_nuclear_notation_tag_no_mass_number(self):
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <nuclear_notation><symbol>He</symbol><atomic_number>5</atomic_number></nuclear_notation>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    #@raises(XmlValidationError)
+    def test_validate_with_nuclear_notation_tag_no_symbol(self):
+        '''
+        This should raise an error since the symbol tag should be required. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <nuclear_notation><atomic_number>He</atomic_number><mass_number>5</mass_number></nuclear_notation>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_nuclear_notation_tag_no_children(self):
+        '''
+        This should raise an error since nuclear_notation is required to contain at least the symbol tag. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <nuclear_notation></nuclear_notation>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_currency_tag_no_children(self):
+        '''
+        This should raise an error since currency is required to contain at least the number tag. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <currency></currency>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_pspicture_tag_no_children(self):
+        '''
+        This should raise an error since currency is required to contain at least either src or code child. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <pspicture></pspicture>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_tikzpicture_tag_no_children(self):
+        '''
+        This should raise an error since tikzpicture is required to contain at least either src or code child. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <tikzpicture></tikzpicture>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
