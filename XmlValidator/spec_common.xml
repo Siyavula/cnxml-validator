@@ -2454,4 +2454,29 @@ return etree.tostring(note)
     </conversion-callback>
   </entry>
 
+<entry>
+    <xpath>//style</xpath>
+    <attributes>
+      <entry>
+    <name>font-color</name>
+    <type>string</type>
+    <default/>
+      </entry>
+    </attributes>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+    <conversion-callback name="latex teacher correct learner">
+return r'\textcolor{' + self.attrib.get('font-color') + '}{' + self.text + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html teacher correct learner">
+environment = 'note'
+style = etree.Element('span')
+style.attrib['style'] = 'color:'
+style.attrib['style'] += self.attrib['font-color']
+style.text = self.text
+return etree.tostring(style)
+    </conversion-callback>
+  </entry>
+
 </spec>

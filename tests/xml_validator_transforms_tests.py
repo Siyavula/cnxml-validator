@@ -1,8 +1,7 @@
 '''
-Series of tests to ensure that new code added to the xml validator and the associated xml to html transforms actually works as expected. This will also begin to put in place the test suite for the validator and associated transforms.
+This test suite is specifically for testing functions in the transformation process. For example does a number get formatted as expected?
 '''
 import unittest
-
 
 # Start with importing the necessary bits - what do I need to import? I think I need to bring in the entire utils.py bit and maybe the cnxml to html bit because these are what I wish to test. I may also need some stuff from the monassis.buildout repo such as the core.py file in transforms
 from XmlValidator.utils import format_number
@@ -44,4 +43,3 @@ class FormatNumberTest(unittest.TestCase):
 # chemistry tags: must be extended to include all alphanumeric chars in all subtags, as well as accepting decimal numbers.
 
 # there might be some tests around unit numbers needed, e.g. only numbers in the number part, only letters in the unit part, the separator that gets added in must be correct
-

@@ -1,3 +1,6 @@
+'''
+This part of the test suite focuses on testing specific xml tags to ensure they are performing as expected. This also tests that the validator does in fact load a spec and validate against that spec.
+'''
 from lxml import etree
 from nose.tools import raises
 from unittest import TestCase
@@ -254,6 +257,45 @@ class ExerciseValidatorTests(TestCase):
             <entry>
                 <problem>
                     <tikzpicture></tikzpicture>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_style_tag(self):
+        '''
+        Testing that the style tag works and allows the font-color attribute
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <para><style font-color="blue">blue text</style></para>
+                    <para><style font-color="blue"><number>5</number></style></para>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_number_tag(self):
+        '''
+        Testing that the number tag works and checks the type of number. This really should fail, oh dear another bad instance.
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <para><number>5x/5</number></para>
                 </problem>
                 <solution>
                 </solution>
