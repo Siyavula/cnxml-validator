@@ -1507,14 +1507,82 @@ if text['base'] is None:
     text['base'] = '10'
 for key in text:
     if text[key] is None: continue
-    if text[key][0] == '-':
-        minus = '-'
-        text[key] = text[key][1:]
-    else:
-        minus = ''
-    if '|' in text[key]:
-        index = text[key].find('|')
-        text[key] = minus + r'\text{' + utils.format_number(text[key][:index]) + ' | ' + text[key][index+1:] + '}'
+    if ('|' in text[key]) or ('(' in text[key]) or ('[' in text[key]):
+        if text[key][0] == '-':
+            minus = '-'
+            text[key] = text[key][1:]
+        else:
+            minus = ''
+        number = text[key]
+        indexesTemp = [number.find('|'), number.find('('), number.find('[')]
+        indexes = []
+        charsTemp = ['|', '(', '[']
+        chars = []
+        for i in range(len(indexesTemp)):
+            if indexesTemp[i] != -1:
+                indexes.append(indexesTemp[i])
+                chars.append(charsTemp[i])
+        if '(' in chars:
+            if '|' in chars:
+                indexPipe = number.find('|')
+                indexBracket = number.find('(')
+                text[key] = r'\text{' + number[:indexPipe] + '}' + '|' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
+                textBrackets = number[indexBracket+1:-1]
+                for i in range(len(textBrackets)):
+                    text[key] += r'\bar{%s}'%textBrackets[i]
+            else:
+                indexBracket = number.find('(')
+                text[key] = r'\text{' + number[:indexBracket] + '}'
+                textBrackets = number[indexBracket+1:-1]
+                for i in range(len(textBrackets)):
+                    text[key] += r'\bar{%s}'%textBrackets[i]
+        elif '[' in chars:
+            if '|' in chars:
+                indexPipe = number.find('|')
+                indexBracket = number.find('[')
+                text[key] = r'\text{' + number[:indexPipe] + '}' + '|' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
+                textBrackets = number[indexBracket+1:-1]
+                text[key] += r'\overline{%s}'%textBrackets
+            else:
+                indexBracket = number.find('[')
+                text[key] = r'\text{' + number[:indexBracket] + '}'
+                textBrackets = number[indexBracket+1:-1]
+                text[key] += r'\overline{%s}'%textBrackets
+        else:
+            indexPipe = number.find('|')
+            text[key] = r'\text{' + number[:indexPipe] + '}' + '|' + r'\text{' + number[indexPipe+1:] + '}'
+    elif (r'\frac' in text[key]):
+        number = text[key]
+        index = number.find(r'}')
+        numerator = number[6:index]
+        denominator = number[index+2:-1]
+        if numerator[0] == '-':
+            minusNumerator = '-'
+            numerator[key] = numerator[1:]
+        else:
+            minusNumerator = ''
+        if denominator[0] == '-':
+            minusDenominator = '-'
+            denominator[key] = denominator[1:]
+        else:
+            minusDenominator = ''
+        text[key] = r'\frac{' + minusNumerator + utils.format_number(numerator) + '}{' + minusDenominator + utils.format_number(denominator) + '}'
+    elif ('/' in text[key]):
+        number = text[key]
+        index = number.find('/')
+        numerator = number[:index]
+        denominator = number[index+1:]
+        if numerator[0] == '-':
+            minusNumerator = '-'
+            numerator[key] = numerator[1:]
+        else:
+            minusNumerator = ''
+        if denominator[0] == '-':
+            minusDenominator = '-'
+            denominator[key] = denominator[1:]
+        else:
+            minusDenominator = ''
+        text[key] = r'\frac{' + minusNumerator + utils.format_number(numerator) + '}{' + minusDenominator + utils.format_number(denominator) + '}'
     else:
         text[key] = minus + r'\text{' + utils.format_number(text[key]) + '}'
 
