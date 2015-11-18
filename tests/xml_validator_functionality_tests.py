@@ -364,6 +364,16 @@ class XmlValidatorTagAttributes(TestCase):
                 </attributes>
             </entry>
             <entry>
+                <xpath>/test-element-string-attribute-with-default</xpath>
+                <attributes>
+                    <entry>
+                        <name>id</name>
+                        <type>string</type>
+                        <default>myId</default>
+                    </entry>
+                </attributes>
+            </entry>
+            <entry>
                 <xpath>/test-element-integer-attribute-with-default</xpath>
                 <attributes>
                     <entry>
@@ -407,6 +417,12 @@ class XmlValidatorTagAttributes(TestCase):
     def test_validate_with_valid_xml_enum_attribute_no_default(self):
         '''This tests the basic pattern of a tag with an attribute of type enum.'''
         good_template_dom = etree.fromstring('<test-element-enum-attribute-no-default type="block"></test-element-enum-attribute-no-default>')
+
+        assert self.xml_validator.validate(good_template_dom) is None
+
+    def test_validate_with_valid_xml_string_attribute_with_default(self):
+        '''This tests the basic pattern of a tag with an attribute of type string.'''
+        good_template_dom = etree.fromstring('<test-element-string-attribute-with-default></test-element-string-attribute-with-default>')
 
         assert self.xml_validator.validate(good_template_dom) is None
 

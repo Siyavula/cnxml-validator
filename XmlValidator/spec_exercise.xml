@@ -144,8 +144,8 @@
       <attributes>
         <entry>
             <name>curriculum</name>
-            <type>enum("all", "CAPS", "AP")</type>
-            <default>all</default>
+            <type>string</type>
+            <default/>
         </entry>
       </attributes>
       <text>

@@ -285,6 +285,7 @@ class ExerciseValidatorTests(TestCase):
 
         assert self.exercise_validator.validate(good_template_dom) is None
 
+    #@raises(XmlValidationError)
     def test_validate_with_number_tag(self):
         '''
         Testing that the number tag works and checks the type of number. This really should fail, oh dear another bad instance.
@@ -296,6 +297,38 @@ class ExerciseValidatorTests(TestCase):
             <entry>
                 <problem>
                     <para><number>5x/5</number></para>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_meta_data(self):
+        '''
+        Testing that the meta data part is working as expected.
+        Authors is optional. There must be an author child tag.
+        Title is not optional but the validator does not actually check that it is present.
+        Difficulty is also not optional. This must contain level in the updated validator.
+        Language is not optional. Only valid language codes are accepted here: en, en-ZA, af, af-ZA.
+        Link is optional and there can be multiple links. Link must be self-closing and contain rel and href as attributes
+        '''
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+                <title>title</title>
+                <authors>
+                    <author>anon</author>
+                </authors>
+                <difficulty>
+                    <level>1</level>
+                </difficulty>
+                <language>en-ZA</language>
+                <link rel="textbook" href="content://siyavula.com/textbooks/caps/physical-sciences/grade-10/#ESAAN"/>
+            </meta>
+            <entry>
+                <problem>
                 </problem>
                 <solution>
                 </solution>
