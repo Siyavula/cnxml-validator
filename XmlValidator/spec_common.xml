@@ -1529,13 +1529,13 @@ for key in text:
                 text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + '|' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
                 textBrackets = number[indexBracket+1:-1]
                 for i in range(len(textBrackets)):
-                    text[key] += r'\bar{%s}'%textBrackets[i]
+                    text[key] += r'\dot{%s}'%textBrackets[i]
             else:
                 indexBracket = number.find('(')
                 text[key] = r'\text{' + utils.format_number(number[:indexBracket]) + '}'
                 textBrackets = number[indexBracket+1:-1]
                 for i in range(len(textBrackets)):
-                    text[key] += r'\bar{%s}'%textBrackets[i]
+                    text[key] += r'\dot{%s}'%textBrackets[i]
         elif '[' in chars:
             if '|' in chars:
                 indexPipe = number.find('|')
