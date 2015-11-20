@@ -10,9 +10,12 @@ from XmlValidator import entities
 from XmlValidator.callbacks import is_numeric_value
 from XmlValidator.callbacks import is_number
 
-# test that the format_number function in utils actually works as expected. There are several cases to consider here so perhaps we write a class for the 1000's separator as a whole and then define functions for each aspect to test?
-# test cases: numbers between 0 and 1000, numbers between 10000 and infinity, numbers between -1000 and 0, numbers between -1000 and -infinity. Also include decimals and scientific notation?
 class FormatNumberTest(unittest.TestCase):
+    '''
+    This class tests that numbers are formatted correctly.
+    It tests that the function input variables are working as expected.
+    It also tests that we are getting the expected output.
+    '''
     def test_thousand_separator(self):
         assert format_number('1000') == u'1\xa0000'  # xa0 is unicode for no breaking space
         assert format_number('14739') == u'14\xa0739'
@@ -39,7 +42,6 @@ class FormatNumberTest(unittest.TestCase):
         assert format_number('0.0547', decimalSeparator=',') == '0,0547'
         assert format_number('0.0547', decimalSeparator='.') == '0.0547'
 
-# for the number tag we need to test that only numbers are accepted and not letters. But decimals must be accepted. This tag also needs additional functionality to allow | and perhaps () or [] for rounding and indicating repeating numbers. Also this tag allows notation such as 1e10 to indicate scientific notation. Latex and python might also be allowed here.
 class NumberTextTest(unittest.TestCase):
     '''
     This tests that the number tag correctly checks if the text of the tag is a number.

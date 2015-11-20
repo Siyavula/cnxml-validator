@@ -1526,7 +1526,7 @@ for key in text:
             if '|' in chars:
                 indexPipe = number.find('|')
                 indexBracket = number.find('(')
-                text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + '|' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
+                text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + r'\vert' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
                 textBrackets = number[indexBracket+1:-1]
                 for i in range(len(textBrackets)):
                     text[key] += r'\dot{%s}'%textBrackets[i]
@@ -1540,7 +1540,7 @@ for key in text:
             if '|' in chars:
                 indexPipe = number.find('|')
                 indexBracket = number.find('[')
-                text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + '|' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
+                text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + r'\vert' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
                 textBrackets = number[indexBracket+1:-1]
                 text[key] += r'\overline{%s}'%textBrackets
             else:
@@ -1550,7 +1550,7 @@ for key in text:
                 text[key] += r'\overline{%s}'%textBrackets
         else:
             indexPipe = number.find('|')
-            text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + '|' + r'\text{' + number[indexPipe+1:] + '}'
+            text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + r'\vert' + r'\text{' + number[indexPipe+1:] + '}'
     elif (r'\frac' in text[key]):
         number = text[key]
         index = number.find(r'}')
@@ -1558,15 +1558,15 @@ for key in text:
         denominator = number[index+2:-1]
         if numerator[0] == '-':
             minusNumerator = '-'
-            numerator[key] = numerator[1:]
+            numerator = numerator[1:]
         else:
             minusNumerator = ''
         if denominator[0] == '-':
             minusDenominator = '-'
-            denominator[key] = denominator[1:]
+            denominator = denominator[1:]
         else:
             minusDenominator = ''
-        text[key] = r'\frac{' + minusNumerator + utils.format_number(numerator) + '}{' + minusDenominator + utils.format_number(denominator) + '}'
+        text[key] = r'\frac{' + minusNumerator + r'\text{' utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
     elif ('/' in text[key]):
         number = text[key]
         index = number.find('/')
@@ -1574,15 +1574,15 @@ for key in text:
         denominator = number[index+1:]
         if numerator[0] == '-':
             minusNumerator = '-'
-            numerator[key] = numerator[1:]
+            numerator = numerator[1:]
         else:
             minusNumerator = ''
         if denominator[0] == '-':
             minusDenominator = '-'
-            denominator[key] = denominator[1:]
+            denominator = denominator[1:]
         else:
             minusDenominator = ''
-        text[key] = r'\frac{' + minusNumerator + utils.format_number(numerator) + '}{' + minusDenominator + utils.format_number(denominator) + '}'
+        text[key] = r'\frac{' + minusNumerator + r'\text{' utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
     else:
         if text[key][0] == '-':
             minus = '-'
