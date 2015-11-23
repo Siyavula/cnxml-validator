@@ -1566,7 +1566,7 @@ for key in text:
             denominator = denominator[1:]
         else:
             minusDenominator = ''
-        text[key] = r'\frac{' + minusNumerator + r'\text{' utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
+        text[key] = r'\frac{' + minusNumerator + r'\text{' + utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
     elif ('/' in text[key]):
         number = text[key]
         index = number.find('/')
@@ -1998,13 +1998,6 @@ elif self.attrib['effect'] == 'normal':
 emph.text = self.text
 return etree.tostring(emph)
     </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//style</xpath>
-    <children>
-      <reference>inline-elements</reference>
-    </children>
   </entry>
 
   <entry>
