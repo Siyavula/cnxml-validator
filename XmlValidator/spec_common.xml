@@ -1582,7 +1582,7 @@ for key in text:
             denominator = denominator[1:]
         else:
             minusDenominator = ''
-        text[key] = r'\frac{' + minusNumerator + r'\text{' utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
+        text[key] = r'\frac{' + minusNumerator + r'\text{' + utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
     else:
         if text[key][0] == '-':
             minus = '-'
