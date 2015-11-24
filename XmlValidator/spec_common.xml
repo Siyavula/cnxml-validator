@@ -1722,8 +1722,6 @@ else:
     symbol = symbolNode.text.strip()
     symbolLocation = symbolNode.attrib.get('location', 'front')
 
-
-
 if symbolLocation == 'front':
     result = symbol + r'\,' + numberText
 else:
@@ -1756,7 +1754,8 @@ else:
     symbol = symbolNode.text.strip()
     symbolLocation = symbolNode.attrib.get('location', 'front')
 
-
+if symbol == '$' or symbol == '&#36;':
+    symbol = '\$'
 
 if symbolLocation == 'front':
     result = r'\text{' + symbol + '}' + r'\,' + r'\text{' + numberText + '}'
@@ -1786,6 +1785,7 @@ return result
 	<default>front</default>
       </entry>
     </attributes>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
