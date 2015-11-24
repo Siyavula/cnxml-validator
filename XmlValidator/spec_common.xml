@@ -1673,12 +1673,12 @@ else:
 return convert_using(self, '//number') + r'\%'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
-parents = [a.tag for a in self.iterancestors()]
-latex = ['latex', 'unit_number', 'unit', 'pspicture', 'tikzpicture']
-if any(l in parents for l in latex):
-  return convert_using(self, '//number') + r'\%'
-else:
-  return convert_using(self, '//number') + r'%'
+latexMode = ('latex' in utils.get_full_dom_path(self))
+result = r'\text{' + utils.format_number(self.text.strip()) + '}' + r'\%'
+
+if not latexMode:
+    result = r'\(' + result + r'\)'
+return result
     </conversion-callback>
   </entry>
 
