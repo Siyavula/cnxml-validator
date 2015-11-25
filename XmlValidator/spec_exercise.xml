@@ -29,8 +29,6 @@
 	<optional>last_updated</optional>
     <element>difficulty</element>
 	<element>language</element>
-    <optional>mastery_tier</optional>
-    <optional>question_categories</optional>
 	<any-number>
 	  <element>link</element>
 	</any-number>
@@ -128,29 +126,9 @@
     </text>
   </entry>
 
-   <!--current behaviour of any number does in fact make the child optional, when the child is implemented in all templates then change this to use any-number from="1" and make the child an element instead of optional-->
   <entry>
     <xpath>/exercise-container/meta/difficulty</xpath>
-    <children>
-        <any-number>
-            <optional>level</optional>
-        </any-number>
-    </children>
     <notext/>
-  </entry>
-
-  <entry>
-      <xpath>/exercise-container/meta/difficulty/level</xpath>
-      <attributes>
-        <entry>
-            <name>curriculum</name>
-            <type>string</type>
-            <default/>
-        </entry>
-      </attributes>
-      <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
   </entry>
 
   <entry>
@@ -185,37 +163,6 @@
       </entry>
     </attributes>
     <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/question_categories</xpath>
-    <children>
-      <any-number from="1">
-    <element>question_category</element>
-      </any-number>
-    </children>
-    <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/question_categories/question_category</xpath>
-    <attributes>
-        <entry>
-        <name>type</name>
-        <type>enum("primary", "secondary")</type>
-        <default>primary</default>
-        </entry>
-    </attributes>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/mastery_tier</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
   </entry>
 
   <entry>
