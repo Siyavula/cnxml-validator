@@ -128,7 +128,9 @@
 
   <entry>
     <xpath>/exercise-container/meta/difficulty</xpath>
-    <notext/>
+    <text>
+      <pre-processing-callback>strip</pre-processing-callback>
+    </text>
   </entry>
 
   <entry>

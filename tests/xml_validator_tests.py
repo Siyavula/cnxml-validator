@@ -322,7 +322,7 @@ class ExerciseValidatorTests(TestCase):
                     <author>anon</author>
                 </authors>
                 <difficulty>
-                    <level>1</level>
+                    1
                 </difficulty>
                 <language>en-ZA</language>
                 <link rel="textbook" href="content://siyavula.com/textbooks/caps/physical-sciences/grade-10/#ESAAN"/>
