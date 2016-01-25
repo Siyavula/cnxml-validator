@@ -89,11 +89,22 @@ if __name__ == "__main__":
         if conversionFunction is None:
             # Cache conversion function
             conversionFunctionNodes = specEntry.xpath(
-                './/conversion-callback[contains(@name, "html") and contains(@name, "%s")]' % commandlineArguments.audience)
+                './/conversion-callback[contains(@name, "html") and contains(@name, "%s") and not(contains(@name, "html5"))]' % commandlineArguments.audience)
             if len(conversionFunctionNodes) == 0:
-                utils.warning_message(
-                    'No conversion entry for ' + specEntry.find('xpath').text)
-                conversionFunctionSource = 'conversionFunction = lambda self: None'
+                conversionFunctionNodes = specEntry.xpath(
+                    './/conversion-callback[contains(@name, "html") and contains(@name, "%s")]' % commandlineArguments.audience)
+                if len(conversionFunctionNodes) == 0:
+                    utils.warning_message(
+                        'No conversion entry for ' + specEntry.find('xpath').text)
+                    conversionFunctionSource = 'conversionFunction = lambda self: None'
+                else:
+                    conversionFunctionSource = conversionFunctionNodes[
+                        0].text.strip()
+                    if conversionFunctionSource == '':
+                        conversionFunctionSource = 'conversionFunction = lambda self: None'
+                    else:
+                        conversionFunctionSource = 'def conversionFunction(self):\n' + '\n'.join(
+                            ['\t' + line for line in conversionFunctionSource.split('\n')]) + '\n'
             else:
                 if len(conversionFunctionNodes) != 1:
                     utils.error_message(
