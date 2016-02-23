@@ -88,14 +88,13 @@ def is_number(element):
             if text[-3:] == '...':
                 text = text[:-3]
             if '|' in text:
-                index = text.find('|')
-                text = text[:index] + text[index+1:]
+                text = text.replace('|', '')
             if '(' in text:
-                index = text.find('(')
-                text = text[:index] + text[index+1:-1]
+                text = text.replace('(', '')
+                text = text.replace(')', '')
             if '[' in text:
-                index = text.find('[')
-                text = text[:index] + text[index+1:-1]
+                text = text.replace('[', '')
+                text = text.replace(']', '')
             try:
                 float(text)
             except ValueError:
@@ -136,14 +135,13 @@ def is_numeric_value(element):
         if text[-3:] == '...':
             text = text[:-3]
         if '|' in text:
-            index = text.find('|')
-            text = text[:index] + text[index+1:]
+            text = text.replace('|', '')
         if '(' in text:
-            index = text.find('(')
-            text = text[:index] + text[index+1:-1]
+            text = text.replace('(', '')
+            text = text.replace(')', '')
         if '[' in text:
-            index = text.find('[')
-            text = text[:index] + text[index+1:-1]
+            text = text.replace('[', '')
+            text = text.replace(']', '')
         try:
             float(__replace_unicode_minus(text))
         except ValueError:
