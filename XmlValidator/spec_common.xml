@@ -1526,13 +1526,15 @@ for key in text:
             if '|' in chars:
                 indexPipe = number.find('|')
                 indexBracket = number.find('(')
-                text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + r'\vert' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
+                text[key] = r'\text{%s}\vert\text{%s}' % (
+                    utils.format_number(number[:indexPipe]), number[indexPipe+1:indexBracket])
                 textBrackets = number[indexBracket+1:-1]
                 for i in range(len(textBrackets)):
                     text[key] += r'\dot{%s}'%textBrackets[i]
             else:
                 indexBracket = number.find('(')
-                text[key] = r'\text{' + utils.format_number(number[:indexBracket]) + '}'
+                text[key] = r'\text{%s}' % (
+                    utils.format_number(number[:indexBracket]))
                 textBrackets = number[indexBracket+1:-1]
                 for i in range(len(textBrackets)):
                     text[key] += r'\dot{%s}'%textBrackets[i]
@@ -1540,17 +1542,19 @@ for key in text:
             if '|' in chars:
                 indexPipe = number.find('|')
                 indexBracket = number.find('[')
-                text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + r'\vert' + r'\text{' + number[indexPipe+1:indexBracket] + '}'
+                text[key] = r'\text{%s}\vert\text{%s}' % (
+                    utils.format_number(number[:indexPipe]), number[indexPipe+1:indexBracket])
                 textBrackets = number[indexBracket+1:-1]
                 text[key] += r'\overline{%s}'%textBrackets
             else:
                 indexBracket = number.find('[')
-                text[key] = r'\text{' + utils.format_number(number[:indexBracket]) + '}'
+                text[key] = r'\text{%s}' % (utils.format_number(number[:indexBracket]))
                 textBrackets = number[indexBracket+1:-1]
                 text[key] += r'\overline{%s}'%textBrackets
         else:
             indexPipe = number.find('|')
-            text[key] = r'\text{' + utils.format_number(number[:indexPipe]) + '}' + r'\vert' + r'\text{' + number[indexPipe+1:] + '}'
+            text[key] = r'\text{%s}\vert\text{%s}' % (
+                utils.format_number(number[:indexPipe]), number[indexPipe+1:])
     elif (r'\frac' in text[key]):
         number = text[key]
         index = number.find(r'}')
@@ -1566,7 +1570,8 @@ for key in text:
             denominator = denominator[1:]
         else:
             minusDenominator = ''
-        text[key] = r'\dfrac{' + minusNumerator + r'\text{' + utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
+        text[key] = r'\dfrac{%s\text{%s}}{%s\text{%s}}' % (
+            minusNumerator, utils.format_number(numerator), minusDenominator, utils.format_number(denominator))
     elif ('/' in text[key]):
         number = text[key]
         index = number.find('/')
@@ -1582,14 +1587,15 @@ for key in text:
             denominator = denominator[1:]
         else:
             minusDenominator = ''
-        text[key] = r'\dfrac{' + minusNumerator + r'\text{' + utils.format_number(numerator) + '}}{' + minusDenominator + r'\text{' + utils.format_number(denominator) + '}}'
+        text[key] = r'\dfrac{%s\text{%s}}{%s\text{%s}}' % (
+            minusNumerator, utils.format_number(numerator), minusDenominator, utils.format_number(denominator))
     else:
         if text[key][0] == '-':
             minus = '-'
             text[key] = text[key][1:]
         else:
             minus = ''
-        text[key] = minus + r'\text{' + utils.format_number(text[key]) + '}'
+        text[key] = minus + r'%s\text{%s}' % (minus, utils.format_number(text[key]))
 
 # Build LaTeX representation
 result = text['coeff'] if nodes['coeff'] is not None else ''
@@ -1758,9 +1764,9 @@ if symbol == '$' or symbol == '&#36;':
     symbol = '\$'
 
 if symbolLocation == 'front':
-    result = r'\text{' + symbol + '}' + r'\,' + r'\text{' + numberText + '}'
+    result = r'\text{%s}\,\text{%s}' %(symbol, numberText)
 else:
-    result = r'\text{' + numberText + '}' + r'\,' + r'\text{' + symbol + '}'
+    result = r'\text{%s}\,\text{%s}' %(numberText, symbol)
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
