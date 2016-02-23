@@ -88,8 +88,7 @@ def is_number(element):
             if text[-3:] == '...':
                 text = text[:-3]
             if '|' in text:
-                index = text.find('|')
-                text = text[:index] + text[index+1:]
+                text = text.replace('|', '')
             try:
                 float(text)
             except ValueError:
