@@ -1,6 +1,8 @@
 '''
-This part of the test suite is aimed at testing the functionality behind the validator itself. For example if a certain attribute is allowed or not, what type of child tags are allowed.
+This part of the test suite is aimed at testing the functionality behind the validator itself.
+For example if a certain attribute is allowed or not, what type of child tags are allowed.
 '''
+
 from lxml import etree
 from nose.tools import raises
 from unittest import TestCase
@@ -10,7 +12,9 @@ from XmlValidator import ExerciseValidator, XmlValidator, XmlValidationError
 
 class XmlValidatorChildrenUncombinedTests(TestCase):
     '''
-    Each entry in the spec provides information about the allowed children. This class tests out that each of the ways of specifying the children of a tag is actually doing what we expect it to do.
+    Each entry in the spec provides information about the allowed children.
+    This class tests out that each of the ways of specifying the children 
+    of a tag is actually doing what we expect it to do.
     '''
     def setUp(self):
         self.basic_spec = '''<?xml version="1.0" encoding="utf-8"?>
@@ -128,7 +132,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
 
     def test_validate_with_valid_xml_subsetof_children(self):
         '''This tests a tag that contains only a subset of the listed child tags.
-        All the listed children can be present in any order. Test-child-two or test-child can be removed and this test still passes.'''
+        All the listed children can be present in any order. 
+        Test-child-two or test-child can be removed and this test still passes.'''
         good_template_dom = etree.fromstring('<test-element-subsetof-children><test-child-required-two></test-child-required-two></test-element-subsetof-children>')
 
         assert self.xml_validator.validate(good_template_dom) is None
@@ -141,7 +146,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
 
     @raises(XmlValidationError)
     def test_validate_with_invalid_xml_raises_error(self):
-        '''This tests the basic pattern of a tag with one required child and one optional child.
+        '''This tests the basic pattern of a tag with one required child 
+        and one optional child.
         The children have to appear in the order they are listed in in the spec.
         '''
         bad_template_dom = etree.fromstring('<test-element><test-child-optional></test-child-optional></test-element>')
@@ -152,7 +158,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
     def test_validate_with_invalid_xml_unordered_children(self):
         '''This tests unordered children where one child is optional.
         The children can be in any order.
-        This tests that you cannot have multiple children of the same type, you can only have one of each type in unordered.
+        This tests that you cannot have multiple children of the same type, 
+        you can only have one of each type in unordered.
         This test should fail but does not, oh dear'''
         bad_template_dom = etree.fromstring('<test-element-unordered-children><test-child-required></test-child-required><test-child-required></test-child-required><test-child-optional></test-child-optional><test-child-optional></test-child-optional></test-element-unordered-children>')
 
@@ -160,7 +167,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
 
     @raises(XmlValidationError)
     def test_validate_with_invalid_xml_oneof_children(self):
-        '''This tests a tag that contains only one of the listed child tags. If both are present this must fail.'''
+        '''This tests a tag that contains only one of the listed child tags.
+        If both are present this must fail.'''
         bad_template_dom = etree.fromstring('<test-element-oneof-children><test-child-required></test-child-required><test-child-required-two></test-child-required-two></test-element-oneof-children>')
 
         self.xml_validator.validate(bad_template_dom)
@@ -168,7 +176,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
     # is there a fail test for anynumber? Should perhaps be 0?
 
     def test_validate_with_invalid_xml_subsetof_children(self):
-        '''This tests a tag that contains a subset of the listed child tags or may contain all of them
+        '''This tests a tag that contains a subset of the listed child tags 
+        or may contain all of them
         This test should fail since it should only contain 1 of each child listed.'''
         bad_template_dom = etree.fromstring('<test-element-subsetof-children><test-child-required></test-child-required><test-child-required-two></test-child-required-two><test-child-required-two></test-child-required-two></test-element-subsetof-children>')
 
@@ -176,7 +185,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
 
 class XmlValidatorChildrenCombinedTests(TestCase):
     '''
-    Each entry in the spec provides information about the allowed children. This class tests out that each of the ways of combining the children of a tag.
+    Each entry in the spec provides information about the allowed children.
+    This class tests out that each of the ways of combining the children of a tag.
     '''
     def setUp(self):
         self.basic_spec = '''<?xml version="1.0" encoding="utf-8"?>
@@ -260,15 +270,20 @@ class XmlValidatorChildrenCombinedTests(TestCase):
         assert self.xml_validator.validate(good_template_dom) is None
 
     def test_validate_with_valid_xml_oneof_anynumber_children(self):
-        '''This tests a tag that contains any-number nested inside one-of. Either of the required children can be present but not both and any number of the present child can be used.
-        What this test is showing is that both children are required and there does not need to be only 1 of each.'''
+        '''This tests a tag that contains any-number nested inside one-of. 
+        Either of the required children can be present
+        but not both and any number of the present child can be used.
+        What this test is showing is that both children are required and 
+        there does not need to be only 1 of each.'''
         good_template_dom = etree.fromstring('<test-element-oneof-anynumber-children><test-child-required></test-child-required><test-child-required-two></test-child-required-two><test-child-required></test-child-required><test-child-required-two></test-child-required-two></test-element-oneof-anynumber-children>')
 
         assert self.xml_validator.validate(good_template_dom) is None
 
     @raises(XmlValidationError)
     def test_validate_with_invalid_xml_oneof_anynumber_children_raises_error(self):
-        '''This tests a tag that contains any-number nested inside one-of. Either of the required children can be present but not both and any number of the present child can be used.
+        '''This tests a tag that contains any-number nested inside one-of. 
+        Either of the required children can be present 
+        but not both and any number of the present child can be used.
         This test is not giving the expected behaviour.
         '''
         bad_template_dom = etree.fromstring('<test-element-oneof-anynumber-children><test-child-required-two></test-child-required-two></test-element-oneof-anynumber-children>')
@@ -276,7 +291,9 @@ class XmlValidatorChildrenCombinedTests(TestCase):
         self.xml_validator.validate(bad_template_dom)
 
     def test_validate_with_valid_xml_anynumber_oneof_children(self):
-        '''This tests a tag that contains one-of nested inside any-number. Either of the required children can be present but not both and any number of the present child can be used.
+        '''This tests a tag that contains one-of nested inside any-number.
+        Either of the required children can be present
+        but not both and any number of the present child can be used.
         This does not fail if test-child-required-two is present, oh dear'''
         good_template_dom = etree.fromstring('<test-element-anynumber-oneof-children><test-child-required></test-child-required><test-child-required></test-child-required></test-element-anynumber-oneof-children>')
 
@@ -284,7 +301,9 @@ class XmlValidatorChildrenCombinedTests(TestCase):
 
     #@raises(XmlValidationError)
     def test_validate_with_invalid_xml_anynumber_oneof_children_raises_error(self):
-        '''This tests a tag that contains one-of nested inside any-number. Either of the required children can be present but not both and any number of the present child can be used.
+        '''This tests a tag that contains one-of nested inside any-number. 
+        Either of the required children can be present but not both 
+        and any number of the present child can be used.
         This test is not giving the expected behaviour.
         '''
         bad_template_dom = etree.fromstring('<test-element-anynumber-oneof-children><test-child-required-two></test-child-required-two><test-child-required-two></test-child-required-two></test-element-anynumber-oneof-children>')
@@ -292,16 +311,20 @@ class XmlValidatorChildrenCombinedTests(TestCase):
         assert self.xml_validator.validate(bad_template_dom) is None
 
     def test_validate_with_valid_xml_unordered_anynumber_children(self):
-        '''This tests a tag that contains any-number nested inside unordered. The children can be in any order and there can be any number of them.
-        While this test is set up such that it passes ideally we want to be able to swop the children elements and still have it pass'''
+        '''This tests a tag that contains any-number nested inside unordered. 
+        The children can be in any order and there can be any number of them.
+        While this test is set up such that it passes ideally 
+        we want to be able to swop the children elements and still have it pass'''
         good_template_dom = etree.fromstring('<test-element-unordered-anynumber-children><test-child-required></test-child-required><test-child-required-two></test-child-required-two></test-element-unordered-anynumber-children>')
 
         assert self.xml_validator.validate(good_template_dom) is None
 
     @raises(XmlValidationError)
     def test_validate_with_invalid_xml_unordered_anynumber_children_raises_error(self):
-        '''This tests a tag that contains any-number nested inside unordered. The children can be in any order.
-        This test is not giving the expected behaviour. In theory the way this is set up it should pass.
+        '''This tests a tag that contains any-number nested inside unordered. 
+        The children can be in any order.
+        This test is not giving the expected behaviour. 
+        In theory the way this is set up it should pass.
         '''
         bad_template_dom = etree.fromstring('<test-element-unordered-anynumber-children><test-child-required-two></test-child-required-two><test-child-required></test-child-required></test-element-unordered-anynumber-children>')
 
@@ -322,7 +345,8 @@ class XmlValidatorChildrenCombinedTests(TestCase):
 
 class XmlValidatorTagAttributes(TestCase):
     '''
-    Some entries in the spec provide information about the attributes of a tag. This class tests that those are working as expected.
+    Some entries in the spec provide information about the attributes of a tag. 
+    This class tests that those are working as expected.
     '''
     def setUp(self):
         self.basic_spec = '''<?xml version="1.0" encoding="utf-8"?>
@@ -433,7 +457,8 @@ class XmlValidatorTagAttributes(TestCase):
         assert self.xml_validator.validate(good_template_dom) is None
 
     def test_validate_with_valid_xml_enum_attribute_no_default(self):
-        '''This tests the basic pattern of a tag with an attribute of type enum. There is a default set and so we are testing leaving out the attribute here.'''
+        '''This tests the basic pattern of a tag with an attribute of type enum. 
+        There is a default set and so we are testing leaving out the attribute here.'''
         good_template_dom = etree.fromstring('<test-element-enum-attribute-with-default></test-element-enum-attribute-with-default>')
 
         assert self.xml_validator.validate(good_template_dom) is None

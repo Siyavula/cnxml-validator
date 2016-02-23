@@ -1,10 +1,10 @@
 '''
-This test suite is specifically for testing functions in the transformation process. For example does a number get formatted as expected?
+This test suite is specifically for testing functions in the transformation process.
 '''
+
 import unittest
 from lxml import etree
 
-# Start with importing the necessary bits - what do I need to import? I think I need to bring in the entire utils.py bit and maybe the cnxml to html bit because these are what I wish to test. I may also need some stuff from the monassis.buildout repo such as the core.py file in transforms
 from XmlValidator.utils import format_number
 from XmlValidator import entities
 from XmlValidator.callbacks import is_numeric_value
@@ -17,21 +17,27 @@ class FormatNumberTest(unittest.TestCase):
     It also tests that we are getting the expected output.
     '''
     def test_thousand_separator(self):
-        assert format_number('1000') == u'1\xa0000'  # xa0 is unicode for no breaking space
+        assert format_number('1000') == u'1\xa0000'  
+        # xa0 is unicode for no breaking space
         assert format_number('14739') == u'14\xa0739'
         assert format_number('999') == u'999'
-        assert format_number('+5') == u'+5'  # might need to be in a new function?
+        assert format_number('+5') == u'+5'
 
     def test_thousand_separator_with_parameter(self):
         assert format_number('1000', thousandsSeparator='|') == u'1|000'
 
     def test_scientific_notation_with_parameter(self):
-        assert format_number('1e10', iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>') == u'1\u00a0\u00d7\u00a010<sup>10</sup>' # u00a0 is unicode for no breaking space, u00d7 is unicode for times, the last bit of this string before the sup is actually \u00a0 followed by 10. Final output of this is assert 1 * 10^10 but with the appropriate unicode and html in it as well
+        assert format_number('1e10', iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>') == u'1\u00a0\u00d7\u00a010<sup>10</sup>' 
+        # u00a0 is unicode for no breaking space, 
+        # u00d7 is unicode for times, 
+        # the last bit of this string before the sup is actually \u00a0 followed by 10. 
+        # Final output of this is assert 1 * 10^10 
+        # but with the appropriate unicode and html in it as well
         assert format_number('1e10', iScientificNotation=u'%se%s') == u'1e10'
         assert format_number('1e-10', iScientificNotation=u'%s\u00a0\u00d7\u00a010<sup>%s</sup>') == u'1\u00a0\u00d7\u00a010<sup>\u221210</sup>'
 
     def test_minus_symbol_with_parameter(self):
-        assert format_number('-5', minusSymbol=entities.unicode['minus']) == u'\u22125'  # minus symbol is \u2212
+        assert format_number('-5', minusSymbol=entities.unicode['minus']) == u'\u22125'
         assert format_number('-5', minusSymbol='-') == u'-5'
 
     def test_thousandths_separator_with_parameter(self):
@@ -120,9 +126,3 @@ class NumberTextTest(unittest.TestCase):
         element1 = etree.Element('number')
         element1.text = '3/2'
         assert is_number(element1) == True
-
-# currency tag: should accept the same input as number tag but with an additional currency symbol. $ symbol needs to be allowed in the symbol part if it is not already allowed. I'm not sure if we can test the spacing modifier here but maybe something can be done.
-
-# chemistry tags: must be extended to include all alphanumeric chars in all subtags, as well as accepting decimal numbers.
-
-# there might be some tests around unit numbers needed, e.g. only numbers in the number part, only letters in the unit part, the separator that gets added in must be correct

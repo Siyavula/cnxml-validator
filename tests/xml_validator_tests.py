@@ -1,6 +1,9 @@
 '''
-This part of the test suite focuses on testing specific xml tags to ensure they are performing as expected. This also tests that the validator does in fact load a spec and validate against that spec.
+This part of the test suite focuses on testing specific xml tags to ensure 
+they are performing as expected. This also tests that the validator does 
+in fact load a spec and validate against that spec.
 '''
+
 from lxml import etree
 from nose.tools import raises
 from unittest import TestCase
@@ -10,8 +13,8 @@ from XmlValidator import ExerciseValidator, XmlValidator, XmlValidationError
 
 class XmlValidatorTests(TestCase):
     '''
-    The XmlValidator takes a spec and validates a given XML string against it. Test that the
-    XmlValidator correctly loads a spec and uses it.
+    The XmlValidator takes a spec and validates a given XML string against it.
+    Test that the XmlValidator correctly loads a spec and uses it.
     '''
     def setUp(self):
         self.basic_spec = '''<?xml version="1.0" encoding="utf-8"?>
@@ -52,7 +55,8 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_valid_xml(self):
         '''
-        This should represent the minimum needed elements for a template. Response is actually optional since that is not needed for entries in books.
+        This should represent the minimum needed elements for a template. 
+        Response is actually optional since that is not needed for entries in books.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -160,7 +164,10 @@ class ExerciseValidatorTests(TestCase):
             </meta>
             <entry>
                 <problem>
-                    <nuclear_notation><symbol>He</symbol><atomic_number>5</atomic_number></nuclear_notation>
+                    <nuclear_notation>
+                        <symbol>He</symbol>
+                        <atomic_number>5</atomic_number>
+                    </nuclear_notation>
                 </problem>
                 <solution>
                 </solution>
@@ -172,7 +179,9 @@ class ExerciseValidatorTests(TestCase):
     #@raises(XmlValidationError)
     def test_validate_with_nuclear_notation_tag_no_symbol(self):
         '''
-        This should raise an error since the symbol tag should be required. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        This should raise an error since the symbol tag should be required. 
+        The problem lies in the unordered modifier since the spec for that 
+        is a hack and matches incorrect patterns. This needs to be corrected.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -180,7 +189,10 @@ class ExerciseValidatorTests(TestCase):
             </meta>
             <entry>
                 <problem>
-                    <nuclear_notation><atomic_number>He</atomic_number><mass_number>5</mass_number></nuclear_notation>
+                    <nuclear_notation>
+                        <atomic_number>He</atomic_number>
+                        <mass_number>5</mass_number>
+                    </nuclear_notation>
                 </problem>
                 <solution>
                 </solution>
@@ -191,7 +203,10 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_nuclear_notation_tag_no_children(self):
         '''
-        This should raise an error since nuclear_notation is required to contain at least the symbol tag. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        This should raise an error since nuclear_notation is required to contain at 
+        least the symbol tag. The problem lies in the unordered modifier 
+        since the spec for that is a hack and matches incorrect patterns. 
+        This needs to be corrected.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -210,7 +225,9 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_currency_tag_no_children(self):
         '''
-        This should raise an error since currency is required to contain at least the number tag. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        This should raise an error since currency is required to contain at least the number tag.
+        The problem lies in the unordered modifier since the spec for that is a 
+        hack and matches incorrect patterns. This needs to be corrected.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -229,7 +246,11 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_pspicture_tag_no_children(self):
         '''
-        This should raise an error since currency is required to contain at least either src or code child. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        This should raise an error since currency is required to contain at 
+        least either src or code child.
+        The problem lies in the unordered modifier since the spec 
+        for that is a hack and matches incorrect patterns.
+        This needs to be corrected.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -248,7 +269,10 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_tikzpicture_tag_no_children(self):
         '''
-        This should raise an error since tikzpicture is required to contain at least either src or code child. The problem lies in the unordered modifier since the spec for that is a hack and matches incorrect patterns. This needs to be corrected.
+        This should raise an error since tikzpicture is required to contain 
+        at least either src or code child.
+        The problem lies in the unordered modifier since the spec for that 
+        is a hack and matches incorrect patterns. This needs to be corrected.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -288,7 +312,8 @@ class ExerciseValidatorTests(TestCase):
     #@raises(XmlValidationError)
     def test_validate_with_number_tag(self):
         '''
-        Testing that the number tag works and checks the type of number. This really should fail, oh dear another bad instance.
+        Testing that the number tag works and checks the type of number. 
+        This really should fail, oh dear another bad instance.
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -312,7 +337,8 @@ class ExerciseValidatorTests(TestCase):
         Title is not optional but the validator does not actually check that it is present.
         Difficulty is also not optional. This must contain level in the updated validator.
         Language is not optional. Only valid language codes are accepted here: en, en-ZA, af, af-ZA.
-        Link is optional and there can be multiple links. Link must be self-closing and contain rel and href as attributes
+        Link is optional and there can be multiple links. 
+        Link must be self-closing and contain rel and href as attributes
         '''
         good_template_dom = etree.fromstring('''
         <exercise-container>
