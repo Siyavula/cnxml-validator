@@ -174,14 +174,15 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
         self.xml_validator.validate(bad_template_dom)
 
     # is there a fail test for anynumber? Should perhaps be 0?
-
+    
+    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_subsetof_children(self):
         """This tests a tag that contains a subset of the listed child tags 
         or may contain all of them
-        This test should fail since it should only contain 1 of each child listed."""
+        This should not contain more than one of each of the child tags"""
         bad_template_dom = etree.fromstring('<test-element-subsetof-children><test-child-required></test-child-required><test-child-required-two></test-child-required-two><test-child-required-two></test-child-required-two></test-element-subsetof-children>')
 
-        assert self.xml_validator.validate(bad_template_dom) is None
+        self.xml_validator.validate(bad_template_dom)
 
 class XmlValidatorChildrenCombinedTests(TestCase):
     """

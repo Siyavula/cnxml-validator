@@ -94,9 +94,7 @@ class XmlValidator(object):
             elif iPatternNode.tag == 'optional':
                 return '((' + ''.join(subPatterns) + ')?)'
             elif iPatternNode.tag == 'subset-of':
-                # TODO: this is currently broken and will also match repetitions of the elements.
-                # It will match correct patterns, but will also match some incorrect ones
-                return '((' + '|'.join(subPatterns) + ')*)'
+                return '((' + '|'.join(subPatterns) + ')?)'
             elif iPatternNode.tag == 'any-number':
                 return '((' + ''.join(subPatterns) + '){%s,%s})' % (
                     iPatternNode.attrib.get('from', ''), iPatternNode.attrib.get('to', ''))
