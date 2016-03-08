@@ -160,28 +160,6 @@ def is_unit(element):
             raise_error("<sup> of <unit> could not be interpreted as an integer", element)
     return True
 
-#def is_nuclear_notation(element):
-    #from data import periodicTable
-
-    #children = {}
-    #for tag in ['symbol', 'mass_number', 'atomic_number']:
-        #children[tag] = element.find(tag).text
-
-    #atomicNumberIsInt = True
-    #for tag in ['mass_number', 'atomic_number']:
-        #try:
-            #int(children[tag])
-        #except ValueError:
-            #raise_error("Could not interpret <%s> as integer" % tag, element, exception=None)
-            #if tag == 'atomic_number':
-                #atomicNumberIsInt = False
-
-    #if children['symbol'] not in periodicTable:
-        #raise_error("Unknown element symbol %s"%repr(children['symbol']), element, exception=None)
-    #elif atomicNumberIsInt and (int(children['atomic_number']) != periodicTable[children['symbol']]):
-        #raise_error("Atomic number does not match position in periodic table", element, exception=None)
-
-    #return True
 
 def check_link_element(element):
     urlPresent = element.attrib.has_key('url')

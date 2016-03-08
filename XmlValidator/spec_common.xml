@@ -1680,10 +1680,10 @@ return convert_using(self, '//number') + r'\%'
     </conversion-callback>
     <conversion-callback name="html learner correct teacher">
 latexMode = ('latex' in utils.get_full_dom_path(self))
-result = r'\text{' + utils.format_number(self.text.strip()) + '}' + r'\%'
+result = r'\text{%s}\%' % (utils.format_number(self.text.strip()))
 
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = r'\(%s\)' % (result)
 return result
     </conversion-callback>
   </entry>
@@ -1729,15 +1729,15 @@ else:
     symbolLocation = symbolNode.attrib.get('location', 'front')
 
 if symbolLocation == 'front':
-    result = symbol + r'\,' + numberText
+    result = r'%s\,%s' % (symbol, numberText)
 else:
-    result = numberText + r'\,' + symbol
-result = r'\text{' + result + '}'
+    result = r'%s\,%s' % (numberText, symbol)
+result = r'\text{%s}' % (result)
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = r'\(%s\)' % (result)
 
 return result
     </conversion-callback>
@@ -1771,7 +1771,7 @@ else:
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = r'\(%s\)' % (result)
 
 return result
     </conversion-callback>
@@ -1853,7 +1853,7 @@ else:
     latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    latex = r'\(' + latex + r'\)'
+    latex = r'\(%s\)' % (latex)
 return latex
     </conversion-callback>
   </entry>
@@ -2513,8 +2513,8 @@ return self.text
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
-environment = 'Note' + self.attrib['type'].capitalize()
-return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+environment = 'Note %s' % (self.attrib['type'].capitalize())
+return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
     </conversion-callback>
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
 environment = 'note'
@@ -2542,7 +2542,7 @@ return etree.tostring(note)
       <reference>inline-elements</reference>
     </children>
     <conversion-callback name="latex teacher correct learner">
-return r'\textcolor{' + self.attrib.get('font-color') + '}{' + self.text + '}\n'
+return r'\textcolor{%s}{%s}\n' % (self.attrib.get('font-color'), self.text)
     </conversion-callback>
     <conversion-callback name="html teacher correct learner">
 environment = 'note'

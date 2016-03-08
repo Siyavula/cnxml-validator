@@ -1,6 +1,6 @@
-'''
+"""
 This test suite is specifically for testing functions in the transformation process.
-'''
+"""
 
 import unittest
 from lxml import etree
@@ -11,11 +11,11 @@ from XmlValidator.callbacks import is_numeric_value
 from XmlValidator.callbacks import is_number
 
 class FormatNumberTest(unittest.TestCase):
-    '''
+    """
     This class tests that numbers are formatted correctly.
     It tests that the function input variables are working as expected.
     It also tests that we are getting the expected output.
-    '''
+    """
     def test_thousand_separator(self):
         assert format_number('1000') == u'1\xa0000'  
         # xa0 is unicode for no breaking space
@@ -49,13 +49,13 @@ class FormatNumberTest(unittest.TestCase):
         assert format_number('0.0547', decimalSeparator='.') == '0.0547'
 
 class NumberTextTest(unittest.TestCase):
-    '''
+    """
     This tests that the number tag correctly checks if the text of the tag is a number.
     If the text is a number then it returns true
     If the text is not a number then it raises an error
     This test uses the is_number function from callbacks.py
     is_number calls is_numeric_value from callbacks.py for non scientific notation
-    '''
+    """
     def test_integer_input(self):
         element = etree.Element('number')
         element.text = '5'
