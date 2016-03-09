@@ -2505,7 +2505,7 @@ return self.text
       </entry>
       <entry>
     <name>type</name>
-    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote","inlinetip")</type>
+    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote",'inlinetip')</type>
       </entry>
     </attributes>
     <children>
@@ -2517,15 +2517,15 @@ environment = 'Note %s' % (self.attrib['type'].capitalize())
 return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
     </conversion-callback>
     <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
-environment = 'note'
-if self.attrib['type'] != "inlinetip":
-    note = etree.Element('div')
-else:
-    note = etree.Element('span')
-note.attrib['class'] = environment
-note.attrib['class'] += " " + self.attrib['type']
-note.text = self.text
-return etree.tostring(note)
+    environment = 'note'
+    if self.attrib['type'] != inlinetip:
+        note = etree.Element('div')
+    else:
+        note = etree.Element('span')
+    note.attrib['class'] = environment
+    note.attrib['class'] += " " + self.attrib['type']
+    note.text = self.text
+    return etree.tostring(note)
     </conversion-callback>
   </entry>
 

@@ -89,12 +89,6 @@ def is_number(element):
                 text = text[:-3]
             if '|' in text:
                 text = text.replace('|', '')
-            if '(' in text:
-                text = text.replace('(', '')
-                text = text.replace(')', '')
-            if '[' in text:
-                text = text.replace('[', '')
-                text = text.replace(']', '')
             try:
                 float(text)
             except ValueError:
@@ -159,7 +153,6 @@ def is_unit(element):
         except ValueError:
             raise_error("<sup> of <unit> could not be interpreted as an integer", element)
     return True
-
 
 def check_link_element(element):
     urlPresent = element.attrib.has_key('url')
