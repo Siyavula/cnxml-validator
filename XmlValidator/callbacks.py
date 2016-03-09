@@ -111,15 +111,35 @@ def is_number(element):
 
 def is_numeric_value(element):
     text = element.text if element.text is not None else ''
-    if text[-3:] == '...':
-        text = text[:-3]
-    if '|' in text:
-        index = text.find('|')
-        text = text[:index] + text[index+1:]
-    try:
-        float(__replace_unicode_minus(text))
-    except ValueError:
-        raise_error("<number> text %s not interpretable as float" % repr(text), element)
+    if '{' in text or '/' in text:
+        if '/' in text:
+            index = text.find('/')
+            numerator = text[:index]
+            denominator = text[index+1:]
+        else:
+            index = text.find('}')
+            numerator = text[6:index]
+            denominator = text[index+2:-1]
+        try:
+            float(__replace_unicode_minus(numerator))
+            float(__replace_unicode_minus(denominator))
+        except ValueError:
+            raise_error("<number> text %s not interpretable as float for fraction" % repr(text), element)
+    else:
+        if text[-3:] == '...':
+            text = text[:-3]
+        if '|' in text:
+            text = text.replace('|', '')
+        if '(' in text:
+            text = text.replace('(', '')
+            text = text.replace(')', '')
+        if '[' in text:
+            text = text.replace('[', '')
+            text = text.replace(']', '')
+        try:
+            float(__replace_unicode_minus(text))
+        except ValueError:
+            raise_error("<number> text %s not interpretable as float" % repr(text), element)
     return True
 
 def is_unit(element):

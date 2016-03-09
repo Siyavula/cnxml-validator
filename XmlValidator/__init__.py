@@ -5,3 +5,4 @@ from XmlValidator import (
 )
 
 import callbacks
+import entities

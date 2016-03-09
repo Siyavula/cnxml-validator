@@ -27,7 +27,7 @@
 	<element>title</element>
 	<optional>authors</optional>
 	<optional>last_updated</optional>
-	<element>difficulty</element>
+    <element>difficulty</element>
 	<element>language</element>
 	<any-number>
 	  <element>link</element>
