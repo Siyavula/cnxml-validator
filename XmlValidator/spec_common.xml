@@ -887,7 +887,7 @@ if self.text.strip() not in ['pst-solides3d', 'pst-3dplot', 'pst-node']:
 return ''
     </conversion-callback>
     <conversion-callback name="html html5 learner correct teacher">
-return 
+return
     </conversion-callback>
   </entry>
 
@@ -924,7 +924,7 @@ return
 return self.text
     </conversion-callback>
     <conversion-callback name="html html5 learner correct teacher">
-return 
+return
     </conversion-callback>
   </entry>
 
@@ -1095,10 +1095,12 @@ return
     <children>
       <subset-of>
         <element>src</element>
-    <element>width</element>
-    <element>height</element>
-        <element>attribution</element>
+	<element>width</element>
+	<element>height</element>
       </subset-of>
+      <any-number>
+          <element>attribution</element>
+      </any-number>
     </children>
     <notext/>
     <conversion-callback name="latex learner teacher">
@@ -1272,15 +1274,17 @@ return ''
     </attributes>
     <children>
       <any-number>
-    <one-of>
-      <element>number</element>
-      <element>unit</element>
-      <element>unit_number</element>
-      <element>percentage</element>
-      <element>currency</element>
-      <element>chem_compound</element>
-      <element>correct</element>
-    </one-of>
+	<one-of>
+	  <element>number</element>
+	  <element>unit</element>
+	  <element>unit_number</element>
+	  <element>percentage</element>
+	  <element>currency</element>
+	  <element>chem_compound</element>
+	  <element>correct</element>
+      <element>nuclear_notation</element>
+      <element>spec_note</element>
+	</one-of>
       </any-number>
     </children>
     <conversion-callback name="latex html learner correct teacher html5">
@@ -1600,12 +1604,95 @@ if text['base'] is None:
     text['base'] = '10'
 for key in text:
     if text[key] is None: continue
-    if text[key][0] == '-':
-        minus = '-'
-        text[key] = text[key][1:]
+    if ('|' in text[key]) or ('(' in text[key]) or ('[' in text[key]):
+        if text[key][0] == '-':
+            minus = '-'
+            text[key] = text[key][1:]
+        else:
+            minus = ''
+        number = text[key]
+        indexesTemp = [number.find('|'), number.find('('), number.find('[')]
+        indexes = []
+        charsTemp = ['|', '(', '[']
+        chars = []
+        for i in range(len(indexesTemp)):
+            if indexesTemp[i] != -1:
+                indexes.append(indexesTemp[i])
+                chars.append(charsTemp[i])
+        if '(' in chars:
+            if '|' in chars:
+                indexPipe = number.find('|')
+                indexBracket = number.find('(')
+                text[key] = r'\text{%s}\vert\text{%s}' % (
+                    utils.format_number(number[:indexPipe]), number[indexPipe+1:indexBracket])
+                textBrackets = number[indexBracket+1:-1]
+                for i in range(len(textBrackets)):
+                    text[key] += r'\dot{%s}'%textBrackets[i]
+            else:
+                indexBracket = number.find('(')
+                text[key] = r'\text{%s}' % (
+                    utils.format_number(number[:indexBracket]))
+                textBrackets = number[indexBracket+1:-1]
+                for i in range(len(textBrackets)):
+                    text[key] += r'\dot{%s}'%textBrackets[i]
+        elif '[' in chars:
+            if '|' in chars:
+                indexPipe = number.find('|')
+                indexBracket = number.find('[')
+                text[key] = r'\text{%s}\vert\text{%s}' % (
+                    utils.format_number(number[:indexPipe]), number[indexPipe+1:indexBracket])
+                textBrackets = number[indexBracket+1:-1]
+                text[key] += r'\overline{%s}'%textBrackets
+            else:
+                indexBracket = number.find('[')
+                text[key] = r'\text{%s}' % (utils.format_number(number[:indexBracket]))
+                textBrackets = number[indexBracket+1:-1]
+                text[key] += r'\overline{%s}'%textBrackets
+        else:
+            indexPipe = number.find('|')
+            text[key] = r'\text{%s}\vert\text{%s}' % (
+                utils.format_number(number[:indexPipe]), number[indexPipe+1:])
+    elif (r'\frac' in text[key]):
+        number = text[key]
+        index = number.find(r'}')
+        numerator = number[6:index]
+        denominator = number[index+2:-1]
+        if numerator[0] == '-':
+            minusNumerator = '-'
+            numerator = numerator[1:]
+        else:
+            minusNumerator = ''
+        if denominator[0] == '-':
+            minusDenominator = '-'
+            denominator = denominator[1:]
+        else:
+            minusDenominator = ''
+        text[key] = r'\dfrac{%s\text{%s}}{%s\text{%s}}' % (
+            minusNumerator, utils.format_number(numerator), minusDenominator, utils.format_number(denominator))
+    elif ('/' in text[key]):
+        number = text[key]
+        index = number.find('/')
+        numerator = number[:index]
+        denominator = number[index+1:]
+        if numerator[0] == '-':
+            minusNumerator = '-'
+            numerator = numerator[1:]
+        else:
+            minusNumerator = ''
+        if denominator[0] == '-':
+            minusDenominator = '-'
+            denominator = denominator[1:]
+        else:
+            minusDenominator = ''
+        text[key] = r'\dfrac{%s\text{%s}}{%s\text{%s}}' % (
+            minusNumerator, utils.format_number(numerator), minusDenominator, utils.format_number(denominator))
     else:
-        minus = ''
-    text[key] = minus + r'\text{' + utils.format_number(text[key], thousandsSeparator=r'\ ') + '}'
+        if text[key][0] == '-':
+            minus = '-'
+            text[key] = text[key][1:]
+        else:
+            minus = ''
+        text[key] = minus + r'%s\text{%s}' % (minus, utils.format_number(text[key]))
 
 # Build LaTeX representation
 result = text['coeff'] if nodes['coeff'] is not None else ''
@@ -1655,7 +1742,7 @@ latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
     result = r'\(' + result + r'\)'
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
-        result = '~' + result
+        result = ' ' + result
 else:
     if inUnitNumber and (self.text[0] not in unitsWithoutSpace):
         assert result[:6] == r'\text{', "Weird error in //unit conversion."
@@ -1689,12 +1776,12 @@ else:
 return convert_using(self, '//number') + r'\%'
     </conversion-callback>
     <conversion-callback name="html html5 learner correct teacher">
-parents = [a.tag for a in self.iterancestors()]
-latex = ['latex', 'unit_number', 'unit', 'pspicture', 'tikzpicture']
-if any(l in parents for l in latex):
-  return convert_using(self, '//number') + r'\%'
-else:
-  return convert_using(self, '//number') + r'%'
+latexMode = ('latex' in utils.get_full_dom_path(self))
+result = r'\text{%s}\%' % (utils.format_number(self.text.strip()))
+
+if not latexMode:
+    result = r'\(%s\)' % (result)
+return result
     </conversion-callback>
   </entry>
 
@@ -1728,7 +1815,7 @@ except ValueError:
     defaultPrecision = 2
 currencyPrecision = int(self.attrib.get('precision', defaultPrecision))
 numberText = ("%%.%if"%currencyPrecision)%float(numberText)
-numberText = utils.format_number(numberText, thousandsSeparator=r'\ ')
+numberText = utils.format_number(numberText)
 
 symbolNode = self.find('symbol')
 if symbolNode is None:
@@ -1738,18 +1825,16 @@ else:
     symbol = symbolNode.text.strip()
     symbolLocation = symbolNode.attrib.get('location', 'front')
 
-
-
 if symbolLocation == 'front':
-    result = symbol + r'\ ' + numberText
+    result = r'%s\,%s' % (symbol, numberText)
 else:
-    result = numberText + r'\ ' + symbol
-result = r'\text{' + result + '}'
+    result = r'%s\,%s' % (numberText, symbol)
+result = r'\text{%s}' % (result)
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = r'\(%s\)' % (result)
 
 return result
     </conversion-callback>
@@ -1772,18 +1857,18 @@ else:
     symbol = symbolNode.text.strip()
     symbolLocation = symbolNode.attrib.get('location', 'front')
 
-
+if symbol == '$' or symbol == '&#36;':
+    symbol = '\$'
 
 if symbolLocation == 'front':
-    result = symbol + r' ' + numberText
+    result = r'\text{%s}\,\text{%s}' %(symbol, numberText)
 else:
-    result = numberText + r' ' + symbol
-result = r'\text{' + result + '}'
+    result = r'\text{%s}\,\text{%s}' %(numberText, symbol)
 
 # Check whether already in math mode
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    result = r'\(' + result + r'\)'
+    result = r'\(%s\)' % (result)
 
 return result
     </conversion-callback>
@@ -1803,6 +1888,7 @@ return result
     <default>front</default>
       </entry>
     </attributes>
+    <conversion-callback name="latex html learner correct teacher"/>
   </entry>
 
   <entry>
@@ -1849,18 +1935,22 @@ return convert_using(self, '//chem_compound')
     <xpath>//nuclear_notation</xpath>
     <children>
       <unordered>
-    <element>symbol</element>
-    <element>mass_number</element>
-    <element>atomic_number</element>
+	<element>symbol</element>
+	<optional>mass_number</optional>
+	<optional>atomic_number</optional>
       </unordered>
     </children>
     <notext/>
-    <validation-callback>is_nuclear_notation</validation-callback>
     <conversion-callback name="latex html learner correct teacher html5">
-latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
+if self.find('atomic_number') is None:
+    latex = r'^{%s}\text{%s}'%(self.find('mass_number').text, self.find('symbol').text)
+elif self.find('mass_number') is None:
+    latex = r'_{%s}\text{%s}'%(self.find('atomic_number').text, self.find('symbol').text)
+else:
+    latex = r'_{%s}^{%s}\text{%s}'%(self.find('atomic_number').text, self.find('mass_number').text, self.find('symbol').text)
 latexMode = ('latex' in utils.get_full_dom_path(self))
 if not latexMode:
-    latex = r'\(' + latex + r'\)'
+    latex = r'\(%s\)' % (latex)
 return latex
     </conversion-callback>
   </entry>
@@ -2004,6 +2094,9 @@ elif self.attrib['effect'] == 'smallcaps':
     emph = etree.Element('span')
     emph.attrib['data-class'] = 'smallcaps'
 
+elif self.attrib['effect'] == 'highlight':
+    emph = etree.Element('mark')
+
 elif self.attrib['effect'] == 'normal':
     emph = etree.Element('span')
     emph.attrib['data-class'] = 'normal'
@@ -2040,13 +2133,6 @@ elif self.attrib['effect'] == 'normal':
 emph.text = self.text
 return etree.tostring(emph)
     </conversion-callback>
-  </entry>
-
-  <entry>
-    <xpath>//style</xpath>
-    <children>
-      <reference>inline-elements</reference>
-    </children>
   </entry>
 
   <entry>
@@ -2209,7 +2295,7 @@ return r"&lt;sup&gt;" + self.text + "&lt;/sup&gt;"
 return etree.tostring(self)
     </conversion-callback>
   </entry> -->
-    
+
   <entry>
     <xpath>//html5table</xpath>
     <attributes>
@@ -2561,6 +2647,65 @@ return '\n' + self.text.strip() + '\n'
     </children>
     <conversion-callback name="latex html learner correct teacher html5">
 return self.text
+    </conversion-callback>
+  </entry>
+
+<entry>
+    <xpath>//note</xpath>
+    <attributes>
+      <entry>
+    <name>id</name>
+    <type>string</type>
+    <default/>
+      </entry>
+      <entry>
+    <name>type</name>
+    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote",'inlinetip')</type>
+      </entry>
+    </attributes>
+    <children>
+      <reference>block-with-para-elements</reference>
+    </children>
+    <notext/>
+    <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
+environment = 'Note %s' % (self.attrib['type'].capitalize())
+return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
+    </conversion-callback>
+    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+    environment = 'note'
+    if self.attrib['type'] != inlinetip:
+        note = etree.Element('div')
+    else:
+        note = etree.Element('span')
+    note.attrib['class'] = environment
+    note.attrib['class'] += " " + self.attrib['type']
+    note.text = self.text
+    return etree.tostring(note)
+    </conversion-callback>
+  </entry>
+
+<entry>
+    <xpath>//style</xpath>
+    <attributes>
+      <entry>
+    <name>font-color</name>
+    <type>string</type>
+    <default/>
+      </entry>
+    </attributes>
+    <children>
+      <reference>inline-elements</reference>
+    </children>
+    <conversion-callback name="latex teacher correct learner">
+return r'\textcolor{%s}{%s}\n' % (self.attrib.get('font-color'), self.text)
+    </conversion-callback>
+    <conversion-callback name="html teacher correct learner">
+environment = 'note'
+style = etree.Element('span')
+style.attrib['style'] = 'color:'
+style.attrib['style'] += self.attrib['font-color']
+style.text = self.text
+return etree.tostring(style)
     </conversion-callback>
   </entry>
 

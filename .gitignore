@@ -4,6 +4,7 @@
 latex-preamble/main.pdf
 latex-preamble/chapter.tex
 cnxml_validator.egg-info
-
-# Environment Files
+build/
+dist/
+coverage/
 venv/

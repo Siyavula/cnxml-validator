@@ -20,18 +20,18 @@
     <xpath>/exercise-container/meta</xpath>
     <children>
       <unordered>
-       <element>id</element>
-       <element>version</element>
-       <optional>random_seed</optional>
-       <optional>derived_from</optional>
-       <element>title</element>
-       <optional>authors</optional>
-       <optional>last_updated</optional>
-       <element>difficulty</element>
-       <element>language</element>
-       <any-number>
-        <element>link</element>
-       </any-number>
+	<element>id</element>
+	<element>version</element>
+	<optional>random_seed</optional>
+	<optional>derived_from</optional>
+	<element>title</element>
+	<optional>authors</optional>
+	<optional>last_updated</optional>
+    <element>difficulty</element>
+	<element>language</element>
+	<any-number>
+	  <element>link</element>
+	</any-number>
       </unordered>
     </children>
     <notext/>

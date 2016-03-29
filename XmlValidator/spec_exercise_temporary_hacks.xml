@@ -2,22 +2,6 @@
 <spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1">
 
   <entry>
-    <xpath>//style</xpath>
-    <attributes>
-      <!-- HACK -->
-      <entry>
-       <name>font-color</name>
-       <type>string</type>
-       <default/>
-      </entry>
-      <!-- /HACK -->
-    </attributes>
-    <children>
-      <reference>inline-elements</reference>
-    </children>
-  </entry>
-
-  <entry>
     <xpath>//para</xpath>
     <!-- /HACK -->
     <attributes>

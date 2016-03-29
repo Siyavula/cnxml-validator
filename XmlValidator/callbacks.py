@@ -87,6 +87,8 @@ def is_number(element):
             text = child.text if child.text is not None else ''
             if text[-3:] == '...':
                 text = text[:-3]
+            if '|' in text:
+                text = text.replace('|', '')
             try:
                 float(text)
             except ValueError:
@@ -109,12 +111,35 @@ def is_number(element):
 
 def is_numeric_value(element):
     text = element.text if element.text is not None else ''
-    if text[-3:] == '...':
-        text = text[:-3]
-    try:
-        float(__replace_unicode_minus(text))
-    except ValueError:
-        raise_error("<number> text %s not interpretable as float" % repr(text), element)
+    if '{' in text or '/' in text:
+        if '/' in text:
+            index = text.find('/')
+            numerator = text[:index]
+            denominator = text[index+1:]
+        else:
+            index = text.find('}')
+            numerator = text[6:index]
+            denominator = text[index+2:-1]
+        try:
+            float(__replace_unicode_minus(numerator))
+            float(__replace_unicode_minus(denominator))
+        except ValueError:
+            raise_error("<number> text %s not interpretable as float for fraction" % repr(text), element)
+    else:
+        if text[-3:] == '...':
+            text = text[:-3]
+        if '|' in text:
+            text = text.replace('|', '')
+        if '(' in text:
+            text = text.replace('(', '')
+            text = text.replace(')', '')
+        if '[' in text:
+            text = text.replace('[', '')
+            text = text.replace(']', '')
+        try:
+            float(__replace_unicode_minus(text))
+        except ValueError:
+            raise_error("<number> text %s not interpretable as float" % repr(text), element)
     return True
 
 def is_unit(element):
@@ -127,29 +152,6 @@ def is_unit(element):
             int(__replace_unicode_minus(text))
         except ValueError:
             raise_error("<sup> of <unit> could not be interpreted as an integer", element)
-    return True
-
-def is_nuclear_notation(element):
-    from data import periodicTable
-
-    children = {}
-    for tag in ['symbol', 'mass_number', 'atomic_number']:
-        children[tag] = element.find(tag).text
-
-    atomicNumberIsInt = True
-    for tag in ['mass_number', 'atomic_number']:
-        try:
-            int(children[tag])
-        except ValueError:
-            raise_error("Could not interpret <%s> as integer" % tag, element, exception=None)
-            if tag == 'atomic_number':
-                atomicNumberIsInt = False
-
-    if children['symbol'] not in periodicTable:
-        raise_error("Unknown element symbol %s"%repr(children['symbol']), element, exception=None)
-    elif atomicNumberIsInt and (int(children['atomic_number']) != periodicTable[children['symbol']]):
-        raise_error("Atomic number does not match position in periodic table", element, exception=None)
-
     return True
 
 def check_link_element(element):
