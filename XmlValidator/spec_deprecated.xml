@@ -7,14 +7,14 @@
     <xpath>/document/content//monassis-template</xpath>
     <attributes>
       <entry>
-	<name>id</name>
-	<type>string</type>
-	<default/>
+    <name>id</name>
+    <type>string</type>
+    <default/>
       </entry>
       <entry>
-	<name>rendered-as</name>
-	<type>enum("example","exercise")</type>
-	<default>exercise</default>
+    <name>rendered-as</name>
+    <type>enum("example","exercise")</type>
+    <default>exercise</default>
       </entry>
     </attributes>
     <children>
@@ -35,14 +35,14 @@
     <xpath>/document/content//monassis-template/content</xpath>
     <attributes>
       <entry>
-	<name>id</name>
-	<type>string</type>
-	<default/>
+    <name>id</name>
+    <type>string</type>
+    <default/>
       </entry>
       <entry>
-	<name>repeat-problem</name>
-	<type>number</type>
-	<default>1</default>
+    <name>repeat-problem</name>
+    <type>number</type>
+    <default>1</default>
       </entry>
     </attributes>
     <children>
@@ -85,7 +85,7 @@
     <xpath>/document/content//monassis-template/content/response/type</xpath>
     <children>
       <any-number>
-	<element>value</element>
+    <element>value</element>
       </any-number>
     </children>
     <notext/>
@@ -99,7 +99,7 @@
     <xpath>/document/content//monassis-template/content/response/marks</xpath>
     <children>
       <any-number>
-	<element>value</element>
+    <element>value</element>
       </any-number>
     </children>
     <notext/>
@@ -113,7 +113,7 @@
     <xpath>/document/content//monassis-template/content/response/correct</xpath>
     <children>
       <any-number>
-	<element>value</element>
+    <element>value</element>
       </any-number>
     </children>
     <notext/>
@@ -127,8 +127,8 @@
     <xpath>/document/content//monassis-template/content/response/query</xpath>
     <children>
       <one-of>
-	<reference>block-element-no-subsections-with-input</reference>
-	<reference>inline-element-with-input</reference>
+    <reference>block-element-no-subsections-with-input</reference>
+    <reference>inline-element-with-input</reference>
       </one-of>
     </children>
   </entry>
@@ -141,10 +141,10 @@
   <entry id="block-element-no-subsections-with-input">
     <children>
       <any-number>
-	<one-of>
-	  <reference>block-element-no-subsections</reference>
-	  <element>input</element>
-	</one-of>
+    <one-of>
+      <reference>block-element-no-subsections</reference>
+      <element>input</element>
+    </one-of>
       </any-number>
     </children>
   </entry>
@@ -152,10 +152,10 @@
   <entry id="inline-element-with-input">
     <children>
       <any-number>
-	<one-of>
-	  <reference>inline-element</reference>
-	  <element>input</element>
-	</one-of>
+    <one-of>
+      <reference>inline-element</reference>
+      <element>input</element>
+    </one-of>
       </any-number>
     </children>
   </entry>
@@ -164,10 +164,10 @@
     <xpath>/document/content//monassis-template/content/solution</xpath>
     <children>
       <one-of>
-	<any-number>
-	  <element>step</element>
-	</any-number>
-	<reference>block-element-no-subsections</reference>
+    <any-number>
+      <element>step</element>
+    </any-number>
+    <reference>block-element-no-subsections</reference>
       </one-of>
     </children>
     <notext/>
@@ -177,14 +177,14 @@
     <xpath>/document/content//monassis-template/content/solution/step</xpath>
     <attributes>
       <entry>
-	<name>id</name>
-	<type>string</type>
-	<default/>
+    <name>id</name>
+    <type>string</type>
+    <default/>
       </entry>
       <entry>
-	<name>marks</name>
-	<type>number</type>
-	<default>1</default>
+    <name>marks</name>
+    <type>number</type>
+    <default>1</default>
       </entry>
     </attributes>
     <children>
