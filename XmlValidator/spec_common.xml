@@ -1605,7 +1605,7 @@ for key in text:
         text[key] = text[key][1:]
     else:
         minus = ''
-    text[key] = minus + r'\text{' + utils.format_number(text[key], thousandsSeparator=r'\ ') + '}'
+    text[key] = minus + r'\text{' + utils.format_number(text[key]) + '}'
 
 # Build LaTeX representation
 result = text['coeff'] if nodes['coeff'] is not None else ''
@@ -1728,7 +1728,7 @@ except ValueError:
     defaultPrecision = 2
 currencyPrecision = int(self.attrib.get('precision', defaultPrecision))
 numberText = ("%%.%if"%currencyPrecision)%float(numberText)
-numberText = utils.format_number(numberText, thousandsSeparator=r'\ ')
+numberText = utils.format_number(numberText)
 
 symbolNode = self.find('symbol')
 if symbolNode is None:
@@ -1762,7 +1762,7 @@ except ValueError:
     defaultPrecision = 2
 currencyPrecision = int(self.attrib.get('precision', defaultPrecision))
 numberText = ("%%.%if"%currencyPrecision)%float(numberText)
-numberText = utils.format_number(numberText, thousandsSeparator=r' ')
+numberText = utils.format_number(numberText)
 
 symbolNode = self.find('symbol')
 if symbolNode is None:
