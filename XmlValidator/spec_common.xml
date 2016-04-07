@@ -2660,13 +2660,12 @@ return self.text
       </entry>
       <entry>
     <name>type</name>
-    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote",'inlinetip')</type>
+    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow","visit","keyconcepts","takenote",'inlinetip')</type>
       </entry>
     </attributes>
     <children>
       <reference>block-with-para-elements</reference>
     </children>
-    <notext/>
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
 environment = 'Note %s' % (self.attrib['type'].capitalize())
 return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
