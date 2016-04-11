@@ -2660,7 +2660,7 @@ return self.text
       </entry>
       <entry>
     <name>type</name>
-    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote",'inlinetip')</type>
+    <type>enum("note","tip","aside","warning","important","keyquestions","newwords","didyouknow", "visit","keyconcepts","takenote","inlinetip","instruction")</type>
       </entry>
     </attributes>
     <children>
