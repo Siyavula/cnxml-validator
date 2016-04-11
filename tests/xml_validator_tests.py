@@ -223,11 +223,10 @@ class ExerciseValidatorTests(TestCase):
 
         assert self.exercise_validator.validate(good_template_dom) is None
 
-    def test_validate_with_currency_tag_no_children(self):
+    def test_validate_with_currency_tag_no_children_no_text(self):
         """
-        This should raise an error since currency is required to contain at least the number tag.
-        The problem lies in the unordered modifier since the spec for that is a 
-        hack and matches incorrect patterns. This needs to be corrected.
+        This tests that there are no errors when the currency tag 
+        has no children tags and no text in it.
         """
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -243,10 +242,97 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         assert self.exercise_validator.validate(good_template_dom) is None
+    
+    @raises(XmlValidationError)
+    def test_validate_with_currency_tag_no_children_text(self):
+        """
+        This tests that there are no errors when the currency tag 
+        has no children tags and no text in it
+        """
+        bad_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <currency>R 5</currency>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        self.exercise_validator.validate(bad_template_dom)
+    
+    def test_validate_currency_tag_with_only_symbol_child(self):
+        """
+        This tests that there are no errors when the currency tag 
+        only contains a symbol tag as a child
+        """
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <currency>
+                        <symbol>R</symbol>
+                    </currency>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+    
+    def test_validate_currency_tag_with_only_number_child(self):
+        """
+        This tests that there are no errors when the currency tag 
+        only contains a number tag as a child
+        """
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <currency>
+                        <number>5</number>
+                    </currency>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+    
+    def test_validate_currency_tag_with_both_children(self):
+        """
+        This tests that there are no errors when the currency tag 
+        contains both children, in a different order to that specified
+        """
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <currency>
+                        <number>5</number><symbol>R</symbol>
+                    </currency>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
 
     def test_validate_with_pspicture_tag_no_children(self):
         """
-        This should raise an error since currency is required to contain at 
+        This should raise an error since pspicture is required to contain at 
         least either src or code child.
         The problem lies in the unordered modifier since the spec 
         for that is a hack and matches incorrect patterns.

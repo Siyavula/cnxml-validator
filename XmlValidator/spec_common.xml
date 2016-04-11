@@ -1802,7 +1802,7 @@ return result
     <children>
       <unordered>
     <optional>symbol</optional>
-    <element>number</element>
+    <optional>number</optional>
       </unordered>
     </children>
     <notext/>
