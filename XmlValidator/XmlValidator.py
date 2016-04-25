@@ -94,7 +94,7 @@ class XmlValidator(object):
             elif iPatternNode.tag == 'optional':
                 return '((' + ''.join(subPatterns) + ')?)'
             elif iPatternNode.tag == 'subset-of':
-                return '((' + '|'.join(subPatterns) + ')?)'
+                return '((' + '|'.join(subPatterns) + ')*)'
             elif iPatternNode.tag == 'any-number':
                 return '((' + ''.join(subPatterns) + '){%s,%s})' % (
                     iPatternNode.attrib.get('from', ''), iPatternNode.attrib.get('to', ''))
