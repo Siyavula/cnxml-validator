@@ -1,10 +1,11 @@
 *~
 *.pyc
 *.swp
+.coverage
 latex-preamble/main.pdf
 latex-preamble/chapter.tex
 cnxml_validator.egg-info
 build/
 dist/
-coverage/
+html_coverage/
 venv/

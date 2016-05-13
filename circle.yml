@@ -1,0 +1,4 @@
+test:
+  override:
+    - nosetests --with-coverage --cover-package=cnxml-validator tests
+    - codeclimate-test-reporter

@@ -1,3 +1,4 @@
+codeclimate-test-reporter==0.1.1
 coverage==4.0.1
 ipdbplugin==1.4.2
 lxml==3.4.4
