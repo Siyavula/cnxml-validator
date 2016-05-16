@@ -2665,8 +2665,8 @@ return self.text
     </attributes>
     <children>
       <reference>block-with-para-elements</reference>
+      <reference>inline-elements</reference>
     </children>
-    <notext/>
     <conversion-callback name="latex learner teacher"><!-- type already creates start of environment -->
 environment = 'Note %s' % (self.attrib['type'].capitalize())
 return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
