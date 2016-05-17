@@ -2730,6 +2730,6 @@ element = etree.Element("blockquote")
 element.text = self.text
 return etree.tostring(element)
     </conversion-callback>
-  </entry>
+</entry>
 
 </spec>
