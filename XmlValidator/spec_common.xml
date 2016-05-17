@@ -2709,4 +2709,27 @@ return etree.tostring(style)
     </conversion-callback>
   </entry>
 
+<entry>
+    <xpath>//quote</xpath>
+    <children>
+      <reference>block-with-para-elements</reference>
+    </children>
+    <attributes>
+      <entry>
+    <name>url</name>
+    <type>string</type>
+    <default/>
+      </entry>
+    </attributes>
+    <conversion-callback name="latex learner teacher">
+environment = 'Quote'
+return '\n\\begin{' + environment + '}\n' + self.text + r'\end{' + environment + '}\n'
+    </conversion-callback>
+    <conversion-callback name="html html5 learner teacher">
+element = etree.Element("blockquote")
+element.text = self.text
+return etree.tostring(element)
+    </conversion-callback>
+  </entry>
+
 </spec>
