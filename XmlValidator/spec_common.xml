@@ -1489,6 +1489,7 @@ else:
     <element>equation</element>
     <element>latex</element>
     <element>correct</element>
+    <element>note</element>
       </one-of>
     </children>
   </entry>
