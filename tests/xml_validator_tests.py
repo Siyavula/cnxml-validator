@@ -517,3 +517,37 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_quote_tag_block_children(self):
+        """Testing that the quote tag works with block children"""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <quote><para>Some text</para></quote>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_quote_tag_inline_children_no_para(self):
+        """Testing that the quote tag works with inline children and no para tag"""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <quote>Some <emphasis>emphasised</emphasis> text not in a paragraph</quote>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
