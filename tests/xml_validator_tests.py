@@ -207,7 +207,7 @@ class ExerciseValidatorTests(TestCase):
             </entry>
         </exercise-container>''')
 
-        self.exercise_validator.validate(good_template_dom)
+        self.exercise_validator.validate(bad_template_dom)
 
     @raises(XmlValidationError)
     def test_validate_with_note_tag_with_book_note_attribute(self):
@@ -227,7 +227,7 @@ class ExerciseValidatorTests(TestCase):
             </entry>
         </exercise-container>''')
 
-        self.exercise_validator.validate(good_template_dom)
+        self.exercise_validator.validate(bad_template_dom)
 
     def test_validate_with_nuclear_notation_tag_no_atomic_number(self):
         good_template_dom = etree.fromstring('''
