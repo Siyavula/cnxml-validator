@@ -191,7 +191,7 @@ class ExerciseValidatorTests(TestCase):
 
     @raises(XmlValidationError)
     def test_validate_with_note_tag_with_incorrect_attribute(self):
-        good_template_dom = etree.fromstring('''
+        bad_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
             </meta>
@@ -202,6 +202,26 @@ class ExerciseValidatorTests(TestCase):
                 </problem>
                 <solution>
                     <note type="bob">
+                    </note>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        self.exercise_validator.validate(good_template_dom)
+
+    @raises(XmlValidationError)
+    def test_validate_with_note_tag_with_book_note_attribute(self):
+        bad_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <note type="warning">
+                    </note>
+                </problem>
+                <solution>
+                    <note type="warning">
                     </note>
                 </solution>
             </entry>
@@ -315,8 +335,7 @@ class ExerciseValidatorTests(TestCase):
     @raises(XmlValidationError)
     def test_validate_with_currency_tag_no_children_text(self):
         """
-        This tests that there are no errors when the currency tag 
-        has no children tags and no text in it
+        This tests that there the currency tag cannot contain text
         """
         bad_template_dom = etree.fromstring('''
         <exercise-container>
@@ -551,3 +570,30 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         assert self.exercise_validator.validate(good_template_dom) is None
+
+    @raises(XmlValidationError)
+    def test_validate_book_tag_is_invalid(self):
+        """
+        This tests that using a tag specific to books gives an error
+        """
+        bad_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <presentation>
+                        <title>The title</title>
+                        <url>google.com</url>
+                    </presentation>
+                </problem>
+                <solution>
+                    <presentation>
+                        <title>The title</title>
+                        <url>google.com</url>
+                    </presentation>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        self.exercise_validator.validate(bad_template_dom)
