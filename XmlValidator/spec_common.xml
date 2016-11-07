@@ -1034,7 +1034,7 @@ return ''
       </entry>
       <entry>
     <name>type</name>
-    <type>enum("note","tip","aside","important","inlinetip","instruction","instructions")</type>
+    <type>enum("note","tip","inlinetip","instruction","instructions")</type>
       </entry>
     </attributes>
     <children>
