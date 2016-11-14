@@ -121,10 +121,12 @@ return etree.tostring(newlist)
   <entry>
     <xpath>//list/item</xpath>
     <children>
+      <any-number>
       <one-of>
     <reference>block-or-minor-environment-elements</reference>
     <reference>inline-elements</reference>
       </one-of>
+    </any-number>
     </children>
     <conversion-callback name="latex learner correct teacher">
 return r'\item ' + self.text
@@ -2426,10 +2428,12 @@ return
       </entry>
     </attributes>
     <children>
+      <any-number>
       <one-of>
     <reference>block-or-minor-environment-elements</reference>
     <reference>inline-elements</reference>
       </one-of>
+    </any-number>
     </children>
   </entry>
 
