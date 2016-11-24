@@ -313,10 +313,7 @@ class ExerciseValidatorTests(TestCase):
         assert self.exercise_validator.validate(good_template_dom) is None
 
     def test_validate_with_currency_tag_no_children_no_text(self):
-        """
-        This tests that there are no errors when the currency tag 
-        has no children tags and no text in it.
-        """
+        """Test the currency tag with no children and no text."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -331,12 +328,10 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         assert self.exercise_validator.validate(good_template_dom) is None
-    
+
     @raises(XmlValidationError)
     def test_validate_with_currency_tag_no_children_text(self):
-        """
-        This tests that there the currency tag cannot contain text
-        """
+        """Test the currency tag with no children and text."""
         bad_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -351,12 +346,9 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         self.exercise_validator.validate(bad_template_dom)
-    
+
     def test_validate_currency_tag_with_only_symbol_child(self):
-        """
-        This tests that there are no errors when the currency tag 
-        only contains a symbol tag as a child
-        """
+        """Test the currency tag with only symbol child."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -373,12 +365,9 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         assert self.exercise_validator.validate(good_template_dom) is None
-    
+
     def test_validate_currency_tag_with_only_number_child(self):
-        """
-        This tests that there are no errors when the currency tag 
-        only contains a number tag as a child
-        """
+        """Test the currency tag with only number child."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -395,12 +384,9 @@ class ExerciseValidatorTests(TestCase):
         </exercise-container>''')
 
         assert self.exercise_validator.validate(good_template_dom) is None
-    
+
     def test_validate_currency_tag_with_both_children(self):
-        """
-        This tests that there are no errors when the currency tag 
-        contains both children, in a different order to that specified
-        """
+        """Test the currency tag with both children."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -420,9 +406,11 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_pspicture_tag_no_children(self):
         """
-        This should raise an error since pspicture is required to contain at 
+        Test validation of pspicture with no child tags.
+
+        This should raise an error since pspicture is required to contain at
         least either src or code child.
-        The problem lies in the unordered modifier since the spec 
+        The problem lies in the unordered modifier since the spec
         for that is a hack and matches incorrect patterns.
         This needs to be corrected.
         """
@@ -464,7 +452,7 @@ class ExerciseValidatorTests(TestCase):
         assert self.exercise_validator.validate(good_template_dom) is None
 
     def test_validate_with_style_tag(self):
-        """Testing that the style tag works and allows the font-color attribute."""
+        """Test that the style tag works and allows the font-color attribute."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -484,7 +472,7 @@ class ExerciseValidatorTests(TestCase):
     # @raises(XmlValidationError)
     def test_validate_with_number_tag(self):
         """
-        Testing that the number tag works and checks the type of number.
+        Test that the number tag works and checks the type of number.
 
         This really should fail, oh dear another bad instance.
         """
@@ -538,7 +526,7 @@ class ExerciseValidatorTests(TestCase):
         assert self.exercise_validator.validate(good_template_dom) is None
 
     def test_validate_with_quote_tag_block_children(self):
-        """Testing that the quote tag works with block children"""
+        """Test that the quote tag works with block children."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -555,7 +543,7 @@ class ExerciseValidatorTests(TestCase):
         assert self.exercise_validator.validate(good_template_dom) is None
 
     def test_validate_with_quote_tag_inline_children_no_para(self):
-        """Testing that the quote tag works with inline children and no para tag"""
+        """Test that the quote tag works with inline children and no para tag."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -563,6 +551,98 @@ class ExerciseValidatorTests(TestCase):
             <entry>
                 <problem>
                     <quote>Some <emphasis>emphasised</emphasis> text not in a paragraph</quote>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_table_tag_notes_and_latex(self):
+        """Test that the table tag works with multiple inline tags."""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <html5table>
+                        <tbody>
+                            <tr>
+                                <td><note type="inlinetip">inline tip</note> and
+                                <latex>x</latex></td>
+                            </tr>
+                        </tbody>
+                    </html5table>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_table_tag_notes_and_quotes(self):
+        """Test that the table tag works with multiple block tags."""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <html5table>
+                        <tbody>
+                            <tr>
+                                <td><note type="tip">tip</note> and
+                                <quote>quote</quote></td>
+                            </tr>
+                        </tbody>
+                    </html5table>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_table_tag_notes_and_emphasis(self):
+        """Test that the table tag works with inline and block tags."""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <html5table>
+                        <tbody>
+                            <tr>
+                                <td><note type="inlinetip">inline tip</note> and
+                                <emphasis>emphas</emphasis></td>
+                            </tr>
+                        </tbody>
+                    </html5table>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_list_tag_notes_and_emphasis(self):
+        """Test that the list tag works with inline and block tags."""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <list>
+                        <item><unit_number><number>5</number><unit>h</unit></unit_number> and
+                        <note type="inlinetip">emphas</note></item>
+                    </list>
                 </problem>
                 <solution>
                 </solution>

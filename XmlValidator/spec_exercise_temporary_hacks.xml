@@ -202,10 +202,12 @@ return etree.tostring(self, pretty_print=True)
 
     </attributes>
     <children>
+      <any-number>
       <one-of>
        <reference>block-or-minor-environment-elements</reference>
        <reference>inline-elements</reference>
       </one-of>
+    </any-number>
     </children>
   </entry>
 
