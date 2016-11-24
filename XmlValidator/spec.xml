@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <spec xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:style="http://siyavula.com/cnxml/style/0.1" xmlns:its="http://www.w3.org/2005/11/its">
 
-  <import>spec_common.xml</import>
+  <import>spec_books.xml</import>
 
   <entry>
     <xpath>/document</xpath>
