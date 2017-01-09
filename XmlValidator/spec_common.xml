@@ -158,6 +158,10 @@
   </entry>
 
   <entry>
+    <xpath>//pspicture/usepackage</xpath>
+  </entry>
+
+  <entry>
     <xpath>//pspicture/code</xpath>
     <children>
       <any-number>
