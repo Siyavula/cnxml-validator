@@ -278,11 +278,10 @@
   <entry>
     <xpath>//entry/response/query</xpath>
     <children>
-      <any-number>
-       <reference>block-or-minor-environment-elements</reference>
-       <reference>inline-elements</reference>
-       <element>radio</element>
-      </any-number>
+      <one-of>
+        <reference>block-or-minor-environment-elements</reference>
+        <reference>inline-elements</reference>
+      </one-of>
     </children>
   </entry>
 
@@ -299,7 +298,7 @@
   </entry>
 
   <entry>
-    <xpath>//entry/response/query//radio</xpath>
+    <xpath>//entry/response/query/radio</xpath>
     <children>
       <any-number>
        <element>button</element>
@@ -310,7 +309,7 @@
 
 
   <entry>
-    <xpath>//entry/response/query//button</xpath>
+    <xpath>//entry/response/query/radio//button</xpath>
     <children>
       <any-number>
         <reference>block-or-minor-environment-elements</reference>
