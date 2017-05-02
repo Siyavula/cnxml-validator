@@ -20,18 +20,18 @@
     <xpath>/exercise-container/meta</xpath>
     <children>
       <unordered>
-	<element>id</element>
-	<element>version</element>
-	<optional>random_seed</optional>
-	<optional>derived_from</optional>
-	<element>title</element>
-	<optional>authors</optional>
-	<optional>last_updated</optional>
-    <element>difficulty</element>
-	<element>language</element>
-	<any-number>
-	  <element>link</element>
-	</any-number>
+      	<element>id</element>
+      	<element>version</element>
+      	<optional>random_seed</optional>
+      	<optional>derived_from</optional>
+      	<element>title</element>
+      	<optional>authors</optional>
+      	<optional>last_updated</optional>
+        <element>difficulty</element>
+	     <element>language</element>
+	     <any-number>
+	       <element>link</element>
+	     </any-number>
       </unordered>
     </children>
     <notext/>
@@ -185,12 +185,12 @@
     <xpath>//entry/response/linked-concepts</xpath>
     <children>
       <one-of>
-    <any-number>
-      <element>value</element>
-    </any-number>
-    <any-number>
-      <element>concept</element>
-    </any-number>
+        <any-number>
+          <element>value</element>
+        </any-number>
+        <any-number>
+          <element>concept</element>
+        </any-number>
       </one-of>
     </children>
     <notext/>
@@ -200,7 +200,7 @@
     <xpath>//entry/response/linked-concepts/value</xpath>
     <children>
       <any-number>
-    <element>concept</element>
+        <element>concept</element>
       </any-number>
     </children>
     <notext/>
@@ -279,8 +279,8 @@
     <xpath>//entry/response/query</xpath>
     <children>
       <one-of>
-       <reference>block-or-minor-environment-elements</reference>
-       <reference>inline-elements</reference>
+        <reference>block-or-minor-environment-elements</reference>
+        <reference>inline-elements</reference>
       </one-of>
     </children>
   </entry>
@@ -295,6 +295,27 @@
       </entry>
     </attributes>
     <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//entry/response/query/radio</xpath>
+    <children>
+      <any-number>
+       <element>button</element>
+      </any-number>
+    </children>
+    <notext/>
+  </entry>
+
+
+  <entry>
+    <xpath>//entry/response/query/radio//button</xpath>
+    <children>
+      <any-number>
+        <reference>block-or-minor-environment-elements</reference>
+        <reference>inline-elements</reference>
+      </any-number>
+    </children>
   </entry>
 
 </spec>

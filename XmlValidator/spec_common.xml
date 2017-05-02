@@ -432,10 +432,11 @@ return ''
   <entry id="block-or-minor-environment-element">
     <children>
       <one-of>
-    <reference>block-with-para-element</reference>
-    <element>definition</element>
-    <element>quote</element>
-    <element>note</element>
+        <reference>block-with-para-element</reference>
+        <element>definition</element>
+        <element>quote</element>
+        <element>note</element>
+        <element>radio</element>
       </one-of>
     </children>
   </entry>
@@ -451,16 +452,16 @@ return ''
   <entry id="block-no-para-element">
     <children>
       <one-of>
-    <element>list</element>
-    <element>pspicture</element>
-    <element>tikzpicture</element>
-    <element>image</element>
-    <element>html5table</element>
-    <element>figure</element>
-    <element>equation</element>
-    <element>latex</element>
-    <element>correct</element>
-    <element>note</element>
+        <element>list</element>
+        <element>pspicture</element>
+        <element>tikzpicture</element>
+        <element>image</element>
+        <element>html5table</element>
+        <element>figure</element>
+        <element>equation</element>
+        <element>latex</element>
+        <element>correct</element>
+        <element>note</element>
       </one-of>
     </children>
   </entry>

@@ -1,13 +1,24 @@
 languages:
   Python: true
 engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - python
   fixme:
     enabled: true
   pep8:
     enabled: true
+    max-line-length: 100
+    checks:
+      E501:
+        enabled: false
   radon:
     enabled: true
 ratings:
   paths:
   - XmlValidator/**
   - "**.py"
+exclude_paths:
+  - "tests/**/*"
