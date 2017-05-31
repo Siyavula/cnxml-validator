@@ -2672,7 +2672,7 @@ return self.text
 environment = 'Note %s' % (self.attrib['type'].capitalize())
 return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
     </conversion-callback>
-    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
+    <conversion-callback name="html learner teacher html5"><!-- type already creates start of environment -->
     environment = 'note'
     if self.attrib['type'] != inlinetip:
         note = etree.Element('div')
