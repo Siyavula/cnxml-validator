@@ -444,7 +444,7 @@ return ''
   <entry id="block-or-minor-environment-elements">
     <children>
       <any-number>
-    <reference>block-or-minor-environment-element</reference>
+        <reference>block-or-minor-environment-element</reference>
       </any-number>
     </children>
   </entry>
@@ -469,7 +469,7 @@ return ''
   <entry id="block-no-para-elements">
     <children>
       <any-number>
-    <reference>block-no-para-element</reference>
+        <reference>block-no-para-element</reference>
       </any-number>
     </children>
   </entry>
@@ -477,8 +477,8 @@ return ''
   <entry id="block-with-para-element">
     <children>
       <one-of>
-    <element>para</element>
-    <reference>block-no-para-element</reference>
+        <element>para</element>
+        <reference>block-no-para-element</reference>
       </one-of>
     </children>
   </entry>
@@ -486,7 +486,7 @@ return ''
   <entry id="block-with-para-elements">
     <children>
       <any-number>
-    <reference>block-with-para-element</reference>
+        <reference>block-with-para-element</reference>
       </any-number>
     </children>
   </entry>
@@ -494,26 +494,27 @@ return ''
   <entry id="inline-element">
     <children>
       <one-of>
-    <element>br</element>
-    <element>space</element>
-    <element>newline</element>
-    <element>chem_compound</element>
-    <element>correct</element>
-    <element>currency</element>
-    <element>emphasis</element>
-    <element>latex</element>
-    <element>link</element>
-    <element>nth</element>
-    <element>nuclear_notation</element>
-    <element>number</element>
-    <element>percentage</element>
-    <element>spec_note</element>
-    <element>sub</element>
-    <element>sup</element>
-    <element>unit_number</element>
-    <element>unit</element>
-    <element>input</element>
-    <element>style</element>
+        <element>br</element>
+        <element>space</element>
+        <element>newline</element>
+        <element>chem_compound</element>
+        <element>correct</element>
+        <element>currency</element>
+        <element>emphasis</element>
+        <element>latex</element>
+        <element>link</element>
+        <element>nth</element>
+        <element>nuclear_notation</element>
+        <element>number</element>
+        <element>percentage</element>
+        <element>spec_note</element>
+        <element>sub</element>
+        <element>sup</element>
+        <element>unit_number</element>
+        <element>unit</element>
+        <element>input</element>
+        <element>style</element>
+        <element>checkmark</element>
       </one-of>
     </children>
   </entry>
@@ -521,7 +522,7 @@ return ''
   <entry id="inline-elements">
     <children>
       <any-number>
-    <reference>inline-element</reference>
+        <reference>inline-element</reference>
       </any-number>
     </children>
   </entry>
@@ -573,6 +574,10 @@ return ''
 
   <entry>
     <xpath>//percentage</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//checkmark</xpath>
   </entry>
 
   <entry>
@@ -1033,7 +1038,7 @@ return ''
     </children>
   </entry>
 
-<entry>
+  <entry>
     <xpath>//note</xpath>
     <attributes>
       <entry>
@@ -1052,7 +1057,7 @@ return ''
     </children>
   </entry>
 
-<entry>
+  <entry>
     <xpath>//style</xpath>
     <attributes>
       <entry>
@@ -1066,7 +1071,7 @@ return ''
     </children>
   </entry>
 
-<entry>
+  <entry>
     <xpath>//quote</xpath>
     <children>
       <reference>block-with-para-elements</reference>
@@ -1079,6 +1084,6 @@ return ''
     <default/>
       </entry>
     </attributes>
-</entry>
+  </entry>
 
 </spec>

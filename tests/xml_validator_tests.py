@@ -501,6 +501,7 @@ class ExerciseValidatorTests(TestCase):
         Language is not optional. Only valid language codes are accepted here: en, en-ZA, af, af-ZA.
         Link is optional and there can be multiple links.
         Link must be self-closing and contain rel and href as attributes
+        Order, shortcodes and sources are all optional.
         """
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -514,6 +515,13 @@ class ExerciseValidatorTests(TestCase):
                 </difficulty>
                 <language>en-ZA</language>
                 <link rel="textbook" href="content://siyavula.com/grade-10/#ESAAN"/>
+                <order>3</order>
+                <shortcodes>
+                  <shortcode>PP1SA13EnQ1</shortcode>
+                </shortcodes>
+                <sources>
+                  <source>Physics Paper 1, South Africa, 2013, Question 1</source>
+                </sources>
             </meta>
             <entry>
                 <problem>
