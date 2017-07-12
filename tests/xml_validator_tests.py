@@ -501,7 +501,6 @@ class ExerciseValidatorTests(TestCase):
         Language is not optional. Only valid language codes are accepted here: en, en-ZA, af, af-ZA.
         Link is optional and there can be multiple links.
         Link must be self-closing and contain rel and href as attributes
-        Order, shortcodes and sources are all optional.
         """
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -515,13 +514,6 @@ class ExerciseValidatorTests(TestCase):
                 </difficulty>
                 <language>en-ZA</language>
                 <link rel="textbook" href="content://siyavula.com/grade-10/#ESAAN"/>
-                <order>3</order>
-                <shortcodes>
-                  <shortcode>PP1SA13EnQ1</shortcode>
-                </shortcodes>
-                <sources>
-                  <source>Physics Paper 1, South Africa, 2013, Question 1</source>
-                </sources>
             </meta>
             <entry>
                 <problem>
@@ -659,11 +651,58 @@ class ExerciseValidatorTests(TestCase):
 
         assert self.exercise_validator.validate(good_template_dom) is None
 
+    def test_validate_with_checkmark_tag_not_in_latex(self):
+        """
+        Test that the checkmark tag works with inline and block tags (not latex).
+
+        In this case the checkmark tag is not inside a latex tag.
+        """
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <para><checkmark>Some text</checkmark></para>
+                    <note type="note">
+                        <checkmark/>
+                    </note>
+                    <list>
+                        <item><checkmark> this is correct</checkmark></item>
+                    </list>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_checkmark_tag_in_latex(self):
+        """Test that the checkmark tag works with inline and block latex."""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <para>
+                        <latex>x <checkmark/></latex>
+                    </para>
+                    <latex display="block">
+                        x = 2 <checkmark> for subtraction</checkmark>
+                    </latex>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
     @raises(XmlValidationError)
     def test_validate_book_tag_is_invalid(self):
-        """
-        This tests that using a tag specific to books gives an error
-        """
+        """Test that using a tag specific to books gives an error."""
         bad_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>

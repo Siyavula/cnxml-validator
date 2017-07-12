@@ -400,6 +400,7 @@ return ''
 	  <element>correct</element>
       <element>nuclear_notation</element>
       <element>spec_note</element>
+      <element>checkmark</element>
 	</one-of>
       </any-number>
     </children>

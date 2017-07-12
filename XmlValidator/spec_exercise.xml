@@ -29,9 +29,6 @@
       	<optional>last_updated</optional>
         <element>difficulty</element>
 	      <element>language</element>
-        <optional>order</optional>
-        <optional>sources</optional>
-        <optional>shortcodes</optional>
 	      <any-number>
 	        <element>link</element>
 	      </any-number>
@@ -150,48 +147,6 @@
       <pre-processing-callback>strip</pre-processing-callback>
     </text>
     <validation-callback>is_language_code</validation-callback>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/order</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-    <validation-callback>is_integer</validation-callback>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/sources</xpath>
-    <children>
-      <any-number>
-       <element>source</element>
-      </any-number>
-    </children>
-    <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/sources/source</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/shortcodes</xpath>
-    <children>
-      <any-number>
-       <element>shortcode</element>
-      </any-number>
-    </children>
-    <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/shortcodes/shortcode</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
   </entry>
 
   <entry>
