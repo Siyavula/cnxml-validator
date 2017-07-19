@@ -1049,7 +1049,7 @@ return ''
       </entry>
       <entry>
     <name>type</name>
-    <type>enum("note","tip","inlinetip","instruction","instructions")</type>
+    <type>enum("note","tip","inlinetip","instruction","instructions","examnote")</type>
       </entry>
     </attributes>
     <children>
