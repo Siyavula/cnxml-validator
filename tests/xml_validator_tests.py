@@ -651,11 +651,11 @@ class ExerciseValidatorTests(TestCase):
 
         assert self.exercise_validator.validate(good_template_dom) is None
 
-    def test_validate_with_checkmark_tag_not_in_latex(self):
+    def test_validate_with_check_tag_not_in_latex(self):
         """
-        Test that the checkmark tag works with inline and block tags (not latex).
+        Test that the check tag works with inline and block tags (not latex).
 
-        In this case the checkmark tag is not inside a latex tag.
+        In this case the check tag is not inside a latex tag.
         """
         good_template_dom = etree.fromstring('''
         <exercise-container>
@@ -663,12 +663,12 @@ class ExerciseValidatorTests(TestCase):
             </meta>
             <entry>
                 <problem>
-                    <para><checkmark>Some text</checkmark></para>
+                    <para><check>Some text</check></para>
                     <note type="note">
-                        <checkmark/>
+                        <check/>
                     </note>
                     <list>
-                        <item><checkmark> this is correct</checkmark></item>
+                        <item><check> this is correct</check></item>
                     </list>
                 </problem>
                 <solution>
@@ -678,8 +678,8 @@ class ExerciseValidatorTests(TestCase):
 
         assert self.exercise_validator.validate(good_template_dom) is None
 
-    def test_validate_with_checkmark_tag_in_latex(self):
-        """Test that the checkmark tag works with inline and block latex."""
+    def test_validate_with_check_tag_in_latex(self):
+        """Test that the check tag works with inline and block latex."""
         good_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
@@ -687,10 +687,10 @@ class ExerciseValidatorTests(TestCase):
             <entry>
                 <problem>
                     <para>
-                        <latex>x <checkmark/></latex>
+                        <latex>x <check/></latex>
                     </para>
                     <latex display="block">
-                        x = 2 <checkmark> for subtraction</checkmark>
+                        x = 2 <check> for subtraction</check>
                     </latex>
                 </problem>
                 <solution>
