@@ -400,7 +400,7 @@ return ''
 	  <element>correct</element>
       <element>nuclear_notation</element>
       <element>spec_note</element>
-      <element>checkmark</element>
+      <element>check</element>
 	</one-of>
       </any-number>
     </children>
@@ -515,7 +515,7 @@ return ''
         <element>unit</element>
         <element>input</element>
         <element>style</element>
-        <element>checkmark</element>
+        <element>check</element>
       </one-of>
     </children>
   </entry>
@@ -578,7 +578,7 @@ return ''
   </entry>
 
   <entry>
-    <xpath>//checkmark</xpath>
+    <xpath>//check</xpath>
   </entry>
 
   <entry>
