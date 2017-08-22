@@ -28,10 +28,10 @@
       	<optional>authors</optional>
       	<optional>last_updated</optional>
         <element>difficulty</element>
-	     <element>language</element>
-	     <any-number>
-	       <element>link</element>
-	     </any-number>
+	      <element>language</element>
+	      <any-number>
+	        <element>link</element>
+	      </any-number>
       </unordered>
     </children>
     <notext/>

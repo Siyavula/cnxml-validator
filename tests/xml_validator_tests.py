@@ -651,11 +651,58 @@ class ExerciseValidatorTests(TestCase):
 
         assert self.exercise_validator.validate(good_template_dom) is None
 
+    def test_validate_with_check_tag_not_in_latex(self):
+        """
+        Test that the check tag works with inline and block tags (not latex).
+
+        In this case the check tag is not inside a latex tag.
+        """
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <para><check>Some text</check></para>
+                    <note type="note">
+                        <check/>
+                    </note>
+                    <list>
+                        <item><check> this is correct</check></item>
+                    </list>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
+    def test_validate_with_check_tag_in_latex(self):
+        """Test that the check tag works with inline and block latex."""
+        good_template_dom = etree.fromstring('''
+        <exercise-container>
+            <meta>
+            </meta>
+            <entry>
+                <problem>
+                    <para>
+                        <latex>x <check/></latex>
+                    </para>
+                    <latex display="block">
+                        x = 2 <check> for subtraction</check>
+                    </latex>
+                </problem>
+                <solution>
+                </solution>
+            </entry>
+        </exercise-container>''')
+
+        assert self.exercise_validator.validate(good_template_dom) is None
+
     @raises(XmlValidationError)
     def test_validate_book_tag_is_invalid(self):
-        """
-        This tests that using a tag specific to books gives an error
-        """
+        """Test that using a tag specific to books gives an error."""
         bad_template_dom = etree.fromstring('''
         <exercise-container>
             <meta>
