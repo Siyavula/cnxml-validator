@@ -438,6 +438,7 @@ return ''
         <element>quote</element>
         <element>note</element>
         <element>radio</element>
+        <element>centre</element>
       </one-of>
     </children>
   </entry>
@@ -640,6 +641,18 @@ return ''
       </any-number>
     </children>
   </entry>
+
+  <entry>
+    <xpath>//centre</xpath>
+    <children>
+      <any-number>
+        <one-of>
+          <reference>block-no-para-element</reference>
+          <reference>inline-element</reference>
+        </one-of>
+      </any-number>
+    </children>
+  </entry>  
 
   <entry>
     <xpath>//spec_note</xpath>
