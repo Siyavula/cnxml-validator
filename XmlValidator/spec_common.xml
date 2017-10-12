@@ -464,6 +464,7 @@ return ''
         <element>latex</element>
         <element>correct</element>
         <element>note</element>
+        <element>centre</element>
       </one-of>
     </children>
   </entry>
