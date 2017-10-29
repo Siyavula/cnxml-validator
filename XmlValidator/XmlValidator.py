@@ -14,6 +14,9 @@ class XmlValidationError(Exception):
 class XmlValidator(object):
 
     def __init__(self, iSpec):
+        self.warnings = []
+        self.errors = []
+
         if isinstance(iSpec, basestring):
             # This parser automatically strips comments
             parser = etree.ETCompatXMLParser()
@@ -53,14 +56,6 @@ class XmlValidator(object):
 
     def __get_full_dom_path(self, iNode):
         return utils.get_full_dom_path(iNode, iSpec=self.spec)
-
-    def __log_warning_message(self, iMessage):
-        # TODO: Fix this. This is so ugly - printing to stdout rather than returning the warnings
-        # subject to the desireability of seeing those warnings but leave this in for now.
-        return utils.warning_message(iMessage)
-
-    def __log_error_message(self, iMessage):
-        raise XmlValidationError(iMessage.encode('utf-8'))
 
     def __validate_traverse_children_xml(self, iPatternNode):
         if iPatternNode is None:
@@ -117,7 +112,7 @@ class XmlValidator(object):
         # Get associated specification node
         specEntry = self.documentSpecEntries.get(iNode)
         if specEntry is None:
-            self.__log_warning_message('Unhandled element at ' + self.__get_full_dom_path(iNode))
+            self.warnings.append('Unhandled element at ' + self.__get_full_dom_path(iNode))
             # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
             return
 
@@ -133,9 +128,10 @@ class XmlValidator(object):
             if len(nodeAttributes) > 0:
                 if not ((nodeAttributes.keys() == ['id', ]) or (
                         iNode.tag[:36] == '{http://www.w3.org/1998/Math/MathML}')):
-                    self.__log_error_message(
+                    self.errors.append(
                         'Extra attributes in {}; {}'.format(
                             self.__get_full_dom_path(iNode), repr(iNode.attrib)))
+
         else:
             for entry in specAttributes:
                 attributeName = entry.find('name').text
@@ -183,7 +179,7 @@ class XmlValidator(object):
                     else:
                         passed = False
                     if not passed:
-                        self.__log_error_message(
+                        self.errors.append(
                             'Attribute value %s does not conform to type %s in ' % (
                                 repr(attributeValue),
                                 repr(attributeType)) + self.__get_full_dom_path(iNode))
@@ -199,7 +195,7 @@ class XmlValidator(object):
         if regex is None:
             # No children
             if len(children) != 0:
-                self.__log_error_message(
+                self.errors.append(
                     'No children expected in {}\n'
                     '*** These are superfluous children:\n'
                     '{}\n*** The offending element looks like this:\n{}'.format(
@@ -215,7 +211,7 @@ class XmlValidator(object):
             else:
                 childrenPattern = ''
             if pattern.match(childrenPattern) is None:
-                self.__log_error_message(
+                self.errors.append(
                     'Child match failed for a {} element.\n'
                     '*** I was expecting the children to follow this pattern:\n{}\n'
                     '*** Instead I got these children:\n{}\n'
@@ -242,7 +238,7 @@ class XmlValidator(object):
                         if iCleanUp:
                             child.tail = None
             if text != '':
-                self.__log_error_message(
+                self.errors.append(
                     '{} element must not have any text.\n'
                     '*** Found the following text {}: {}\n'
                     '*** The offending element looks like this: {}'.format(
@@ -253,10 +249,10 @@ class XmlValidator(object):
         callbackNode = specEntry.find('validation-callback')
         if callbackNode is not None:
             callbackFunctionName = callbackNode.text.strip()
-            from . import callbacks
+            from . import callbacks  # noqa
             callbackFunction = eval('callbacks.' + callbackFunctionName)
             if not callbackFunction(iNode):
-                self.__log_error_message(
+                self.errors.append(
                     "Validation callback {}\n"
                     "failed on the following element:\n{}".format(
                         repr(callbackFunctionName), etree.tostring(iNode)))
@@ -286,10 +282,8 @@ class XmlValidator(object):
                     for node in headerNode.getchildren():
                         problemNode.insert(0, node)
                 if contentNode[index].tag == 'response':
-                    responseNode = contentNode[index]
                     index += 1
-                else:
-                    responseNode = None
+
                 solutionNode = contentNode[index]
                 assert solutionNode.tag == 'solution'
                 solutionNode.tag = 'answer'
@@ -319,10 +313,8 @@ class XmlValidator(object):
                     for node in headerNode.getchildren():
                         problemNode.insert(0, node)
                 if contentNode[index].tag == 'response':
-                    responseNode = contentNode[index]
                     del contentNode[index]
-                else:
-                    responseNode = None
+
                 solutionNode = contentNode[index]
                 assert solutionNode.tag == 'solution'
                 if (len(solutionNode) > 0) and (solutionNode[0].tag == 'step'):
