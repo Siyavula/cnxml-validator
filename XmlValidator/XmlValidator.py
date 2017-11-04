@@ -8,10 +8,13 @@ from lxml import etree
 
 
 class XmlValidationError(Exception):
+    """Generic exception for any error raised during validation of XML content."""
+
     pass
 
 
 class XmlValidator(object):
+    """Validate the XML in a given document according to a specific XML rules file."""
 
     def __init__(self, iSpec):
         self.warnings = []
@@ -72,12 +75,12 @@ class XmlValidator(object):
                         child for child in self.spec if child.attrib.get('id') == tag][0]
                 except IndexError:
                     raise ValueError(
-                        "Could not find referenced entry %s in specification" % (repr(tag)))
+                        "Could not find referenced entry {} in specification".format(repr(tag)))
                 return self.__validate_traverse_children_xml(referenceEntry.find('children'))
             if iPatternNode.tag == 'optional':
-                return '(' + tag + ',)?'
+                return '({},)?'.format(tag)
             else:
-                return '(' + tag + ',)'
+                return '({},)'.format(tag)
         else:
             assert iPatternNode.tag in [
                 'children', 'optional', 'subset-of', 'any-number', 'one-of',
@@ -85,24 +88,25 @@ class XmlValidator(object):
             subPatterns = [self.__validate_traverse_children_xml(child) for child
                            in iPatternNode.getchildren()]
             if iPatternNode.tag == 'children':
-                return '(' + ''.join(subPatterns) + ')'
+                return '({})'.format(''.join(subPatterns))
             elif iPatternNode.tag == 'optional':
-                return '((' + ''.join(subPatterns) + ')?)'
+                return '(({})?)'.format(''.join(subPatterns))
             elif iPatternNode.tag == 'subset-of':
-                return '((' + '|'.join(subPatterns) + ')*)'
+                return '(({})*)'.format('|'.join(subPatterns))
             elif iPatternNode.tag == 'any-number':
-                return '((' + ''.join(subPatterns) + '){%s,%s})' % (
-                    iPatternNode.attrib.get('from', ''), iPatternNode.attrib.get('to', ''))
+                return '((%s){%s,%s})' % (
+                    ''.join(subPatterns), iPatternNode.attrib.get('from', ''),
+                    iPatternNode.attrib.get('to', ''))
             elif iPatternNode.tag == 'one-of':
-                return '(' + '|'.join(subPatterns) + ')'
+                return '({})'.format('|'.join(subPatterns))
             elif iPatternNode.tag == 'unordered':
                 # TODO: this is currently broken and will also match repetitions of the
                 # elements or a subset of the elements. it will match correct patterns,
                 # but will also match some incorrect ones
-                return '((' + '|'.join(subPatterns) + ')*)'
+                return '(({})*)'.format('|'.join(subPatterns))
             else:
                 assert False
-                return '(' + ''.join(subPatterns) + ')'
+                return '({})'.format(''.join(subPatterns))
 
     def __validate_traverse(self, iNode, iCleanUp):
         children = iNode.getchildren()
@@ -112,7 +116,7 @@ class XmlValidator(object):
         # Get associated specification node
         specEntry = self.documentSpecEntries.get(iNode)
         if specEntry is None:
-            self.warnings.append('Unhandled element at ' + self.__get_full_dom_path(iNode))
+            self.warnings.append('Unhandled element at {}'.format(self.__get_full_dom_path(iNode)))
             # TODO: This will ignore any node without matching xpath in spec. Be more strict later.
             return
 
@@ -140,7 +144,7 @@ class XmlValidator(object):
                 if attributeValue is None:
                     specDefaultNode = entry.find('default')
                     if specDefaultNode is None:
-                        raise KeyError("Missing attribute '%s' in %s" % (
+                        self.errors.append("Missing attribute '{}' in {}".format(
                             attributeName, self.__get_full_dom_path(iNode)))
                     elif iCleanUp and (specDefaultNode.text != ''):
                         iNode.attrib[self.__tag_prefix_to_namespace(
@@ -180,14 +184,14 @@ class XmlValidator(object):
                         passed = False
                     if not passed:
                         self.errors.append(
-                            'Attribute value %s does not conform to type %s in ' % (
-                                repr(attributeValue),
-                                repr(attributeType)) + self.__get_full_dom_path(iNode))
+                            'Attribute value {} does not conform to type {} in {}'.format(
+                                repr(attributeValue), repr(attributeType),
+                                self.__get_full_dom_path(iNode)))
                     del nodeAttributes[attributeName]
             if len(nodeAttributes) > 0:
                 # There are still unhandled node attributes
                 raise KeyError(
-                    "Unknown attribute(s) '%s' in %s" % (
+                    "Unknown attribute(s) '{}' in {}".format(
                         "', '".join(nodeAttributes.keys()), self.__get_full_dom_path(iNode)))
 
         # Validate children: build regex from spec
@@ -233,7 +237,7 @@ class XmlValidator(object):
                     if child.tail is not None:
                         text = child.tail.strip()
                         if text != '':
-                            location = 'after a %s child' % child.tag
+                            location = 'after a {} child'.format(child.tag)
                             break
                         if iCleanUp:
                             child.tail = None
@@ -258,8 +262,8 @@ class XmlValidator(object):
                         repr(callbackFunctionName), etree.tostring(iNode)))
 
     def monassis_to_cnxml(self):
-        assert len(self.dom.xpath('//monassis-template')
-                   ) == 0, "monassis-template elements are deprecated"
+        assert len(
+            self.dom.xpath('//monassis-template')) == 0, "monassis-template elements are deprecated"
         for templateNode in self.dom.xpath('//monassis-template'):
             renderer = templateNode.attrib.get('rendered-as', 'exercise')
             if renderer == "example":
@@ -330,7 +334,7 @@ class XmlValidator(object):
                         solutionNode.append(child)
                 templateNode.getparent().replace(templateNode, contentNode)
             else:
-                raise ValueError("Unknown renderer for monassis template: %s" % repr(renderer))
+                raise ValueError("Unknown renderer for monassis template: {}".format(renderer))
 
     def convert_exercises(self, dom):
         for exercisesNode in dom.xpath('//exercises'):
@@ -392,6 +396,7 @@ class XmlValidator(object):
 
 
 class ExerciseValidator(XmlValidator):
+    """Validate the XML created in practice exercises."""
 
     def __init__(self):
         myPath = os.path.realpath(os.path.dirname(__file__))

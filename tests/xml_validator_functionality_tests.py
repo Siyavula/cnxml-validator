@@ -5,10 +5,9 @@ For example if a certain attribute is allowed or not, what type of child tags ar
 """
 
 from lxml import etree
-from nose.tools import raises
 from unittest import TestCase
 
-from XmlValidator import XmlValidator, XmlValidationError
+from XmlValidator import XmlValidator
 
 
 class XmlValidatorChildrenUncombinedTests(TestCase):
@@ -119,7 +118,7 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <test-child-optional></test-child-optional>
             </test-element>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_unordered_children(self):
         """
@@ -133,7 +132,7 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <test-child-required></test-child-required>
             </test-element-unordered-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_oneof_children(self):
         """
@@ -146,7 +145,7 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <test-child-required></test-child-required>
             </test-element-oneof-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_anynumber_children(self):
         """Test a tag that contains any number of the listed child tags."""
@@ -156,7 +155,7 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <test-child-required></test-child-required>
             </test-element-anynumber-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_subsetof_children(self):
         """
@@ -170,7 +169,7 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <test-child-required-two></test-child-required-two>
             </test-element-subsetof-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_reference_children(self):
         """Test a tag that references another entry for the child tag."""
@@ -179,9 +178,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <reference-child></reference-child>
             </test-element-reference-child>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_raises_error(self):
         """
         Test the basic pattern of a tag with one required child and one optional child.
@@ -194,6 +192,16 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
             </test-element>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ['Child match failed for a /test-element element.\n'
+             '*** I was expecting the children to follow this pattern:\n'
+             '((test-child-required,)(test-child-optional,)?)\n'
+             '*** Instead I got these children:\ntest-child-optional,\n'
+             '*** The offending element looks like this:\n'
+             '<test-element>\n'
+             '                <test-child-optional></test-child-optional>\n'
+             '            </test-element>\n'])
 
     # @raises(XmlValidationError)
     def test_validate_with_invalid_xml_unordered_children(self):
@@ -212,9 +220,8 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
                 <test-child-optional></test-child-optional>
             </test-element-unordered-children>''')
 
-        assert self.xml_validator.validate(bad_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(bad_template_dom))
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_oneof_children(self):
         """
         Test a tag that contains only one of the listed child tags.
@@ -228,6 +235,17 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
             </test-element-oneof-children>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ['Child match failed for a /test-element-oneof-children element.\n'
+             '*** I was expecting the children to follow this pattern:\n'
+             '(((test-child-required,)|(test-child-required-two,)))\n'
+             '*** Instead I got these children:\ntest-child-required,test-child-required-two,\n'
+             '*** The offending element looks like this:\n'
+             '<test-element-oneof-children>\n'
+             '                <test-child-required></test-child-required>\n'
+             '                <test-child-required-two></test-child-required-two>\n'
+             '            </test-element-oneof-children>\n'])
 
     # is there a fail test for anynumber? Should perhaps be 0?
 
@@ -352,7 +370,7 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                     <test-child-optional></test-child-optional>
                 </test-element>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_oneof_anynumber_children(self):
         """
@@ -370,9 +388,8 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 <test-child-required-two></test-child-required-two>
             </test-element-oneof-anynumber-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_oneof_anynumber_children_raises_error(self):
         """
         Test a tag that contains any-number nested inside one-of.
@@ -388,6 +405,15 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 </test-element-oneof-anynumber-children>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ['Child match failed for a /test-element-oneof-anynumber-children element.\n'
+             '*** I was expecting the children to follow this pattern:\n'
+             '(((((test-child-required,)(test-child-required-two,)){,})))\n'
+             '*** Instead I got these children:\ntest-child-required-two,\n'
+             '*** The offending element looks like this:\n<test-element-oneof-anynumber-children>\n'
+             '                    <test-child-required-two></test-child-required-two>\n'
+             '                </test-element-oneof-anynumber-children>\n'])
 
     def test_validate_with_valid_xml_anynumber_oneof_children(self):
         """
@@ -403,7 +429,7 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 <test-child-required></test-child-required>
             </test-element-anynumber-oneof-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     # @raises(XmlValidationError)
     def test_validate_with_invalid_xml_anynumber_oneof_children_raises_error(self):
@@ -420,7 +446,7 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                     <test-child-required-two></test-child-required-two>
                 </test-element-anynumber-oneof-children>''')
 
-        assert self.xml_validator.validate(bad_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(bad_template_dom))
 
     def test_validate_with_valid_xml_unordered_anynumber_children(self):
         """
@@ -436,9 +462,8 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 <test-child-required-two></test-child-required-two>
             </test-element-unordered-anynumber-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_unordered_anynumber_children_raises_error(self):
         """
         Test a tag that contains any-number nested inside unordered.
@@ -454,6 +479,17 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 </test-element-unordered-anynumber-children>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ['Child match failed for a /test-element-unordered-anynumber-children element.\n'
+             '*** I was expecting the children to follow this pattern:\n'
+             '((((((test-child-required,)(test-child-required-two,)){,}))*))\n'
+             '*** Instead I got these children:\ntest-child-required-two,test-child-required,\n'
+             '*** The offending element looks like this:\n'
+             '<test-element-unordered-anynumber-children>\n'
+             '                    <test-child-required-two></test-child-required-two>\n'
+             '                    <test-child-required></test-child-required>\n'
+             '                </test-element-unordered-anynumber-children>\n'])
 
     def test_validate_with_valid_xml_anynumber_from_children(self):
         """Test a tag that contains any-number from 1 of the children."""
@@ -463,15 +499,21 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 <test-child-required></test-child-required>
             </test-element-anynumber-from-children>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_anynumber_from_children_raises_error(self):
         """Test a tag that contains any-number from 1 of the children."""
         bad_template_dom = etree.fromstring('''
             <test-element-anynumber-from-children></test-element-anynumber-from-children>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ['Child match failed for a /test-element-anynumber-from-children element.\n'
+             '*** I was expecting the children to follow this pattern:\n'
+             '((((test-child-required,)){1,}))\n*** Instead I got these children:\n\n'
+             '*** The offending element looks like this:\n'
+             '<test-element-anynumber-from-children></test-element-anynumber-from-children>\n'])
 
 
 class XmlValidatorTagAttributes(TestCase):
@@ -558,7 +600,7 @@ class XmlValidatorTagAttributes(TestCase):
         good_template_dom = etree.fromstring('''
             <test-element-no-attributes></test-element-no-attributes>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_string_attribute_no_default(self):
         """Test the basic pattern of a tag with an attribute of type string."""
@@ -566,7 +608,7 @@ class XmlValidatorTagAttributes(TestCase):
             <test-element-string-attribute-no-default id="my id">
             </test-element-string-attribute-no-default>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_integer_attribute_no_default(self):
         """Test the basic pattern of a tag with an attribute of type integer."""
@@ -574,7 +616,7 @@ class XmlValidatorTagAttributes(TestCase):
             <test-element-integer-attribute-no-default precision="5">
             </test-element-integer-attribute-no-default>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_enum_attribute_no_default_block_type(self):
         """Test the basic pattern of a tag with an attribute of type enum."""
@@ -582,7 +624,7 @@ class XmlValidatorTagAttributes(TestCase):
             <test-element-enum-attribute-no-default type="block">
             </test-element-enum-attribute-no-default>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_string_attribute_with_default(self):
         """Test the basic pattern of a tag with an attribute of type string."""
@@ -590,7 +632,7 @@ class XmlValidatorTagAttributes(TestCase):
             <test-element-string-attribute-with-default>
             </test-element-string-attribute-with-default>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_integer_attribute_with_default(self):
         """
@@ -602,7 +644,7 @@ class XmlValidatorTagAttributes(TestCase):
             <test-element-integer-attribute-with-default>
             </test-element-integer-attribute-with-default>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
     def test_validate_with_valid_xml_enum_attribute_no_default(self):
         """
@@ -614,9 +656,8 @@ class XmlValidatorTagAttributes(TestCase):
             <test-element-enum-attribute-with-default>
             </test-element-enum-attribute-with-default>''')
 
-        assert self.xml_validator.validate(good_template_dom) is None
+        self.assertIsNone(self.xml_validator.validate(good_template_dom))
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_integer_attribute_no_default(self):
         """Test the basic pattern of a tag with an attribute of type integer."""
         bad_template_dom = etree.fromstring('''
@@ -624,8 +665,11 @@ class XmlValidatorTagAttributes(TestCase):
             </test-element-integer-attribute-no-default>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ["Attribute value 'ten' does not conform to type 'integer' in "
+             "/test-element-integer-attribute-no-default"])
 
-    @raises(XmlValidationError)
     def test_validate_with_invalid_xml_enum_attribute_no_default(self):
         """Test the basic pattern of a tag with an attribute of type enum."""
         bad_template_dom = etree.fromstring('''
@@ -633,3 +677,7 @@ class XmlValidatorTagAttributes(TestCase):
             </test-element-enum-attribute-no-default>''')
 
         self.xml_validator.validate(bad_template_dom)
+        self.assertEqual(
+            self.xml_validator.errors,
+            ['Attribute value \'ten\' does not conform to type "enum(\'inline\', \'block\')" in '
+             '/test-element-enum-attribute-no-default'])
