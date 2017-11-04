@@ -7,7 +7,7 @@
   <entry>
     <xpath>/exercise-container</xpath>
     <children>
-      <element>meta</element>
+      <element>title</element>
       <one-of>
        <element>multi-part</element>
        <element>entry</element>
@@ -17,154 +17,10 @@
   </entry>
 
   <entry>
-    <xpath>/exercise-container/meta</xpath>
-    <children>
-      <unordered>
-      	<element>id</element>
-      	<element>version</element>
-      	<optional>random_seed</optional>
-      	<optional>derived_from</optional>
-      	<element>title</element>
-      	<optional>authors</optional>
-      	<optional>last_updated</optional>
-        <element>difficulty</element>
-	      <element>language</element>
-	      <any-number>
-	        <element>link</element>
-	      </any-number>
-      </unordered>
-    </children>
-    <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/id</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/version</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/random_seed</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-    <validation-callback>is_integer</validation-callback>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/derived_from</xpath>
-    <children>
-      <unordered>
-       <element>id</element>
-       <element>version</element>
-       <optional>random_seed</optional>
-       <element>relationship</element>
-      </unordered>
-    </children>
-    <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/derived_from/id</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/derived_from/version</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/derived_from/random_seed</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-    <validation-callback>is_integer</validation-callback>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/derived_from/relationship</xpath>
-    <!-- translation, copy (exactly the same), correction (small fix), improvement (larger edits), rework (basis for a new exercise)  -->
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/title</xpath>
+    <xpath>/exercise-container/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/authors</xpath>
-    <children>
-      <any-number>
-       <element>author</element>
-      </any-number>
-    </children>
-    <notext/>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/authors/author</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/difficulty</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/last_updated</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-    <validation-callback>is_iso8601</validation-callback>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/language</xpath>
-    <text>
-      <pre-processing-callback>strip</pre-processing-callback>
-    </text>
-    <validation-callback>is_language_code</validation-callback>
-  </entry>
-
-  <entry>
-    <xpath>/exercise-container/meta/link</xpath>
-    <attributes>
-      <entry>
-       <name>rel</name>
-       <type>enum('textbook', 'conceptmap', 'shortcode')</type>
-        <!-- textbook => this template should appear in the chapter or section associated with the given textbook path -->
-        <!-- conceptmap => this template depends on the given concept map node -->
-        <!-- shortcode => this is the static exercise associated with the given shortcode -->
-      </entry>
-      <entry>
-       <name>href</name>
-       <type>url</type>
-      </entry>
-    </attributes>
-    <notext/>
   </entry>
 
   <entry>
