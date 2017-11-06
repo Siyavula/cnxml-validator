@@ -81,6 +81,7 @@
       <element>table</element>
       <element>pspicture</element>
       <element>tikzpicture</element>
+      <element>custompackage</element>
       <element>image</element>
       <element>para</element>
       <element>equation</element>
@@ -257,6 +258,74 @@
   </entry>
 
   <entry>
+    <xpath>//custompackage</xpath>
+    <attributes>
+      <entry>
+    <name>id</name>
+    <type>string</type>
+    <default/>
+      </entry>
+      <entry>
+    <name>style:width</name>
+    <type>number</type>
+    <default/>
+      </entry>
+    </attributes>
+    <children>
+      <unordered>
+    <any-number>
+      <element>usepackage</element>
+    </any-number>
+    <any-number>
+      <element>include</element>
+    </any-number>
+    <optional>width</optional>
+    <optional>height</optional>
+    <one-of>
+      <element>code</element>
+      <element>src</element>
+    </one-of>
+      </unordered>
+    </children>
+    <notext/>
+  </entry>
+
+  <entry>
+    <xpath>//custompackage/usepackage</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//custompackage/width</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//custompackage/height</xpath>
+  </entry>
+
+  <entry>
+    <xpath>//custompackage/code</xpath>
+    <children>
+      <any-number>
+    <one-of>
+      <element>unit_number</element>
+      <element>number</element>
+      <element>unit</element>
+      <element>percentage</element>
+      <element>currency</element>
+      <element>chem_compound</element>
+      <element>spec_note</element>
+      <element>nuclear_notation</element>
+      <element>nth</element>
+    </one-of>
+      </any-number>
+    </children>
+  </entry>
+
+  <entry>
+    <xpath>//custompackage/src</xpath>
+  </entry>
+
+  <entry>
     <xpath>//image</xpath>
     <attributes>
       <entry>
@@ -293,8 +362,8 @@
     <children>
       <subset-of>
         <element>src</element>
-	<element>width</element>
-	<element>height</element>
+    <element>width</element>
+    <element>height</element>
       </subset-of>
       <any-number>
           <element>attribution</element>
@@ -390,18 +459,18 @@ return ''
     </attributes>
     <children>
       <any-number>
-	<one-of>
-	  <element>number</element>
-	  <element>unit</element>
-	  <element>unit_number</element>
-	  <element>percentage</element>
-	  <element>currency</element>
-	  <element>chem_compound</element>
-	  <element>correct</element>
+    <one-of>
+      <element>number</element>
+      <element>unit</element>
+      <element>unit_number</element>
+      <element>percentage</element>
+      <element>currency</element>
+      <element>chem_compound</element>
+      <element>correct</element>
       <element>nuclear_notation</element>
       <element>spec_note</element>
       <element>check</element>
-	</one-of>
+    </one-of>
       </any-number>
     </children>
   </entry>
@@ -457,6 +526,7 @@ return ''
         <element>list</element>
         <element>pspicture</element>
         <element>tikzpicture</element>
+        <element>custompackage</element>
         <element>image</element>
         <element>html5table</element>
         <element>figure</element>
@@ -663,9 +733,9 @@ return ''
     <xpath>//nuclear_notation</xpath>
     <children>
       <unordered>
-	<element>symbol</element>
-	<optional>mass_number</optional>
-	<optional>atomic_number</optional>
+    <element>symbol</element>
+    <optional>mass_number</optional>
+    <optional>atomic_number</optional>
       </unordered>
     </children>
     <notext/>
