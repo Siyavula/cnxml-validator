@@ -75,85 +75,90 @@ class ExerciseValidatorTests(TestCase):
         Response is actually optional since that is not needed for entries in books.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem></problem>
                 <response></response>
                 <solution></solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
         self.assertEqual(self.exercise_validator.warnings, [])
 
     def test_validate_with_invalid_xml(self):
-        invalid_template_dom = etree.fromstring('<exercise-container></exercise-container>')
+        invalid_template_dom = etree.fromstring('<template></template>')
 
         self.exercise_validator.validate(invalid_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
-            ['Child match failed for a /exercise-container element.\n'
+            ['Child match failed for a /template element.\n'
              '*** I was expecting the children to follow this pattern:\n'
              '((title,)((multi-part,)|(entry,)))\n'
              '*** Instead I got these children:\n\n'
              '*** The offending element looks like this:\n'
-             '<exercise-container></exercise-container>\n'])
+             '<template></template>\n'])
 
     def test_validate_with_meta_tag(self):
         invalid_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <meta></meta>
             <entry>
                 <problem></problem>
                 <solution></solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(invalid_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
-            ['Child match failed for a /exercise-container element.\n*** '
-             'I was expecting the children to follow this pattern:\n((title,)((multi-part,)|(entry,)))\n'
+            ['Child match failed for a /template element.\n*** '
+             'I was expecting the children to follow this pattern:\n'
+             '((title,)((multi-part,)|(entry,)))\n'
              '*** Instead I got these children:\nmeta,entry,\n*** '
-             'The offending element looks like this:\n<exercise-container>\n            '
-             '<meta></meta>\n            <entry>\n                <problem></problem>\n                '
-             '<solution></solution>\n            </entry>\n        </exercise-container>\n'])
+             'The offending element looks like this:\n<template>\n            '
+             '<meta></meta>\n            <entry>\n'
+             '                <problem></problem>\n                '
+             '<solution></solution>\n            </entry>\n        </template>\n'])
 
     def test_validate_missing_title(self):
         invalid_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <entry>
                 <problem></problem>
                 <solution></solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(invalid_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
-            ['Child match failed for a /exercise-container element.\n*** '
-             'I was expecting the children to follow this pattern:\n((title,)((multi-part,)|(entry,)))\n'
-             '*** Instead I got these children:\nentry,\n*** The offending element looks like this:\n'
-             '<exercise-container>\n            <entry>\n                <problem></problem>'
+            ['Child match failed for a /template element.\n*** '
+             'I was expecting the children to follow this pattern:\n'
+             '((title,)((multi-part,)|(entry,)))\n'
+             '*** Instead I got these children:\nentry,\n'
+             '*** The offending element looks like this:\n'
+             '<template>\n            <entry>\n                <problem></problem>'
              '\n                <solution></solution>\n            </entry>\n        '
-             '</exercise-container>\n'])
+             '</template>\n'])
 
     def test_validate_missing_entry(self):
         invalid_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(invalid_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
-            ['Child match failed for a /exercise-container element.\n*** '
-             'I was expecting the children to follow this pattern:\n((title,)((multi-part,)|(entry,)))\n'
+            ['Child match failed for a /template element.\n*** '
+             'I was expecting the children to follow this pattern:\n'
+             '((title,)((multi-part,)|(entry,)))\n'
              '*** Instead I got these children:\ntitle,\n*** '
-             'The offending element looks like this:\n<exercise-container>\n            '
-             '<title></title>\n        </exercise-container>\n'])
+             'The offending element looks like this:\n<template>\n            '
+             '<title></title>\n        </template>\n'])
 
     def test_validate_title_tag_with_other_elements(self):
         """
@@ -164,14 +169,15 @@ class ExerciseValidatorTests(TestCase):
         spec_note, sub, sup, unit_number, unit, input, style, check
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
-            <title><latex>x</latex> makes <sup>the</sup> title. <unit>Units</unit> are needed.</title>
+        <template>
+            <title><latex>x</latex> makes <sup>the</sup> title. '
+            '<unit>Units</unit> are needed.</title>
             <entry>
                 <problem></problem>
                 <response></response>
                 <solution></solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -179,7 +185,7 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_note_tag(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -189,7 +195,7 @@ class ExerciseValidatorTests(TestCase):
                     <note type="note"></note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -197,7 +203,7 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_note_tag_with_variety_of_typical_subtags(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -215,7 +221,7 @@ class ExerciseValidatorTests(TestCase):
                     </note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -223,7 +229,7 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_note_tag_with_text(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -233,7 +239,7 @@ class ExerciseValidatorTests(TestCase):
                     <note type="tip">Note Content</note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -241,7 +247,7 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_note_tag_with_para(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -251,7 +257,7 @@ class ExerciseValidatorTests(TestCase):
                     <note type="tip"><para>Note Content</para></note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -259,7 +265,7 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_note_tag_with_no_attribute(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -271,17 +277,17 @@ class ExerciseValidatorTests(TestCase):
                     </note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(good_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
-            ["Missing attribute 'type' in /exercise-container/entry/problem/note",
-             "Missing attribute 'type' in /exercise-container/entry/solution/note"])
+            ["Missing attribute 'type' in /template/entry/problem/note",
+             "Missing attribute 'type' in /template/entry/solution/note"])
 
     def test_validate_with_note_tag_with_incorrect_attribute(self):
         bad_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -293,21 +299,21 @@ class ExerciseValidatorTests(TestCase):
                     </note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(bad_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
             ['Attribute value \'bob\' does not conform to type \'enum'
              '("note","tip","inlinetip","instruction","instructions","examnote")\' in '
-             '/exercise-container/entry/problem/note',
+             '/template/entry/problem/note',
              'Attribute value \'bob\' does not conform to type \'enum'
              '("note","tip","inlinetip","instruction","instructions","examnote")\' in '
-             '/exercise-container/entry/solution/note'])
+             '/template/entry/solution/note'])
 
     def test_validate_with_note_tag_with_book_note_attribute(self):
         bad_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -319,21 +325,21 @@ class ExerciseValidatorTests(TestCase):
                     </note>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(bad_template_dom)
         self.assertEqual(
             self.exercise_validator.errors,
             ['Attribute value \'warning\' does not conform to type \'enum'
              '("note","tip","inlinetip","instruction","instructions","examnote")\' in '
-             '/exercise-container/entry/problem/note',
+             '/template/entry/problem/note',
              'Attribute value \'warning\' does not conform to type \'enum'
              '("note","tip","inlinetip","instruction","instructions","examnote")\' in '
-             '/exercise-container/entry/solution/note'])
+             '/template/entry/solution/note'])
 
     def test_validate_with_nuclear_notation_tag_no_atomic_number(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -342,7 +348,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -350,7 +356,7 @@ class ExerciseValidatorTests(TestCase):
 
     def test_validate_with_nuclear_notation_tag_no_mass_number(self):
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -362,7 +368,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -376,7 +382,7 @@ class ExerciseValidatorTests(TestCase):
         incorrect patterns. This needs to be corrected.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -388,7 +394,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -402,7 +408,7 @@ class ExerciseValidatorTests(TestCase):
         incorrect patterns. This needs to be corrected.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -411,7 +417,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -420,7 +426,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_currency_tag_no_children_no_text(self):
         """Test the currency tag with no children and no text."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -429,7 +435,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -438,7 +444,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_currency_tag_no_children_text(self):
         """Test the currency tag with no children and text."""
         bad_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -447,7 +453,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(bad_template_dom)
         self.assertEqual(
@@ -459,7 +465,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_currency_tag_with_only_symbol_child(self):
         """Test the currency tag with only symbol child."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -470,7 +476,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -479,7 +485,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_currency_tag_with_only_number_child(self):
         """Test the currency tag with only number child."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -490,7 +496,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -499,7 +505,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_currency_tag_with_both_children(self):
         """Test the currency tag with both children."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -510,7 +516,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -527,7 +533,7 @@ class ExerciseValidatorTests(TestCase):
         This needs to be corrected.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -536,7 +542,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -550,7 +556,7 @@ class ExerciseValidatorTests(TestCase):
         incorrect patterns. This needs to be corrected.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -559,7 +565,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -568,7 +574,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_style_tag(self):
         """Test that the style tag works and allows the font-color attribute."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -578,7 +584,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -592,7 +598,7 @@ class ExerciseValidatorTests(TestCase):
         This really should fail, oh dear another bad instance.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -601,7 +607,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -610,7 +616,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_quote_tag_block_children(self):
         """Test that the quote tag works with block children."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -619,7 +625,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -628,7 +634,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_quote_tag_inline_children_no_para(self):
         """Test that the quote tag works with inline children and no para tag."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -637,7 +643,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -646,7 +652,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_table_tag_notes_and_latex(self):
         """Test that the table tag works with multiple inline tags."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -662,7 +668,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -671,7 +677,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_table_tag_notes_and_quotes(self):
         """Test that the table tag works with multiple block tags."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -687,7 +693,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -696,7 +702,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_table_tag_notes_and_emphasis(self):
         """Test that the table tag works with inline and block tags."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -712,7 +718,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -721,7 +727,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_list_tag_notes_and_emphasis(self):
         """Test that the list tag works with inline and block tags."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -733,7 +739,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -746,7 +752,7 @@ class ExerciseValidatorTests(TestCase):
         In this case the check tag is not inside a latex tag.
         """
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -761,7 +767,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -770,7 +776,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_with_check_tag_in_latex(self):
         """Test that the check tag works with inline and block latex."""
         good_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -784,7 +790,7 @@ class ExerciseValidatorTests(TestCase):
                 <solution>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.assertIsNone(self.exercise_validator.validate(good_template_dom))
         self.assertEqual(self.exercise_validator.errors, [])
@@ -793,7 +799,7 @@ class ExerciseValidatorTests(TestCase):
     def test_validate_book_tag_is_invalid(self):
         """Test that using a tag specific to books gives an error."""
         bad_template_dom = etree.fromstring('''
-        <exercise-container>
+        <template>
             <title></title>
             <entry>
                 <problem>
@@ -809,7 +815,7 @@ class ExerciseValidatorTests(TestCase):
                     </presentation>
                 </solution>
             </entry>
-        </exercise-container>''')
+        </template>''')
 
         self.exercise_validator.validate(bad_template_dom)
         self.assertEqual(

@@ -5,7 +5,7 @@
   <import>spec_common.xml</import>
 
   <entry>
-    <xpath>/exercise-container</xpath>
+    <xpath>/template</xpath>
     <children>
       <element>title</element>
       <one-of>
@@ -17,7 +17,7 @@
   </entry>
 
   <entry>
-    <xpath>/exercise-container/title</xpath>
+    <xpath>/template/title</xpath>
     <children>
       <reference>inline-elements</reference>
     </children>
