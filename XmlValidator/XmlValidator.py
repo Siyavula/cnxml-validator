@@ -5,6 +5,7 @@ import re
 import utils
 
 from lxml import etree
+from termcolor import colored
 
 
 class XmlValidationError(Exception):
@@ -197,15 +198,18 @@ class XmlValidator(object):
         # Validate children: build regex from spec
         regex = self.__validate_traverse_children_xml(specEntry.find('children'))
         if regex is None:
-            # No children
             if len(children) != 0:
                 self.errors.append(
-                    'No children expected in {}\n'
-                    '*** These are superfluous children:\n'
-                    '{}\n*** The offending element looks like this:\n{}'.format(
-                        self.documentSpecEntries[iNode].find('xpath').text,
-                        ','.join([self.__tag_namespace_to_prefix(child.tag) for child in children]),
-                        etree.tostring(iNode)))
+                    '{main_error}\n'
+                    '{children_title}\n{children}\n'
+                    '{offending_elements_title}\n{offending_elements}'.format(
+                        main_error=colored('No children expected in {}'.format(
+                            self.documentSpecEntries[iNode].find('xpath').text), 'red'),
+                        children_title=colored('Superfluous children:', 'red'),
+                        children=','.join(
+                            [self.__tag_namespace_to_prefix(child.tag) for child in children]),
+                        offending_elements_title=colored('Offending elements:', 'red'),
+                        offending_elements=etree.tostring(iNode)))
         else:
             pattern = re.compile('^' + regex + '$')
             # Validate children: build children pattern
@@ -214,14 +218,21 @@ class XmlValidator(object):
                     [self.__tag_namespace_to_prefix(child.tag) for child in children]) + ','
             else:
                 childrenPattern = ''
+
             if pattern.match(childrenPattern) is None:
                 self.errors.append(
-                    'Child match failed for a {} element.\n'
-                    '*** I was expecting the children to follow this pattern:\n{}\n'
-                    '*** Instead I got these children:\n{}\n'
-                    '*** The offending element looks like this:\n{}\n'.format(
-                        self.documentSpecEntries[iNode].find('xpath').text,
-                        regex, childrenPattern, etree.tostring(iNode)))
+                    '{main_error}\n'
+                    '{expecting_title}\n{expecting}\n'
+                    '{got_title}\n{got}\n'
+                    '{offending_elements_title}\n{offending_elements}\n'.format(
+                        main_error=colored('Child match failed for a {} element'.format(
+                            self.documentSpecEntries[iNode].find('xpath').text), 'red'),
+                        expecting_title=colored('Expecting:', 'red'),
+                        expecting=regex,
+                        got_title=colored('Got:', 'red'),
+                        got=childrenPattern,
+                        offending_elements_title=colored('Offending elements:', 'red'),
+                        offending_elements=etree.tostring(iNode)))
 
         # Check that text matches text spec
         if specEntry.find('notext') is not None:
@@ -243,11 +254,15 @@ class XmlValidator(object):
                             child.tail = None
             if text != '':
                 self.errors.append(
-                    '{} element must not have any text.\n'
-                    '*** Found the following text {}: {}\n'
-                    '*** The offending element looks like this: {}'.format(
-                        self.documentSpecEntries[iNode].find('xpath').text,
-                        location, text, etree.tostring(iNode)))
+                    '{main_error}\n'
+                    '{found_title} {found}\n'
+                    '{offending_elements_title} {offending_elements}'.format(
+                        main_error=colored('{} element must not have any text'.format(
+                            self.documentSpecEntries[iNode].find('xpath').text), 'red'),
+                        found_title=colored('Found {}:'.format(location), 'red'),
+                        found=text,
+                        offending_elements_title=colored('Offending elements:', 'red'),
+                        offending_elements=etree.tostring(iNode)))
 
         # Do validation callback
         callbackNode = specEntry.find('validation-callback')

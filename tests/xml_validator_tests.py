@@ -48,13 +48,10 @@ class XmlValidatorTests(TestCase):
         bad_template_dom = etree.fromstring("<test-element>This text can't be here</test-element>")
 
         self.xml_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.xml_validator.errors,
-            ["/test-element element must not have any text.\n"
-             "*** Found the following text at the beginning of the element: "
-             "This text can't be here\n"
-             "*** The offending element looks like this: "
-             "<test-element>This text can't be here</test-element>"])
+        error = self.xml_validator.errors[0]
+        self.assertIn('/test-element element must not have any text', error)
+        self.assertIn("This text can't be here", error)
+        self.assertIn("<test-element>This text can't be here</test-element>", error)
 
 
 class ExerciseValidatorTests(TestCase):
@@ -92,14 +89,11 @@ class ExerciseValidatorTests(TestCase):
         invalid_template_dom = etree.fromstring('<template></template>')
 
         self.exercise_validator.validate(invalid_template_dom)
-        self.assertEqual(
-            self.exercise_validator.errors,
-            ['Child match failed for a /template element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '((title,)((multi-part,)|(entry,)))\n'
-             '*** Instead I got these children:\n\n'
-             '*** The offending element looks like this:\n'
-             '<template></template>\n'])
+
+        error = self.exercise_validator.errors[0]
+        self.assertIn('Child match failed for a /template element', error)
+        self.assertIn('((title,)((multi-part,)|(entry,)))', error)
+        self.assertIn('<template></template>', error)
 
     def test_validate_with_meta_tag(self):
         invalid_template_dom = etree.fromstring('''
@@ -112,16 +106,18 @@ class ExerciseValidatorTests(TestCase):
         </template>''')
 
         self.exercise_validator.validate(invalid_template_dom)
-        self.assertEqual(
-            self.exercise_validator.errors,
-            ['Child match failed for a /template element.\n*** '
-             'I was expecting the children to follow this pattern:\n'
-             '((title,)((multi-part,)|(entry,)))\n'
-             '*** Instead I got these children:\nmeta,entry,\n*** '
-             'The offending element looks like this:\n<template>\n            '
-             '<meta></meta>\n            <entry>\n'
-             '                <problem></problem>\n                '
-             '<solution></solution>\n            </entry>\n        </template>\n'])
+
+        error = self.exercise_validator.errors[0]
+        self.assertIn('Child match failed for a /template element', error)
+        self.assertIn("((title,)((multi-part,)|(entry,)))", error)
+        self.assertIn(
+            '<template>\n'
+            '            <meta></meta>\n'
+            '            <entry>\n'
+            '                <problem></problem>\n'
+            '                <solution></solution>\n'
+            '            </entry>\n'
+            '        </template>', error)
 
     def test_validate_missing_title(self):
         invalid_template_dom = etree.fromstring('''
@@ -133,16 +129,17 @@ class ExerciseValidatorTests(TestCase):
         </template>''')
 
         self.exercise_validator.validate(invalid_template_dom)
-        self.assertEqual(
-            self.exercise_validator.errors,
-            ['Child match failed for a /template element.\n*** '
-             'I was expecting the children to follow this pattern:\n'
-             '((title,)((multi-part,)|(entry,)))\n'
-             '*** Instead I got these children:\nentry,\n'
-             '*** The offending element looks like this:\n'
-             '<template>\n            <entry>\n                <problem></problem>'
-             '\n                <solution></solution>\n            </entry>\n        '
-             '</template>\n'])
+
+        error = self.exercise_validator.errors[0]
+        self.assertIn('Child match failed for a /template element', error)
+        self.assertIn("((title,)((multi-part,)|(entry,)))", error)
+        self.assertIn(
+            '<template>\n'
+            '            <entry>\n'
+            '                <problem></problem>\n'
+            '                <solution></solution>\n'
+            '            </entry>\n'
+            '        </template>', error)
 
     def test_validate_missing_entry(self):
         invalid_template_dom = etree.fromstring('''
@@ -151,14 +148,14 @@ class ExerciseValidatorTests(TestCase):
         </template>''')
 
         self.exercise_validator.validate(invalid_template_dom)
-        self.assertEqual(
-            self.exercise_validator.errors,
-            ['Child match failed for a /template element.\n*** '
-             'I was expecting the children to follow this pattern:\n'
-             '((title,)((multi-part,)|(entry,)))\n'
-             '*** Instead I got these children:\ntitle,\n*** '
-             'The offending element looks like this:\n<template>\n            '
-             '<title></title>\n        </template>\n'])
+
+        error = self.exercise_validator.errors[0]
+        self.assertIn('Child match failed for a /template element', error)
+        self.assertIn('((title,)((multi-part,)|(entry,)))', error)
+        self.assertIn(
+            '<template>\n'
+            '            <title></title>\n'
+            '        </template>', error)
 
     def test_validate_title_tag_with_other_elements(self):
         """
@@ -456,11 +453,12 @@ class ExerciseValidatorTests(TestCase):
         </template>''')
 
         self.exercise_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.exercise_validator.errors,
-            ['//currency element must not have any text.\n*** Found the following text at the '
-             'beginning of the element: R 5\n*** The offending element looks like this: '
-             '<currency>R 5</currency>\n                '])
+
+        error = self.exercise_validator.errors[0]
+        self.assertIn('//currency element must not have any text', error)
+        self.assertIn('Found at the beginning of the element:', error)
+        self.assertIn('R 5', error)
+        self.assertIn('<currency>R 5</currency>', error)
 
     def test_validate_currency_tag_with_only_symbol_child(self):
         """Test the currency tag with only symbol child."""
@@ -818,34 +816,37 @@ class ExerciseValidatorTests(TestCase):
         </template>''')
 
         self.exercise_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.exercise_validator.errors,
-            ['Child match failed for a //entry/problem element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '((((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)|(image,)|(html5table,)|'
-             '(figure,)|(equation,)|(latex,)|(correct,)|(note,)|(centre,)))))|(definition,)|'
-             '(quote,)|(note,)|(radio,)|(centre,)))){,}))|((((((br,)|(space,)|(newline,)|'
-             '(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)|(link,)|(nth,)|'
-             '(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)|(sub,)|(sup,)|'
-             '(unit_number,)|(unit,)|(input,)|(style,)|(check,)))){,}))))\n'
-             '*** Instead I got these children:\npresentation,\n'
-             '*** The offending element looks like this:\n<problem>\n'
-             '                    <presentation>\n'
-             '                        <title>The title</title>\n'
-             '                        <url>google.com</url>\n'
-             '                    </presentation>\n'
-             '                </problem>\n                \n',
-             'Child match failed for a //entry/solution element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '((((((step,)|(hint,))){,})|((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)|'
-             '(image,)|(html5table,)|(figure,)|(equation,)|(latex,)|(correct,)|(note,)|'
-             '(centre,)))))|(definition,)|(quote,)|(note,)|(radio,)|(centre,)))){,}))|((((((br,)|'
-             '(space,)|(newline,)|(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)|'
-             '(link,)|(nth,)|(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)|(sub,)|'
-             '(sup,)|(unit_number,)|(unit,)|(input,)|(style,)|(check,)))){,}))))\n'
-             '*** Instead I got these children:\npresentation,\n'
-             '*** The offending element looks like this:\n<solution>\n'
-             '                    <presentation>\n'
-             '                        <title>The title</title>\n'
-             '                        <url>google.com</url>\n'
-             '                    </presentation>\n                </solution>\n            \n'])
+
+        error1 = self.exercise_validator.errors[0]
+        self.assertIn('Child match failed for a //entry/problem element', error1)
+        self.assertIn(
+            '((((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)|(image,)|(html5table,)|'
+            '(figure,)|(equation,)|(latex,)|(correct,)|(note,)|(centre,)))))|(definition,)|'
+            '(quote,)|(note,)|(radio,)|(centre,)))){,}))|((((((br,)|(space,)|(newline,)|'
+            '(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)|(link,)|(nth,)|'
+            '(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)|(sub,)|(sup,)|'
+            '(unit_number,)|(unit,)|(input,)|(style,)|(check,)))){,}))))', error1)
+        self.assertIn(
+            '<problem>\n'
+            '                    <presentation>\n'
+            '                        <title>The title</title>\n'
+            '                        <url>google.com</url>\n'
+            '                    </presentation>\n'
+            '                </problem>', error1)
+
+        error2 = self.exercise_validator.errors[1]
+        self.assertIn('Child match failed for a //entry/solution element', error2)
+        self.assertIn(
+            '((((((step,)|(hint,))){,})|((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)|'
+            '(image,)|(html5table,)|(figure,)|(equation,)|(latex,)|(correct,)|(note,)|'
+            '(centre,)))))|(definition,)|(quote,)|(note,)|(radio,)|(centre,)))){,}))|((((((br,)|'
+            '(space,)|(newline,)|(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)|'
+            '(link,)|(nth,)|(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)|(sub,)|'
+            '(sup,)|(unit_number,)|(unit,)|(input,)|(style,)|(check,)))){,}))))', error2)
+        self.assertIn(
+            '<solution>\n'
+            '                    <presentation>\n'
+            '                        <title>The title</title>\n'
+            '                        <url>google.com</url>\n'
+            '                    </presentation>\n'
+            '                </solution>', error2)

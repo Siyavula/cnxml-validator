@@ -192,18 +192,15 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
             </test-element>''')
 
         self.xml_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.xml_validator.errors,
-            ['Child match failed for a /test-element element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '((test-child-required,)(test-child-optional,)?)\n'
-             '*** Instead I got these children:\ntest-child-optional,\n'
-             '*** The offending element looks like this:\n'
-             '<test-element>\n'
-             '                <test-child-optional></test-child-optional>\n'
-             '            </test-element>\n'])
 
-    # @raises(XmlValidationError)
+        error = self.xml_validator.errors[0]
+        self.assertIn('Child match failed for a /test-element element', error)
+        self.assertIn('((test-child-required,)(test-child-optional,)?)', error)
+        self.assertIn(
+            '<test-element>\n'
+            '                <test-child-optional></test-child-optional>\n'
+            '            </test-element>', error)
+
     def test_validate_with_invalid_xml_unordered_children(self):
         """
         Test unordered children where one child is optional.
@@ -235,17 +232,15 @@ class XmlValidatorChildrenUncombinedTests(TestCase):
             </test-element-oneof-children>''')
 
         self.xml_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.xml_validator.errors,
-            ['Child match failed for a /test-element-oneof-children element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '(((test-child-required,)|(test-child-required-two,)))\n'
-             '*** Instead I got these children:\ntest-child-required,test-child-required-two,\n'
-             '*** The offending element looks like this:\n'
-             '<test-element-oneof-children>\n'
-             '                <test-child-required></test-child-required>\n'
-             '                <test-child-required-two></test-child-required-two>\n'
-             '            </test-element-oneof-children>\n'])
+
+        error = self.xml_validator.errors[0]
+        self.assertIn('Child match failed for a /test-element-oneof-children element', error)
+        self.assertIn('(((test-child-required,)|(test-child-required-two,)))', error)
+        self.assertIn(
+            '<test-element-oneof-children>\n'
+            '                <test-child-required></test-child-required>\n'
+            '                <test-child-required-two></test-child-required-two>\n'
+            '            </test-element-oneof-children>', error)
 
     # is there a fail test for anynumber? Should perhaps be 0?
 
@@ -405,15 +400,15 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 </test-element-oneof-anynumber-children>''')
 
         self.xml_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.xml_validator.errors,
-            ['Child match failed for a /test-element-oneof-anynumber-children element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '(((((test-child-required,)(test-child-required-two,)){,})))\n'
-             '*** Instead I got these children:\ntest-child-required-two,\n'
-             '*** The offending element looks like this:\n<test-element-oneof-anynumber-children>\n'
-             '                    <test-child-required-two></test-child-required-two>\n'
-             '                </test-element-oneof-anynumber-children>\n'])
+
+        error = self.xml_validator.errors[0]
+        self.assertIn(
+            'Child match failed for a /test-element-oneof-anynumber-children element', error)
+        self.assertIn('(((((test-child-required,)(test-child-required-two,)){,})))', error)
+        self.assertIn(
+            '<test-element-oneof-anynumber-children>\n'
+            '                    <test-child-required-two></test-child-required-two>\n'
+            '                </test-element-oneof-anynumber-children>', error)
 
     def test_validate_with_valid_xml_anynumber_oneof_children(self):
         """
@@ -479,17 +474,17 @@ class XmlValidatorChildrenCombinedTests(TestCase):
                 </test-element-unordered-anynumber-children>''')
 
         self.xml_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.xml_validator.errors,
-            ['Child match failed for a /test-element-unordered-anynumber-children element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '((((((test-child-required,)(test-child-required-two,)){,}))*))\n'
-             '*** Instead I got these children:\ntest-child-required-two,test-child-required,\n'
-             '*** The offending element looks like this:\n'
-             '<test-element-unordered-anynumber-children>\n'
-             '                    <test-child-required-two></test-child-required-two>\n'
-             '                    <test-child-required></test-child-required>\n'
-             '                </test-element-unordered-anynumber-children>\n'])
+
+        error = self.xml_validator.errors[0]
+        self.assertIn(
+            'Child match failed for a /test-element-unordered-anynumber-children element', error)
+        self.assertIn(
+            '((((((test-child-required,)(test-child-required-two,)){,}))*))', error)
+        self.assertIn(
+            '<test-element-unordered-anynumber-children>\n'
+            '                    <test-child-required-two></test-child-required-two>\n'
+            '                    <test-child-required></test-child-required>\n'
+            '                </test-element-unordered-anynumber-children>', error)
 
     def test_validate_with_valid_xml_anynumber_from_children(self):
         """Test a tag that contains any-number from 1 of the children."""
@@ -507,13 +502,13 @@ class XmlValidatorChildrenCombinedTests(TestCase):
             <test-element-anynumber-from-children></test-element-anynumber-from-children>''')
 
         self.xml_validator.validate(bad_template_dom)
-        self.assertEqual(
-            self.xml_validator.errors,
-            ['Child match failed for a /test-element-anynumber-from-children element.\n'
-             '*** I was expecting the children to follow this pattern:\n'
-             '((((test-child-required,)){1,}))\n*** Instead I got these children:\n\n'
-             '*** The offending element looks like this:\n'
-             '<test-element-anynumber-from-children></test-element-anynumber-from-children>\n'])
+
+        error = self.xml_validator.errors[0]
+        self.assertIn(
+            'Child match failed for a /test-element-anynumber-from-children element', error)
+        self.assertIn('((((test-child-required,)){1,}))', error)
+        self.assertIn(
+            '<test-element-anynumber-from-children></test-element-anynumber-from-children>', error)
 
 
 class XmlValidatorTagAttributes(TestCase):
