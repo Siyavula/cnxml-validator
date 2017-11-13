@@ -81,7 +81,7 @@
       <element>table</element>
       <element>pspicture</element>
       <element>tikzpicture</element>
-      <element>custompackage</element>
+      <element>latexpicture</element>
       <element>image</element>
       <element>para</element>
       <element>equation</element>
@@ -258,7 +258,7 @@
   </entry>
 
   <entry>
-    <xpath>//custompackage</xpath>
+    <xpath>//latexpicture</xpath>
     <attributes>
       <entry>
     <name>id</name>
@@ -291,19 +291,19 @@
   </entry>
 
   <entry>
-    <xpath>//custompackage/usepackage</xpath>
+    <xpath>//latexpicture/usepackage</xpath>
   </entry>
 
   <entry>
-    <xpath>//custompackage/width</xpath>
+    <xpath>//latexpicture/width</xpath>
   </entry>
 
   <entry>
-    <xpath>//custompackage/height</xpath>
+    <xpath>//latexpicture/height</xpath>
   </entry>
 
   <entry>
-    <xpath>//custompackage/code</xpath>
+    <xpath>//latexpicture/code</xpath>
     <children>
       <any-number>
     <one-of>
@@ -322,7 +322,7 @@
   </entry>
 
   <entry>
-    <xpath>//custompackage/src</xpath>
+    <xpath>//latexpicture/src</xpath>
   </entry>
 
   <entry>
@@ -526,7 +526,7 @@ return ''
         <element>list</element>
         <element>pspicture</element>
         <element>tikzpicture</element>
-        <element>custompackage</element>
+        <element>latexpicture</element>
         <element>image</element>
         <element>html5table</element>
         <element>figure</element>
