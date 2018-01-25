@@ -1,0 +1,130 @@
+<template version="2.0">
+    <entry>
+        <problem>
+            <para>
+                <emphasis>In a para:</emphasis>
+            </para>
+            <para>
+                <set>1; 2; 3</set> <br/>
+                <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> <br/>
+                <set>x; y; z</set> <br/>
+                <latex><set>1; 2; 3</set></latex> <br/>
+                <latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex> <br/>
+                <latex><set>x; y; z</set></latex>
+            </para>
+        </problem>
+        <response>
+            <query>
+                <set>1; 2; 3</set> <br/>
+                <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> <br/>
+                <set>x; y; z</set> <br/>
+                <latex><set>1; 2; 3</set></latex> <br/>
+                <latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex> <br/>
+                <latex><set>x; y; z</set></latex> <br/>
+                <input/>
+            </query>
+            <type>
+                <value>numeric</value>
+            </type>
+            <correct>
+                <value>1</value>
+            </correct>
+            <marks>
+                <value>1</value>
+            </marks>
+        </response>
+        <solution>
+            <step>
+                <title><set>1; 2; 3</set> <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> <set>x; y; z</set> <latex><set>1; 2; 3</set></latex> <latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex> <latex><set>x; y; z</set></latex></title>
+                <marks>1</marks>
+                <para>
+                    <emphasis>In a title (above):</emphasis>
+                </para>
+                <para>
+                    <emphasis>In a list:</emphasis>
+                </para>
+                <list list-type="enumerated">
+                    <item><set>1; 2; 3</set></item>
+                    <item><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></item>
+                    <item><set>x; y; z</set></item>
+                    <item><latex><set>1; 2; 3</set></latex></item>
+                    <item><latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex></item>
+                    <item><latex><set>x; y; z</set></latex></item>
+                </list>
+                <para>
+                    <emphasis>In a table:</emphasis>
+                </para>
+                <html5table border="1">
+                    <tr>
+                        <td><set>1; 2; 3</set></td>
+                    </tr>
+                    <tr>
+                        <td><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></td>
+                    </tr>
+                    <tr>
+                        <td><set>x; y; z</set></td>
+                    </tr>
+                    <tr>
+                        <td><latex><set>1; 2; 3</set></latex></td>
+                    </tr>
+                    <tr>
+                        <td><latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex></td>
+                    </tr>
+                    <tr>
+                        <td><latex><set>x; y; z</set></latex></td>
+                    </tr>
+                </html5table>
+                <para>
+                    <emphasis>In a note:</emphasis>
+                </para>
+                <note type="note">
+                    <set>1; 2; 3</set> <br/>
+                    <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> <br/>
+                    <set>x; y; z</set> <br/>
+                    <latex><set>1; 2; 3</set></latex> <br/>
+                    <latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex> <br/>
+                    <latex><set>x; y; z</set></latex> <br/>
+                </note>
+                <para>
+                    <emphasis>In a quote:</emphasis>
+                </para>
+                <quote>
+                    <set>1; 2; 3</set> <br/>
+                    <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> <br/>
+                    <set>x; y; z</set> <br/>
+                    <latex><set>1; 2; 3</set></latex> <br/>
+                    <latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex> <br/>
+                    <latex><set>x; y; z</set></latex> <br/>
+                </quote>
+                <para>
+                    <emphasis>In an inlinetip:</emphasis>
+                </para>
+                <para>
+                    <note type="inlinetip"><set>1; 2; 3</set> <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> <set>x; y; z</set> <latex><set>1; 2; 3</set></latex> <latex><set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set></latex> <latex><set>x; y; z</set></latex></note>
+                </para>
+                <para>
+                    <emphasis>In a latex block:</emphasis>
+                </para>
+                <latex display="block">
+                    \begin{aligned}
+                        &amp; <set>1; 2; 3</set> \\
+                        &amp; <set><number>1.5</number>; <number>2.5</number>; <number>3.5</number></set> \\
+                        &amp; <set>x; y; z</set>
+                    \end{aligned}
+                </latex>
+                <para>
+                    <emphasis>In a TIKZ image:</emphasis>
+                </para>
+                <tikzpicture>
+                    <src>example.tikz</src>
+                </tikzpicture>
+                <para>
+                    <emphasis>In a PSTRICKS image:</emphasis>
+                </para>
+                <pspicture>
+                    <src>example.pst</src>
+                </pspicture>
+            </step>
+        </solution>
+    </entry>
+</template>
