@@ -1,0 +1,130 @@
+<template version="2.0">
+    <entry>
+        <problem>
+            <para>
+                <emphasis>In a para:</emphasis>
+            </para>
+            <para>
+                <interval>[1; 2] U (3; oo)</interval> <br/>
+                <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> <br/>
+                <interval>[x; y] U (z; oo)</interval> <br/>
+                <latex><interval>[1; 2] U (3; oo)</interval></latex> <br/>
+                <latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex> <br/>
+                <latex><interval>[x; y] U (z; oo)</interval></latex>
+            </para>
+        </problem>
+        <response>
+            <query>
+                <interval>[1; 2] U (3; oo)</interval> <br/>
+                <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> <br/>
+                <interval>[x; y] U (z; oo)</interval> <br/>
+                <latex><interval>[1; 2] U (3; oo)</interval></latex> <br/>
+                <latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex> <br/>
+                <latex><interval>[x; y] U (z; oo)</interval></latex> <br/>
+                <input/>
+            </query>
+            <type>
+                <value>numeric</value>
+            </type>
+            <correct>
+                <value>1</value>
+            </correct>
+            <marks>
+                <value>1</value>
+            </marks>
+        </response>
+        <solution>
+            <step>
+                <title><interval>[1; 2] U (3; oo)</interval> <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> <interval>[x; y] U (z; oo)</interval> <latex><interval>[1; 2] U (3; oo)</interval></latex> <latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex> <latex><interval>[x; y] U (z; oo)</interval></latex></title>
+                <marks>1</marks>
+                <para>
+                    <emphasis>In a title (above):</emphasis>
+                </para>
+                <para>
+                    <emphasis>In a list:</emphasis>
+                </para>
+                <list list-type="enumerated">
+                    <item><interval>[1; 2] U (3; oo)</interval></item>
+                    <item><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></item>
+                    <item><interval>[x; y] U (z; oo)</interval></item>
+                    <item><latex><interval>[1; 2] U (3; oo)</interval></latex></item>
+                    <item><latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex></item>
+                    <item><latex><interval>[x; y] U (z; oo)</interval></latex></item>
+                </list>
+                <para>
+                    <emphasis>In a table:</emphasis>
+                </para>
+                <html5table border="1">
+                    <tr>
+                        <td><interval>[1; 2] U (3; oo)</interval></td>
+                    </tr>
+                    <tr>
+                        <td><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></td>
+                    </tr>
+                    <tr>
+                        <td><interval>[x; y] U (z; oo)</interval></td>
+                    </tr>
+                    <tr>
+                        <td><latex><interval>[1; 2] U (3; oo)</interval></latex></td>
+                    </tr>
+                    <tr>
+                        <td><latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex></td>
+                    </tr>
+                    <tr>
+                        <td><latex><interval>[x; y] U (z; oo)</interval></latex></td>
+                    </tr>
+                </html5table>
+                <para>
+                    <emphasis>In a note:</emphasis>
+                </para>
+                <note type="note">
+                    <interval>[1; 2] U (3; oo)</interval> <br/>
+                    <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> <br/>
+                    <interval>[x; y] U (z; oo)</interval> <br/>
+                    <latex><interval>[1; 2] U (3; oo)</interval></latex> <br/>
+                    <latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex> <br/>
+                    <latex><interval>[x; y] U (z; oo)</interval></latex> <br/>
+                </note>
+                <para>
+                    <emphasis>In a quote:</emphasis>
+                </para>
+                <quote>
+                    <interval>[1; 2] U (3; oo)</interval> <br/>
+                    <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> <br/>
+                    <interval>[x; y] U (z; oo)</interval> <br/>
+                    <latex><interval>[1; 2] U (3; oo)</interval></latex> <br/>
+                    <latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex> <br/>
+                    <latex><interval>[x; y] U (z; oo)</interval></latex> <br/>
+                </quote>
+                <para>
+                    <emphasis>In an inlinetip:</emphasis>
+                </para>
+                <para>
+                    <note type="inlinetip"><interval>[1; 2] U (3; oo)</interval> <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> <interval>[x; y] U (z; oo)</interval> <latex><interval>[1; 2] U (3; oo)</interval></latex> <latex><interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval></latex> <latex><interval>[x; y] U (z; oo)</interval></latex></note>
+                </para>
+                <para>
+                    <emphasis>In a latex block:</emphasis>
+                </para>
+                <latex display="block">
+                    \begin{aligned}
+                        &amp; <interval>[1; 2] U (3; oo)</interval> \\
+                        &amp; <interval>[<number>1.5</number>; <number>2.5</number>] U (<number>3.5</number>; oo)</interval> \\
+                        &amp; <interval>[x; y] U (z; oo)</interval>
+                    \end{aligned}
+                </latex>
+                <para>
+                    <emphasis>In a TIKZ image:</emphasis>
+                </para>
+                <tikzpicture>
+                    <src>example.tikz</src>
+                </tikzpicture>
+                <para>
+                    <emphasis>In a PSTRICKS image:</emphasis>
+                </para>
+                <pspicture>
+                    <src>example.pst</src>
+                </pspicture>
+            </step>
+        </solution>
+    </entry>
+</template>
