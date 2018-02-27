@@ -1778,7 +1778,7 @@ return convert_using(self, '//number') + r'\%'
     </conversion-callback>
     <conversion-callback name="html html5 learner correct teacher">
 latexMode = ('latex' in utils.get_full_dom_path(self))
-result = r'\text{%s}\%' % (utils.format_number(self.text.strip()))
+result = r'\text{%s}%%' % (utils.format_number(self.text.strip()))
 
 if not latexMode:
     result = r'\(%s\)' % (result)
@@ -2674,7 +2674,7 @@ return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
     </conversion-callback>
     <conversion-callback name="html learner teacher html5"><!-- type already creates start of environment -->
 environment = 'note'
-if self.attrib['type'] != inlinetip:
+if self.attrib['type'] != 'inlinetip':
     note = etree.Element('div')
 else:
     note = etree.Element('span')
