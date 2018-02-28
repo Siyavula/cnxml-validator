@@ -85,6 +85,9 @@
       <element>para</element>
       <element>equation</element>
       <element>latex</element>
+      <element>coordinate</element>
+      <element>set</element>
+      <element>interval</element>
     </one-of>
       </any-number>
       <optional>caption</optional>
@@ -391,16 +394,19 @@ return ''
     <children>
       <any-number>
 	<one-of>
-	  <element>number</element>
-	  <element>unit</element>
-	  <element>unit_number</element>
-	  <element>percentage</element>
-	  <element>currency</element>
-	  <element>chem_compound</element>
-	  <element>correct</element>
+  	  <element>number</element>
+  	  <element>unit</element>
+  	  <element>unit_number</element>
+  	  <element>percentage</element>
+  	  <element>currency</element>
+  	  <element>chem_compound</element>
+  	  <element>correct</element>
       <element>nuclear_notation</element>
       <element>spec_note</element>
       <element>check</element>
+      <element>coordinate</element>
+      <element>set</element>
+      <element>interval</element>
 	</one-of>
       </any-number>
     </children>
@@ -439,6 +445,9 @@ return ''
         <element>note</element>
         <element>radio</element>
         <element>centre</element>
+        <element>coordinate</element>
+        <element>set</element>
+        <element>interval</element>
       </one-of>
     </children>
   </entry>
@@ -465,6 +474,9 @@ return ''
         <element>correct</element>
         <element>note</element>
         <element>centre</element>
+        <element>coordinate</element>
+        <element>set</element>
+        <element>interval</element>
       </one-of>
     </children>
   </entry>
@@ -518,6 +530,9 @@ return ''
         <element>input</element>
         <element>style</element>
         <element>check</element>
+        <element>coordinate</element>
+        <element>set</element>
+        <element>interval</element>
       </one-of>
     </children>
   </entry>
@@ -653,7 +668,43 @@ return ''
         </one-of>
       </any-number>
     </children>
-  </entry>  
+  </entry>
+
+  <entry>
+    <xpath>//coordinate</xpath>
+    <children>
+      <any-number>
+        <one-of>
+          <reference>block-no-para-element</reference>
+          <reference>inline-element</reference>
+        </one-of>
+      </any-number>
+    </children>
+   </entry>
+
+  <entry>
+    <xpath>//set</xpath>
+    <children>
+      <any-number>
+        <one-of>
+          <reference>block-no-para-element</reference>
+          <reference>inline-element</reference>
+        </one-of>
+      </any-number>
+    </children>
+   </entry>
+
+  <entry>
+    <xpath>//interval</xpath>
+    <children>
+      <any-number>
+        <one-of>
+          <reference>block-no-para-element</reference>
+          <reference>inline-element</reference>
+        </one-of>
+      </any-number>
+    </children>
+   </entry>
 
   <entry>
     <xpath>//spec_note</xpath>
