@@ -1,0 +1,130 @@
+<template version="2.0">
+    <entry>
+        <problem>
+            <para>
+                <emphasis>In a para:</emphasis>
+            </para>
+            <para>
+                <coordinate>(1; 2)</coordinate> <br/>
+                <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> <br/>
+                <coordinate>(x; y)</coordinate> <br/>
+                <latex><coordinate>(1; 2)</coordinate></latex> <br/>
+                <latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex> <br/>
+                <latex><coordinate>(x; y)</coordinate></latex>
+            </para>
+        </problem>
+        <response>
+            <query>
+                <coordinate>(1; 2)</coordinate> <br/>
+                <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> <br/>
+                <coordinate>(x; y)</coordinate> <br/>
+                <latex><coordinate>(1; 2)</coordinate></latex> <br/>
+                <latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex> <br/>
+                <latex><coordinate>(x; y)</coordinate></latex> <br/>
+                <input/>
+            </query>
+            <type>
+                <value>numeric</value>
+            </type>
+            <correct>
+                <value>1</value>
+            </correct>
+            <marks>
+                <value>1</value>
+            </marks>
+        </response>
+        <solution>
+            <step>
+                <title><coordinate>(1; 2)</coordinate> <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> <coordinate>(x; y)</coordinate> <latex><coordinate>(1; 2)</coordinate></latex> <latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex> <latex><coordinate>(x; y)</coordinate></latex></title>
+                <marks>1</marks>
+                <para>
+                    <emphasis>In a title (above):</emphasis>
+                </para>
+                <para>
+                    <emphasis>In a list:</emphasis>
+                </para>
+                <list list-type="enumerated">
+                    <item><coordinate>(1; 2)</coordinate></item>
+                    <item><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></item>
+                    <item><coordinate>(x; y)</coordinate></item>
+                    <item><latex><coordinate>(1; 2)</coordinate></latex></item>
+                    <item><latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex></item>
+                    <item><latex><coordinate>(x; y)</coordinate></latex></item>
+                </list>
+                <para>
+                    <emphasis>In a table:</emphasis>
+                </para>
+                <html5table border="1">
+                    <tr>
+                        <td><coordinate>(1; 2)</coordinate></td>
+                    </tr>
+                    <tr>
+                        <td><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></td>
+                    </tr>
+                    <tr>
+                        <td><coordinate>(x; y)</coordinate></td>
+                    </tr>
+                    <tr>
+                        <td><latex><coordinate>(1; 2)</coordinate></latex></td>
+                    </tr>
+                    <tr>
+                        <td><latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex></td>
+                    </tr>
+                    <tr>
+                        <td><latex><coordinate>(x; y)</coordinate></latex></td>
+                    </tr>
+                </html5table>
+                <para>
+                    <emphasis>In a note:</emphasis>
+                </para>
+                <note type="note">
+                    <coordinate>(1; 2)</coordinate> <br/>
+                    <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> <br/>
+                    <coordinate>(x; y)</coordinate> <br/>
+                    <latex><coordinate>(1; 2)</coordinate></latex> <br/>
+                    <latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex> <br/>
+                    <latex><coordinate>(x; y)</coordinate></latex> <br/>
+                </note>
+                <para>
+                    <emphasis>In a quote:</emphasis>
+                </para>
+                <quote>
+                    <coordinate>(1; 2)</coordinate> <br/>
+                    <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> <br/>
+                    <coordinate>(x; y)</coordinate> <br/>
+                    <latex><coordinate>(1; 2)</coordinate></latex> <br/>
+                    <latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex> <br/>
+                    <latex><coordinate>(x; y)</coordinate></latex> <br/>
+                </quote>
+                <para>
+                    <emphasis>In an inlinetip:</emphasis>
+                </para>
+                <para>
+                    <note type="inlinetip"><coordinate>(1; 2)</coordinate> <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> <coordinate>(x; y)</coordinate> <latex><coordinate>(1; 2)</coordinate></latex> <latex><coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate></latex> <latex><coordinate>(x; y)</coordinate></latex></note>
+                </para>
+                <para>
+                    <emphasis>In a latex block:</emphasis>
+                </para>
+                <latex display="block">
+                    \begin{aligned}
+                        &amp; <coordinate>(1; 2)</coordinate> \\
+                        &amp; <coordinate>(<number>1.5</number>; <number>2.5</number>)</coordinate> \\
+                        &amp; <coordinate>(x; y)</coordinate>
+                    \end{aligned}
+                </latex>
+                <para>
+                    <emphasis>In a TIKZ image:</emphasis>
+                </para>
+                <tikzpicture>
+                    <src>example.tikz</src>
+                </tikzpicture>
+                <para>
+                    <emphasis>In a PSTRICKS image:</emphasis>
+                </para>
+                <pspicture>
+                    <src>example.pst</src>
+                </pspicture>
+            </step>
+        </solution>
+    </entry>
+</template>

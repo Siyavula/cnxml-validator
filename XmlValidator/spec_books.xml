@@ -1778,7 +1778,7 @@ return convert_using(self, '//number') + r'\%'
     </conversion-callback>
     <conversion-callback name="html html5 learner correct teacher">
 latexMode = ('latex' in utils.get_full_dom_path(self))
-result = r'\text{%s}\%' % (utils.format_number(self.text.strip()))
+result = r'\text{%s}%%' % (utils.format_number(self.text.strip()))
 
 if not latexMode:
     result = r'\(%s\)' % (result)
@@ -2672,16 +2672,16 @@ return self.text
 environment = 'Note %s' % (self.attrib['type'].capitalize())
 return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
     </conversion-callback>
-    <conversion-callback name="html learner teacher"><!-- type already creates start of environment -->
-    environment = 'note'
-    if self.attrib['type'] != inlinetip:
-        note = etree.Element('div')
-    else:
-        note = etree.Element('span')
-    note.attrib['class'] = environment
-    note.attrib['class'] += " " + self.attrib['type']
-    note.text = self.text
-    return etree.tostring(note)
+    <conversion-callback name="html learner teacher html5"><!-- type already creates start of environment -->
+environment = 'note'
+if self.attrib['type'] != 'inlinetip':
+    note = etree.Element('div')
+else:
+    note = etree.Element('span')
+note.attrib['class'] = environment
+note.attrib['class'] += " " + self.attrib['type']
+note.text = self.text
+return etree.tostring(note)
     </conversion-callback>
   </entry>
 
@@ -2700,7 +2700,7 @@ return '\n\\begin{%s}\n%s\end{%s}\n' % (environment, self.text, environment)
     <conversion-callback name="latex teacher correct learner">
 return r'\textcolor{%s}{%s}\n' % (self.attrib.get('font-color'), self.text)
     </conversion-callback>
-    <conversion-callback name="html teacher correct learner">
+    <conversion-callback name="html html5 teacher correct learner">
 environment = 'note'
 style = etree.Element('span')
 style.attrib['style'] = 'color:'
