@@ -821,11 +821,13 @@ class ExerciseValidatorTests(TestCase):
         self.assertIn('Child match failed for a //entry/problem element', error1)
         self.assertIn(
             '((((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)|(image,)|(html5table,)|'
-            '(figure,)|(equation,)|(latex,)|(correct,)|(note,)|(centre,)))))|(definition,)|'
-            '(quote,)|(note,)|(radio,)|(centre,)))){,}))|((((((br,)|(space,)|(newline,)|'
-            '(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)|(link,)|(nth,)|'
-            '(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)|(sub,)|(sup,)|'
-            '(unit_number,)|(unit,)|(input,)|(style,)|(check,)))){,}))))', error1)
+            '(figure,)|(equation,)|(latex,)|(correct,)|(note,)|(centre,)|'
+            '(coordinate,)|(set,)|(interval,)))))|(definition,)|(quote,)|(note,)|(radio,)'
+            '|(centre,)|(coordinate,)|(set,)|(interval,)))){,}))|((((((br,)|(space,)'
+            '|(newline,)|(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)'
+            '|(link,)|(nth,)|(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)'
+            '|(sub,)|(sup,)|(unit_number,)|(unit,)|(input,)|(style,)|(check,)|'
+            '(coordinate,)|(set,)|(interval,)))){,}))))', error1)
         self.assertIn(
             '<problem>\n'
             '                    <presentation>\n'
@@ -837,12 +839,14 @@ class ExerciseValidatorTests(TestCase):
         error2 = self.exercise_validator.errors[1]
         self.assertIn('Child match failed for a //entry/solution element', error2)
         self.assertIn(
-            '((((((step,)|(hint,))){,})|((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)|'
-            '(image,)|(html5table,)|(figure,)|(equation,)|(latex,)|(correct,)|(note,)|'
-            '(centre,)))))|(definition,)|(quote,)|(note,)|(radio,)|(centre,)))){,}))|((((((br,)|'
-            '(space,)|(newline,)|(chem_compound,)|(correct,)|(currency,)|(emphasis,)|(latex,)|'
-            '(link,)|(nth,)|(nuclear_notation,)|(number,)|(percentage,)|(spec_note,)|(sub,)|'
-            '(sup,)|(unit_number,)|(unit,)|(input,)|(style,)|(check,)))){,}))))', error2)
+            '((((((step,)|(hint,))){,})|((((((((para,)|(((list,)|(pspicture,)|(tikzpicture,)'
+            '|(image,)|(html5table,)|(figure,)|(equation,)|(latex,)|(correct,)|(note,)'
+            '|(centre,)|(coordinate,)|(set,)|(interval,)))))|(definition,)|(quote,)'
+            '|(note,)|(radio,)|(centre,)|(coordinate,)|(set,)|(interval,)))){,}))|((((((br,)'
+            '|(space,)|(newline,)|(chem_compound,)|(correct,)|(currency,)|(emphasis,)'
+            '|(latex,)|(link,)|(nth,)|(nuclear_notation,)|(number,)|(percentage,)'
+            '|(spec_note,)|(sub,)|(sup,)|(unit_number,)|(unit,)|(input,)|(style,)'
+            '|(check,)|(coordinate,)|(set,)|(interval,)))){,}))))', error2)
         self.assertIn(
             '<solution>\n'
             '                    <presentation>\n'
