@@ -10,10 +10,7 @@ from XmlValidator import ExerciseValidator
 
 
 class RadioButtonValidatorTests(TestCase):
-    """
-    Test that the ExerciseValidator class correctly validates a given XML structure for the radio
-    buttons.
-    """
+    """Test that ExerciseValidator correctly validates a given XML for the radio buttons."""
 
     def setUp(self):
         self.exercise_validator = ExerciseValidator()
